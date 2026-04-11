@@ -11,6 +11,7 @@ async function startCheckout(plan: string) {
   })
   const data = await res.json()
   if (data.url) window.location.href = data.url
+  else alert('Checkout error: ' + (data.error || 'Unknown error'))
 }
 
 export default function LandingPage() {
