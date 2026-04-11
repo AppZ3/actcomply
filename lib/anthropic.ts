@@ -3,6 +3,7 @@ import {
   HIGH_RISK_CATEGORIES,
   HIGH_RISK_REQUIREMENTS,
   LIMITED_RISK_REQUIREMENTS,
+  type ComplianceRequirement,
   PROHIBITED_INDICATORS,
   type AssessmentResult,
   type RiskLevel,
@@ -74,7 +75,7 @@ Be precise, reference actual article numbers, and be conservative - if unsure, c
   const riskLevel: RiskLevel = parsed.riskLevel
 
   // Attach the relevant requirements based on risk level
-  let requirements = []
+  let requirements: ComplianceRequirement[] = []
   if (riskLevel === 'HIGH_RISK') {
     requirements = HIGH_RISK_REQUIREMENTS
   } else if (riskLevel === 'LIMITED_RISK') {

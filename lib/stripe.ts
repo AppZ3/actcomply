@@ -1,13 +1,15 @@
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-03-31.basil',
-})
+export function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2026-03-25.dahlia',
+  })
+}
 
 export const PLANS = {
   starter: {
     name: 'Starter',
-    priceId: process.env.STRIPE_STARTER_PRICE_ID!,
+    priceId: 'STRIPE_STARTER_PRICE_ID',
     price: 499,
     currency: 'aud',
     interval: 'month',
@@ -22,7 +24,7 @@ export const PLANS = {
   },
   business: {
     name: 'Business',
-    priceId: process.env.STRIPE_BUSINESS_PRICE_ID!,
+    priceId: 'STRIPE_BUSINESS_PRICE_ID',
     price: 1999,
     currency: 'aud',
     interval: 'month',
@@ -36,11 +38,11 @@ export const PLANS = {
       'Audit trail for regulators',
       'Priority email support',
     ],
-    limit: -1, // unlimited
+    limit: -1,
   },
   enterprise: {
     name: 'Enterprise',
-    priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID!,
+    priceId: 'STRIPE_ENTERPRISE_PRICE_ID',
     price: 4999,
     currency: 'aud',
     interval: 'month',
