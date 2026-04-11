@@ -1,5 +1,17 @@
+'use client'
+
 import Link from 'next/link'
 import { PLANS } from '@/lib/stripe'
+
+async function startCheckout(plan: string) {
+  const res = await fetch('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ plan }),
+  })
+  const data = await res.json()
+  if (data.url) window.location.href = data.url
+}
 
 export default function LandingPage() {
   return (
@@ -140,16 +152,16 @@ export default function LandingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/assess"
-                className={`block text-center font-semibold py-3 rounded-xl transition ${
+              <button
+                onClick={() => startCheckout(Object.keys(PLANS)[i])}
+                className={`w-full font-semibold py-3 rounded-xl transition cursor-pointer ${
                   i === 1
                     ? 'bg-white text-blue-600 hover:bg-blue-50'
                     : 'bg-white/10 hover:bg-white/20 text-white'
                 }`}
               >
                 Get started
-              </Link>
+              </button>
             </div>
           ))}
         </div>

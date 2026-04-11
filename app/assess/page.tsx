@@ -212,12 +212,20 @@ export default function AssessPage() {
               Subscribe to receive auto-generated technical documentation, conformity assessment templates,
               ongoing regulatory monitoring, and audit-ready reports.
             </p>
-            <Link
-              href="/#pricing"
-              className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-xl transition"
+            <button
+              onClick={async () => {
+                const res = await fetch('/api/checkout', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ plan: 'starter' }),
+                })
+                const data = await res.json()
+                if (data.url) window.location.href = data.url
+              }}
+              className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-xl transition cursor-pointer"
             >
-              View plans from $499 AUD/month →
-            </Link>
+              Get started from $499 AUD/month →
+            </button>
           </div>
         </div>
       </div>
