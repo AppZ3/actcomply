@@ -80,15 +80,16 @@ export default function AssessPage() {
         body: JSON.stringify(form),
       })
 
+      const data = await res.json()
+
       if (!res.ok) {
-        throw new Error('Assessment failed')
+        throw new Error(data.error || 'Assessment failed')
       }
 
-      const data: AssessmentResult = await res.json()
-      setResult(data)
+      setResult(data as AssessmentResult)
       setStep('result')
-    } catch {
-      setError('Something went wrong. Please try again.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
       setStep('form')
     }
   }

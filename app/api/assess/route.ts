@@ -16,9 +16,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Assessment error:', error)
+    const message = error instanceof Error ? error.message : String(error)
+    console.error('Assessment error:', message)
     return NextResponse.json(
-      { error: 'Assessment failed. Please try again.' },
+      { error: message },
       { status: 500 }
     )
   }
