@@ -71,7 +71,8 @@ Be precise, reference actual article numbers, and be conservative - if unsure, c
     throw new Error('Unexpected response type from Claude')
   }
 
-  const parsed = JSON.parse(content.text)
+  const raw = content.text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/,'').trim()
+  const parsed = JSON.parse(raw)
   const riskLevel: RiskLevel = parsed.riskLevel
 
   // Attach the relevant requirements based on risk level
