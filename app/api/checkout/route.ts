@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     }
 
     const stripe = getStripe()
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://actcomply.vercel.app'
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://getactcomply.com'
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
