@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel`,
       billing_address_collection: 'required',
+      customer_email: undefined, // Stripe collects email at checkout
       currency: 'aud',
+      metadata: { plan },
     })
 
     return NextResponse.json({ url: session.url })
