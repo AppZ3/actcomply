@@ -9,7 +9,7 @@ export function getStripe() {
 export const PLANS = {
   starter: {
     name: 'Starter',
-    priceId: 'price_1TKv8oPI69EOXhfjsrTFVzAF',
+    priceId: process.env.STRIPE_STARTER_PRICE_ID!,
     price: 499,
     currency: 'aud',
     interval: 'month',
@@ -24,7 +24,7 @@ export const PLANS = {
   },
   business: {
     name: 'Business',
-    priceId: 'price_1TKv99PI69EOXhfjrvrMBMKu',
+    priceId: process.env.STRIPE_BUSINESS_PRICE_ID!,
     price: 1999,
     currency: 'aud',
     interval: 'month',
@@ -42,7 +42,7 @@ export const PLANS = {
   },
   enterprise: {
     name: 'Enterprise',
-    priceId: 'price_1TKv9YPI69EOXhfjv9ZM6aKc',
+    priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID!,
     price: 4999,
     currency: 'aud',
     interval: 'month',
