@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { PLANS } from '@/lib/stripe'
 
-async function startCheckout(plan: string) {
+async function startCheckout(plan: string, annual: boolean) {
   const res = await fetch('/api/checkout', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan }),
+    body: JSON.stringify({ plan, annual }),
   })
   const data = await res.json()
   if (data.url) window.location.href = data.url
@@ -15,6 +16,7 @@ async function startCheckout(plan: string) {
 }
 
 export default function LandingPage() {
+  const [annual, setAnnual] = useState(false)
   return (
     <div className="min-h-screen bg-gray-950 text-white">
 
@@ -122,50 +124,74 @@ export default function LandingPage() {
       {/* Pricing */}
       <section id="pricing" className="max-w-6xl mx-auto px-6 py-24">
         <h2 className="text-3xl font-bold text-center mb-4">Simple pricing</h2>
-        <p className="text-gray-400 text-center mb-16">Cheaper than one hour of compliance consulting. Cancel anytime.</p>
+        <p className="text-gray-400 text-center mb-8">Cheaper than one hour of compliance consulting. Cancel anytime.</p>
+
+        {/* Billing toggle */}
+        <div className="flex items-center justify-center gap-4 mb-12">
+          <span className={`text-sm ${!annual ? 'text-white' : 'text-gray-400'}`}>Monthly</span>
+          <button
+            onClick={() => setAnnual(v => !v)}
+            className={`relative w-12 h-6 rounded-full transition-colors ${annual ? 'bg-blue-600' : 'bg-white/20'}`}
+          >
+            <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${annual ? 'translate-x-6' : ''}`} />
+          </button>
+          <span className={`text-sm ${annual ? 'text-white' : 'text-gray-400'}`}>
+            Annual <span className="text-green-400 font-semibold">2 months free</span>
+          </span>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-8">
-          {Object.values(PLANS).map((plan, i) => (
-            <div
-              key={plan.name}
-              className={`rounded-2xl p-8 border ${
-                i === 1
-                  ? 'bg-blue-600 border-blue-500'
-                  : 'bg-white/5 border-white/10'
-              }`}
-            >
-              {i === 1 && (
-                <div className="text-xs font-semibold bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-4">
-                  MOST POPULAR
-                </div>
-              )}
-              <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-              <div className="text-4xl font-bold mb-1">
-                ${plan.price.toLocaleString()}
-                <span className="text-lg font-normal opacity-70"> AUD/mo</span>
-              </div>
-              <p className={`text-sm mb-6 ${i === 1 ? 'text-blue-100' : 'text-gray-400'}`}>
-                {plan.limit === -1 ? 'Unlimited AI systems' : `Up to ${plan.limit} AI systems`}
-              </p>
-              <ul className="space-y-3 mb-8">
-                {plan.features.map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm">
-                    <span className={i === 1 ? 'text-blue-200' : 'text-blue-400'}>✓</span>
-                    <span className={i === 1 ? 'text-blue-50' : 'text-gray-300'}>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => startCheckout(Object.keys(PLANS)[i])}
-                className={`w-full font-semibold py-3 rounded-xl transition cursor-pointer ${
+          {Object.entries(PLANS).map(([key, plan], i) => {
+            const displayPrice = annual ? plan.annualPrice : plan.price
+            const perLabel = annual ? '/year' : '/mo'
+            return (
+              <div
+                key={plan.name}
+                className={`rounded-2xl p-8 border ${
                   i === 1
-                    ? 'bg-white text-blue-600 hover:bg-blue-50'
-                    : 'bg-white/10 hover:bg-white/20 text-white'
+                    ? 'bg-blue-600 border-blue-500'
+                    : 'bg-white/5 border-white/10'
                 }`}
               >
-                Get started
-              </button>
-            </div>
-          ))}
+                {i === 1 && (
+                  <div className="text-xs font-semibold bg-white/20 text-white px-3 py-1 rounded-full inline-block mb-4">
+                    MOST POPULAR
+                  </div>
+                )}
+                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                <div className="text-4xl font-bold mb-1">
+                  €{displayPrice.toLocaleString()}
+                  <span className="text-lg font-normal opacity-70">{perLabel}</span>
+                </div>
+                {annual && (
+                  <p className={`text-xs mb-1 ${i === 1 ? 'text-blue-200' : 'text-green-400'}`}>
+                    €{plan.price}/mo billed annually
+                  </p>
+                )}
+                <p className={`text-sm mb-6 ${i === 1 ? 'text-blue-100' : 'text-gray-400'}`}>
+                  {plan.limit === -1 ? 'Unlimited AI systems' : `Up to ${plan.limit} AI systems`}
+                </p>
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map(f => (
+                    <li key={f} className="flex items-start gap-2 text-sm">
+                      <span className={i === 1 ? 'text-blue-200' : 'text-blue-400'}>✓</span>
+                      <span className={i === 1 ? 'text-blue-50' : 'text-gray-300'}>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => startCheckout(key, annual)}
+                  className={`w-full font-semibold py-3 rounded-xl transition cursor-pointer ${
+                    i === 1
+                      ? 'bg-white text-blue-600 hover:bg-blue-50'
+                      : 'bg-white/10 hover:bg-white/20 text-white'
+                  }`}
+                >
+                  Get started
+                </button>
+              </div>
+            )
+          })}
         </div>
       </section>
 

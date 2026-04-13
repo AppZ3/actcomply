@@ -10,9 +10,10 @@ export const PLANS = {
   starter: {
     name: 'Starter',
     priceId: process.env.STRIPE_STARTER_PRICE_ID!,
+    annualPriceId: process.env.STRIPE_STARTER_ANNUAL_PRICE_ID!,
     price: 499,
-    currency: 'aud',
-    interval: 'month',
+    annualPrice: 4990,
+    currency: 'eur',
     features: [
       'Up to 5 AI systems assessed',
       'Full EU AI Act risk classification',
@@ -25,9 +26,10 @@ export const PLANS = {
   business: {
     name: 'Business',
     priceId: process.env.STRIPE_BUSINESS_PRICE_ID!,
-    price: 1999,
-    currency: 'aud',
-    interval: 'month',
+    annualPriceId: process.env.STRIPE_BUSINESS_ANNUAL_PRICE_ID!,
+    price: 1499,
+    annualPrice: 14990,
+    currency: 'eur',
     features: [
       'Unlimited AI systems assessed',
       'Full EU AI Act risk classification',
@@ -43,9 +45,10 @@ export const PLANS = {
   enterprise: {
     name: 'Enterprise',
     priceId: process.env.STRIPE_ENTERPRISE_PRICE_ID!,
-    price: 4999,
-    currency: 'aud',
-    interval: 'month',
+    annualPriceId: process.env.STRIPE_ENTERPRISE_ANNUAL_PRICE_ID!,
+    price: 2999,
+    annualPrice: 29990,
+    currency: 'eur',
     features: [
       'Everything in Business',
       'Multi-entity / group management',
