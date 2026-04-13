@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { AssessmentResult } from '@/lib/eu-ai-act'
+import { createClient } from '@/lib/supabase'
 
 const SECTORS = [
   'Technology / Software',
@@ -54,8 +55,22 @@ const RISK_CONFIG = {
 
 export default function AssessPage() {
   const [step, setStep] = useState<'form' | 'loading' | 'result'>('form')
-  const [result, setResult] = useState<AssessmentResult | null>(null)
+  const [result, setResult] = useState<AssessmentResult & { savedId?: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isPaidUser, setIsPaidUser] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', user.id)
+        .single()
+      if (profile && profile.plan !== 'free') setIsPaidUser(true)
+    })
+  }, [])
 
   const [form, setForm] = useState({
     name: '',
@@ -205,28 +220,43 @@ export default function AssessPage() {
             </div>
           )}
 
-          {/* Upgrade CTA */}
-          <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8 text-center">
-            <h2 className="text-xl font-bold mb-3">Get your full compliance package</h2>
-            <p className="text-gray-400 mb-6">
-              Subscribe to receive auto-generated technical documentation, conformity assessment templates,
-              ongoing regulatory monitoring, and audit-ready reports.
-            </p>
-            <button
-              onClick={async () => {
-                const res = await fetch('/api/checkout', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ plan: 'starter' }),
-                })
-                const data = await res.json()
-                if (data.url) window.location.href = data.url
-              }}
-              className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-xl transition cursor-pointer"
-            >
-              Get started from $499 AUD/month →
-            </button>
-          </div>
+          {/* CTA */}
+          {isPaidUser ? (
+            <div className="bg-green-600/10 border border-green-500/20 rounded-2xl p-8 text-center">
+              <h2 className="text-xl font-bold mb-3">Assessment saved to your dashboard</h2>
+              <p className="text-gray-400 mb-6">
+                View this assessment alongside all your other AI systems, track compliance progress, and monitor for regulatory changes.
+              </p>
+              <Link
+                href={result?.savedId ? `/dashboard/systems/${result.savedId}` : '/dashboard/systems'}
+                className="inline-block bg-green-600 hover:bg-green-500 text-white font-semibold px-8 py-3 rounded-xl transition"
+              >
+                View in dashboard →
+              </Link>
+            </div>
+          ) : (
+            <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8 text-center">
+              <h2 className="text-xl font-bold mb-3">Get your full compliance package</h2>
+              <p className="text-gray-400 mb-6">
+                Subscribe to receive auto-generated technical documentation, conformity assessment templates,
+                ongoing regulatory monitoring, and audit-ready reports.
+              </p>
+              <button
+                onClick={async () => {
+                  const res = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan: 'starter' }),
+                  })
+                  const data = await res.json()
+                  if (data.url) window.location.href = data.url
+                }}
+                className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-xl transition cursor-pointer"
+              >
+                Get started from $499 AUD/month →
+              </button>
+            </div>
+          )}
         </div>
       </div>
     )
