@@ -27,6 +27,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-6">
             <Link href="#pricing" className="text-sm text-gray-400 hover:text-white transition">Pricing</Link>
+            <Link href="/login" className="text-sm text-gray-400 hover:text-white transition">Sign in</Link>
             <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg transition">
               Check Your AI Systems
             </Link>
