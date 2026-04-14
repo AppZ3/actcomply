@@ -223,8 +223,9 @@ export function getDaysUntilEnforcement(): number {
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
 }
 
+// Total compliance obligations currently defined in this file.
+// Add more requirement objects to HIGH_RISK_REQUIREMENTS or LIMITED_RISK_REQUIREMENTS
+// and this number will update automatically — the landing page rounds to nearest 5.
 export const REQUIREMENTS_MAPPED =
-  HIGH_RISK_REQUIREMENTS.length * HIGH_RISK_CATEGORIES.length + // per-sector high-risk obligations
-  LIMITED_RISK_REQUIREMENTS.length +                            // transparency obligations
-  14 +                                                          // GPAI model obligations (Art 53-55)
-  12                                                            // general provider obligations (Art 16-27)
+  HIGH_RISK_REQUIREMENTS.length +
+  LIMITED_RISK_REQUIREMENTS.length
