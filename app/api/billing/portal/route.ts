@@ -16,7 +16,7 @@ export async function POST() {
     .single()
 
   if (!profile?.stripe_customer_id) {
-    return NextResponse.json({ error: 'No billing account found' }, { status: 404 })
+    return NextResponse.json({ error: 'No billing account found. Please subscribe to a plan first.' }, { status: 404 })
   }
 
   const stripe = getStripe()
@@ -29,6 +29,15 @@ export async function POST() {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('Stripe portal error:', message)
+    // If the customer no longer exists in Stripe, clear the stale ID
+    if (message.includes('No such customer')) {
+      await supabase.from('profiles').update({
+        stripe_customer_id: null,
+        stripe_subscription_id: null,
+        subscription_status: null,
+      }).eq('id', user.id)
+      return NextResponse.json({ error: 'Billing account not found. Please subscribe to a plan to set up billing.' }, { status: 404 })
+    }
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
