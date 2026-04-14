@@ -1,6 +1,8 @@
 // GET  /api/docs/[assessmentId]  → fetch existing technical doc
 // POST /api/docs/[assessmentId]  → generate new doc with Claude, save to DB
 
+export const maxDuration = 60 // Vercel Pro: respected. Hobby: ignored (10s cap applies)
+
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
@@ -47,8 +49,8 @@ export async function POST(
   if (!assessment) return NextResponse.json({ error: 'Assessment not found' }, { status: 404 })
 
   const msg = await ai.messages.create({
-    model: 'claude-opus-4-6',
-    max_tokens: 4096,
+    model: 'claude-sonnet-4-6',
+    max_tokens: 3000,
     messages: [{
       role: 'user',
       content: `You are a EU AI Act compliance expert generating Article 11 + Annex IV technical documentation for a high-risk AI system.

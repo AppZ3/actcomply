@@ -82,6 +82,9 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
               Generate complete Annex IV technical documentation for this AI system — 10 sections covering development methodology, risk management, human oversight, and post-market monitoring. Audit-ready and regulator-facing.
             </p>
           </div>
+          {generating && (
+            <p className="text-xs text-gray-500 w-full mb-2">This takes ~30 seconds — please keep this tab open.</p>
+          )}
           <button
             onClick={generate}
             disabled={generating}
