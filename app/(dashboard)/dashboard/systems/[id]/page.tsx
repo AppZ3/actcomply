@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase-server'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
 import Link from 'next/link'
 import { ComplianceChecklist } from './checklist'
+import { TechnicalDocumentation } from './docs'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -37,6 +38,9 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
   for (const row of progressRows ?? []) {
     progressMap[row.requirement_id] = { status: row.status, notes: row.notes ?? '' }
   }
+
+  const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single()
+  const isPaid = profile?.plan && profile.plan !== 'free'
 
   const config = RISK_CONFIG[assessment.risk_level as RiskLevel]
   const requirements = (assessment.requirements ?? []) as ComplianceRequirement[]
@@ -117,6 +121,15 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           doneCount={doneCount}
         />
       )}
+
+      {/* Technical documentation */}
+      <div className="mt-6">
+        <TechnicalDocumentation
+          assessmentId={id}
+          systemName={assessment.name}
+          isPaid={!!isPaid}
+        />
+      </div>
     </div>
   )
 }

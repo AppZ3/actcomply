@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import type { AssessmentResult, RiskLevel } from '@/lib/eu-ai-act'
+import { OnboardingBanner } from './onboarding'
 
 const RISK_BADGE: Record<RiskLevel, { label: string; class: string }> = {
   PROHIBITED:   { label: 'Prohibited',    class: 'bg-red-500/20 text-red-400 border-red-500/30' },
@@ -45,6 +46,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-8">
+      {total === 0 && <OnboardingBanner userEmail={user.email ?? ''} />}
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Overview</h1>
         <p className="text-gray-400 text-sm mt-1">EU AI Act enforcement in <span className="text-red-400 font-semibold">{daysLeft} days</span></p>

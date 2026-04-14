@@ -26,8 +26,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
   ])
 
   const unreadAlerts = Math.max(0, (totalAlerts ?? 0) - (readAlerts ?? 0))
-    .eq('id', user.id)
-    .single()
 
   const plan = profile?.plan ?? 'free'
   const isActive = profile?.subscription_status === 'active'
@@ -59,6 +57,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <NavLink href="/dashboard/systems" label="AI Systems" icon={
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+            </svg>
+          } />
+          <NavLink href="/dashboard/billing" label="Billing" icon={
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
           } />
           <NavLink href="/dashboard/alerts" label="Alerts" badge={unreadAlerts} icon={
