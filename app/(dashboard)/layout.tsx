@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { NavLink } from './nav-link'
 
 const PLAN_LABELS: Record<string, string> = {
   free: 'Free',
@@ -127,19 +128,3 @@ export default async function DashboardLayout({ children }: { children: React.Re
   )
 }
 
-function NavLink({ href, label, icon, badge }: { href: string; label: string; icon: React.ReactNode; badge?: number }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
-    >
-      {icon}
-      <span className="flex-1">{label}</span>
-      {badge != null && badge > 0 && (
-        <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0">
-          {badge > 9 ? '9+' : badge}
-        </span>
-      )}
-    </Link>
-  )
-}
