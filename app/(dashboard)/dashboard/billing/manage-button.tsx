@@ -11,11 +11,13 @@ export function ManageBillingButton() {
     setError(null)
     try {
       const res = await fetch('/api/billing/portal', { method: 'POST' })
-      const data = await res.json()
+      const text = await res.text()
+      let data: { url?: string; error?: string } = {}
+      try { data = JSON.parse(text) } catch { /* non-JSON response */ }
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError(data.error ?? 'Could not open billing portal')
+        setError(data.error ?? `Error ${res.status} — please contact support`)
         setLoading(false)
       }
     } catch {

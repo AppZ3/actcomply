@@ -20,10 +20,15 @@ export async function POST() {
   }
 
   const stripe = getStripe()
-  const session = await stripe.billingPortal.sessions.create({
-    customer: profile.stripe_customer_id,
-    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`,
-  })
-
-  return NextResponse.json({ url: session.url })
+  try {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: profile.stripe_customer_id,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`,
+    })
+    return NextResponse.json({ url: session.url })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('Stripe portal error:', message)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
