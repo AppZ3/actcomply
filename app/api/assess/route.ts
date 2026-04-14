@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { assessAISystem, type AISystemInput } from '@/lib/anthropic'
+import { assessAISystem, validateAssessmentInput, type AISystemInput } from '@/lib/anthropic'
 import { createClient } from '@/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
@@ -11,6 +11,12 @@ export async function POST(request: NextRequest) {
         { error: 'Missing required fields: name, description, purpose, sector' },
         { status: 400 }
       )
+    }
+
+    // Validate input before running the full assessment
+    const validation = await validateAssessmentInput(body)
+    if (!validation.valid) {
+      return NextResponse.json({ error: validation.reason }, { status: 422 })
     }
 
     // Run the assessment
