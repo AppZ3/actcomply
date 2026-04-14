@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PLANS } from '@/lib/stripe'
 
 async function startCheckout(plan: string, annual: boolean) {
@@ -15,15 +15,32 @@ async function startCheckout(plan: string, annual: boolean) {
   else alert('Checkout error: ' + (data.error || 'Unknown error'))
 }
 
-function daysUntilEnforcement() {
-  const deadline = new Date('2026-08-02T00:00:00Z')
-  const now = new Date()
-  const diff = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-  return Math.max(0, diff)
-}
-
 export default function LandingPage() {
   const [annual, setAnnual] = useState(false)
+  const [days, setDays] = useState<number | null>(null)
+  const [requirementsMapped, setRequirementsMapped] = useState<number | null>(null)
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch('/api/stats')
+        const data = await res.json()
+        setDays(data.daysUntilEnforcement)
+        setRequirementsMapped(data.requirementsMapped)
+      } catch {
+        // fallback: calculate days client-side
+        const deadline = new Date('2026-08-02T00:00:00Z')
+        const diff = Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+        setDays(Math.max(0, diff))
+      }
+    }
+
+    fetchStats()
+
+    // Refresh every minute so days ticks down without a page reload
+    const interval = setInterval(fetchStats, 60_000)
+    return () => clearInterval(interval)
+  }, [])
   return (
     <div className="min-h-screen bg-gray-950 text-white">
 
@@ -86,12 +103,27 @@ export default function LandingPage() {
           {[
             { value: '€35M', label: 'Maximum fine per violation' },
             { value: '7%', label: 'Of global turnover at risk' },
-            { value: `${daysUntilEnforcement()} days`, label: 'Until enforcement begins' },
-            { value: '600+', label: 'Compliance requirements mapped' },
+            {
+              value: days !== null ? `${days} days` : '— days',
+              label: 'Until enforcement begins',
+              live: true,
+            },
+            {
+              value: requirementsMapped !== null ? `${requirementsMapped}+` : '600+',
+              label: 'Compliance requirements mapped',
+              live: true,
+            },
           ].map(stat => (
             <div key={stat.label}>
-              <div className="text-3xl font-bold text-blue-400 mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-400">{stat.label}</div>
+              <div className="text-3xl font-bold text-blue-400 mb-1 tabular-nums">
+                {stat.value}
+              </div>
+              <div className="text-sm text-gray-400 flex items-center justify-center gap-1.5">
+                {stat.live && days !== null && (
+                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shrink-0" />
+                )}
+                {stat.label}
+              </div>
             </div>
           ))}
         </div>

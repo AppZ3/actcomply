@@ -211,3 +211,20 @@ export const LIMITED_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     effort: 'LOW',
   },
 ]
+
+// Total compliance obligations mapped across the EU AI Act (Regulation EU 2024/1689).
+// Counts: high-risk requirements × each Annex III sector + limited-risk obligations +
+// GPAI model obligations (Articles 53-55) + general provider obligations (Articles 16-27)
+// Update this number when new requirement categories are added to this file.
+export const ENFORCEMENT_DEADLINE = new Date('2026-08-02T00:00:00Z')
+
+export function getDaysUntilEnforcement(): number {
+  const diff = ENFORCEMENT_DEADLINE.getTime() - Date.now()
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+}
+
+export const REQUIREMENTS_MAPPED =
+  HIGH_RISK_REQUIREMENTS.length * HIGH_RISK_CATEGORIES.length + // per-sector high-risk obligations
+  LIMITED_RISK_REQUIREMENTS.length +                            // transparency obligations
+  14 +                                                          // GPAI model obligations (Art 53-55)
+  12                                                            // general provider obligations (Art 16-27)
