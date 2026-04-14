@@ -53,6 +53,148 @@ const RISK_CONFIG = {
   },
 }
 
+const PLANS = [
+  {
+    key: 'starter',
+    name: 'Starter',
+    price: 499,
+    annualPrice: 4990,
+    description: 'For small teams getting compliant fast.',
+    features: [
+      'Up to 5 AI systems assessed',
+      'Full EU AI Act risk classification',
+      'Compliance requirement checklist',
+      'Monthly regulatory update alerts',
+      'PDF compliance report',
+    ],
+    highlight: false,
+  },
+  {
+    key: 'business',
+    name: 'Business',
+    price: 1499,
+    annualPrice: 14990,
+    description: 'For teams with multiple AI systems.',
+    features: [
+      'Unlimited AI systems assessed',
+      'Auto-generated technical documentation',
+      'Conformity assessment templates',
+      'Weekly regulatory monitoring alerts',
+      'EU database registration guidance',
+      'Audit trail for regulators',
+      'Priority email support',
+    ],
+    highlight: true,
+  },
+  {
+    key: 'enterprise',
+    name: 'Enterprise',
+    price: 2999,
+    annualPrice: 29990,
+    description: 'For large organisations and groups.',
+    features: [
+      'Everything in Business',
+      'Multi-entity / group management',
+      'White-label compliance reports',
+      'API access to assessment engine',
+      'Custom regulatory monitoring scope',
+      'Dedicated onboarding support',
+      'SLA-backed uptime',
+    ],
+    highlight: false,
+  },
+]
+
+function UpgradePlans() {
+  const [annual, setAnnual] = useState(false)
+  const [loading, setLoading] = useState<string | null>(null)
+
+  async function handleCheckout(planKey: string) {
+    setLoading(planKey)
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: planKey, annual }),
+    })
+    const data = await res.json()
+    if (data.url) window.location.href = data.url
+    else setLoading(null)
+  }
+
+  return (
+    <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8">
+      <div className="text-center mb-8">
+        <h2 className="text-xl font-bold mb-2">Get your full compliance package</h2>
+        <p className="text-gray-400 text-sm mb-6">
+          Auto-generated documentation, regulatory monitoring, and audit-ready reports — all included.
+        </p>
+        {/* Annual toggle */}
+        <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
+          <span className={`text-sm ${!annual ? 'text-white' : 'text-gray-500'}`}>Monthly</span>
+          <button
+            onClick={() => setAnnual(v => !v)}
+            className={`relative w-10 h-5 rounded-full transition-colors ${annual ? 'bg-blue-600' : 'bg-white/20'}`}
+          >
+            <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${annual ? 'translate-x-5' : 'translate-x-0.5'}`} />
+          </button>
+          <span className={`text-sm ${annual ? 'text-white' : 'text-gray-500'}`}>
+            Annual <span className="text-green-400 text-xs font-semibold ml-1">2 months free</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {PLANS.map(plan => (
+          <div
+            key={plan.key}
+            className={`rounded-xl p-6 flex flex-col ${
+              plan.highlight
+                ? 'bg-blue-600/20 border-2 border-blue-500'
+                : 'bg-white/5 border border-white/10'
+            }`}
+          >
+            {plan.highlight && (
+              <div className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-3">
+                Most popular
+              </div>
+            )}
+            <div className="mb-1 font-bold text-lg">{plan.name}</div>
+            <div className="text-gray-400 text-xs mb-4">{plan.description}</div>
+            <div className="mb-5">
+              <span className="text-3xl font-bold">€{annual ? Math.round(plan.annualPrice / 12) : plan.price}</span>
+              <span className="text-gray-400 text-sm">/month</span>
+              {annual && (
+                <div className="text-xs text-green-400 mt-0.5">€{plan.annualPrice}/year billed annually</div>
+              )}
+            </div>
+            <ul className="space-y-2 mb-6 flex-1">
+              {plan.features.map(f => (
+                <li key={f} className="flex items-start gap-2 text-sm text-gray-300">
+                  <svg className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={() => handleCheckout(plan.key)}
+              disabled={loading === plan.key}
+              className={`w-full py-2.5 rounded-lg text-sm font-semibold transition disabled:opacity-50 ${
+                plan.highlight
+                  ? 'bg-blue-600 hover:bg-blue-500 text-white'
+                  : 'bg-white/10 hover:bg-white/20 text-white'
+              }`}
+            >
+              {loading === plan.key ? 'Loading...' : `Get ${plan.name} →`}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function AssessPage() {
   const [step, setStep] = useState<'form' | 'loading' | 'result'>('form')
   const [result, setResult] = useState<AssessmentResult & { savedId?: string } | null>(null)
@@ -235,27 +377,7 @@ export default function AssessPage() {
               </Link>
             </div>
           ) : (
-            <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8 text-center">
-              <h2 className="text-xl font-bold mb-3">Get your full compliance package</h2>
-              <p className="text-gray-400 mb-6">
-                Subscribe to receive auto-generated technical documentation, conformity assessment templates,
-                ongoing regulatory monitoring, and audit-ready reports.
-              </p>
-              <button
-                onClick={async () => {
-                  const res = await fetch('/api/checkout', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ plan: 'starter' }),
-                  })
-                  const data = await res.json()
-                  if (data.url) window.location.href = data.url
-                }}
-                className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-3 rounded-xl transition cursor-pointer"
-              >
-                Get started from $499 AUD/month →
-              </button>
-            </div>
+            <UpgradePlans />
           )}
         </div>
       </div>
