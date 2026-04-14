@@ -4,9 +4,12 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import type Stripe from 'stripe'
 
 const PRICE_TO_PLAN: Record<string, { plan: string; limit: number }> = {
-  [PLANS.starter.priceId]:    { plan: 'starter',    limit: PLANS.starter.limit },
-  [PLANS.business.priceId]:   { plan: 'business',   limit: PLANS.business.limit },
-  [PLANS.enterprise.priceId]: { plan: 'enterprise', limit: PLANS.enterprise.limit },
+  [PLANS.starter.priceId]:          { plan: 'starter',    limit: PLANS.starter.limit },
+  [PLANS.starter.annualPriceId]:    { plan: 'starter',    limit: PLANS.starter.limit },
+  [PLANS.business.priceId]:         { plan: 'business',   limit: PLANS.business.limit },
+  [PLANS.business.annualPriceId]:   { plan: 'business',   limit: PLANS.business.limit },
+  [PLANS.enterprise.priceId]:       { plan: 'enterprise', limit: PLANS.enterprise.limit },
+  [PLANS.enterprise.annualPriceId]: { plan: 'enterprise', limit: PLANS.enterprise.limit },
 }
 
 export async function POST(request: NextRequest) {
