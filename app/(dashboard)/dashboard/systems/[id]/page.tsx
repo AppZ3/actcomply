@@ -64,7 +64,7 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
-            href="/assess"
+            href={`/assess?prefill=${id}`}
             className="text-sm text-blue-400 border border-blue-500/30 hover:bg-blue-500/10 px-4 py-2 rounded-lg transition"
           >
             Re-assess

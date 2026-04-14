@@ -44,5 +44,14 @@ export async function POST(req: NextRequest) {
     )
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Write audit log entry
+  await supabase.from('audit_log').insert({
+    user_id: user.id,
+    assessment_id: assessmentId,
+    action: 'requirement_status_change',
+    detail: { requirement_id: requirementId, status, notes: notes ?? null },
+  }).then(() => {}) // fire and forget
+
   return NextResponse.json({ ok: true })
 }

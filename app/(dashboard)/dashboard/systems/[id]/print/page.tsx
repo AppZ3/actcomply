@@ -34,6 +34,18 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
     .eq('user_id', user.id)
     .single()
 
+  // Fetch checklist progress
+  const { data: progressRows } = await supabase
+    .from('requirement_progress')
+    .select('requirement_id, status, notes')
+    .eq('user_id', user.id)
+    .eq('assessment_id', id)
+
+  const progressMap: Record<string, { status: string; notes: string }> = {}
+  for (const row of progressRows ?? []) {
+    progressMap[row.requirement_id] = { status: row.status, notes: row.notes ?? '' }
+  }
+
   const doc = docRow?.content as { sections?: { title: string; article_ref: string; content: string }[] } | null
   const requirements = (assessment.requirements ?? []) as ComplianceRequirement[]
   const immediateActions = (assessment.immediate_actions ?? []) as string[]
@@ -101,23 +113,31 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
               Compliance Requirements ({requirements.length})
             </h2>
             <div className="space-y-3">
-              {requirements.map(req => (
-                <div key={req.id} className="border border-gray-200 rounded p-3">
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <div>
-                      <span className="text-xs font-mono text-blue-600 mr-2">{req.article}</span>
-                      <span className="text-sm font-semibold">{req.title}</span>
+              {requirements.map(req => {
+                const p = progressMap[req.id]
+                const status = p?.status ?? 'not_started'
+                return (
+                  <div key={req.id} className={`border rounded p-3 ${status === 'done' ? 'border-green-300 bg-green-50' : status === 'in_progress' ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200'}`}>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-sm font-bold ${status === 'done' ? 'text-green-600' : status === 'in_progress' ? 'text-yellow-600' : 'text-gray-400'}`}>
+                          {status === 'done' ? '✓' : status === 'in_progress' ? '◑' : '○'}
+                        </span>
+                        <span className="text-xs font-mono text-blue-600">{req.article}</span>
+                        <span className={`text-sm font-semibold ${status === 'done' ? 'line-through text-gray-400' : ''}`}>{req.title}</span>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded font-medium shrink-0 ${
+                        req.effort === 'HIGH' ? 'bg-red-100 text-red-700' :
+                        req.effort === 'MEDIUM' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>{req.effort}</span>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded font-medium shrink-0 ${
-                      req.effort === 'HIGH' ? 'bg-red-100 text-red-700' :
-                      req.effort === 'MEDIUM' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>{req.effort}</span>
+                    <p className="text-xs text-gray-500">{req.description}</p>
+                    <p className="text-xs text-gray-400 mt-1">Deadline: {req.deadline}</p>
+                    {p?.notes && <p className="text-xs text-gray-600 mt-1 italic">Notes: {p.notes}</p>}
                   </div>
-                  <p className="text-xs text-gray-500">{req.description}</p>
-                  <p className="text-xs text-gray-400 mt-1">Deadline: {req.deadline}</p>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </section>
         )}

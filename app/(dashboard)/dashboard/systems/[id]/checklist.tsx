@@ -45,6 +45,7 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
     return map
   })
   const [saving, setSaving] = useState<string | null>(null)
+  const [saved, setSaved] = useState<string | null>(null)
   const [expandedNotes, setExpandedNotes] = useState<string | null>(null)
 
   const doneCount = Object.values(progress).filter(p => p.status === 'done').length
@@ -67,6 +68,8 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
       }),
     })
     setSaving(null)
+    setSaved(reqId)
+    setTimeout(() => setSaved(s => s === reqId ? null : s), 1500)
   }
 
   async function saveNotes(reqId: string, notes: string) {
@@ -137,7 +140,7 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
                 >
                   {saving === req.id ? (
                     <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
-                  ) : s.icon}
+                  ) : saved === req.id ? '✓' : s.icon}
                 </button>
 
                 <div className="flex-1 min-w-0">

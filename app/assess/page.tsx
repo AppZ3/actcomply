@@ -200,19 +200,7 @@ export default function AssessPage() {
   const [result, setResult] = useState<AssessmentResult & { savedId?: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPaidUser, setIsPaidUser] = useState(false)
-
-  useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) return
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', user.id)
-        .single()
-      if (profile && profile.plan !== 'free') setIsPaidUser(true)
-    })
-  }, [])
+  const [prefillLoaded, setPrefillLoaded] = useState(false)
 
   const [form, setForm] = useState({
     name: '',
@@ -224,6 +212,43 @@ export default function AssessPage() {
     affectsIndividuals: false,
     currentSafeguards: '',
   })
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', user.id)
+        .single()
+      if (profile && profile.plan !== 'free') setIsPaidUser(true)
+
+      // Pre-fill form if ?prefill=id is set
+      const prefillId = new URLSearchParams(window.location.search).get('prefill')
+      if (prefillId && !prefillLoaded) {
+        const { data: existing } = await supabase
+          .from('assessments')
+          .select('name, description, purpose, sector, uses_personal_data, makes_autonomous_decisions, affects_individuals, current_safeguards')
+          .eq('id', prefillId)
+          .eq('user_id', user.id)
+          .single()
+        if (existing) {
+          setForm({
+            name: existing.name ?? '',
+            description: existing.description ?? '',
+            purpose: existing.purpose ?? '',
+            sector: existing.sector ?? '',
+            usesPersonalData: existing.uses_personal_data ?? false,
+            makesAutonomousDecisions: existing.makes_autonomous_decisions ?? false,
+            affectsIndividuals: existing.affects_individuals ?? false,
+            currentSafeguards: existing.current_safeguards ?? '',
+          })
+          setPrefillLoaded(true)
+        }
+      }
+    })
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
