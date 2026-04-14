@@ -39,49 +39,45 @@ export async function POST(request: NextRequest) {
         const customerId = session.customer as string
         const subscriptionId = session.subscription as string
         const planKey = session.metadata?.plan
+        const userId = session.metadata?.user_id ?? null
         const planData = planKey ? PRICE_TO_PLAN[PLANS[planKey as keyof typeof PLANS]?.priceId] : null
 
-        console.log('checkout.session.completed', { email, planKey, planData, customerId, subscriptionId })
+        const profileUpdate = {
+          plan: planData?.plan ?? 'starter',
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscriptionId,
+          subscription_status: 'active',
+          systems_limit: planData?.limit ?? 5,
+          updated_at: new Date().toISOString(),
+        }
 
-        if (!email) {
-          console.error('No email found in checkout session')
+        // Prefer direct user_id lookup (logged-in upgrade path)
+        if (userId) {
+          await supabaseAdmin.from('profiles').update(profileUpdate).eq('id', userId)
           break
         }
 
-        // Check if profile already exists
+        // Fallback: email lookup (new customer from landing page)
+        if (!email) {
+          console.error('No email or user_id in checkout session')
+          break
+        }
+
         const { data: existingProfile } = await supabaseAdmin
           .from('profiles')
           .select('id')
           .ilike('email', email)
           .single()
 
-        console.log('Existing profile:', existingProfile)
-
         if (!existingProfile) {
-          // New customer — invite and wait for DB trigger to create profile
           const { error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
             redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?redirect=/dashboard`,
           })
           if (inviteError) console.error('Invite error:', inviteError.message)
-          // Wait for handle_new_user trigger to run
           await new Promise(resolve => setTimeout(resolve, 2000))
         }
 
-        // Update profile by email
-        const { data: updated, error: updateError } = await supabaseAdmin
-          .from('profiles')
-          .update({
-            plan: planData?.plan ?? 'starter',
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscriptionId,
-            subscription_status: 'active',
-            systems_limit: planData?.limit ?? 5,
-            updated_at: new Date().toISOString(),
-          })
-          .ilike('email', email)
-          .select()
-
-        console.log('Profile update result:', updated, updateError?.message)
+        await supabaseAdmin.from('profiles').update(profileUpdate).ilike('email', email)
         break
       }
 

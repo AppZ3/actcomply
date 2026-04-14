@@ -4,6 +4,7 @@ import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
 import Link from 'next/link'
 import { ComplianceChecklist } from './checklist'
 import { TechnicalDocumentation } from './docs'
+import { DeleteSystemButton } from './delete-button'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -61,12 +62,15 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           <h1 className="text-2xl font-bold mb-1">{assessment.name}</h1>
           <p className="text-gray-400 text-sm">{assessment.sector} · Assessed {new Date(assessment.created_at).toLocaleDateString()}</p>
         </div>
-        <Link
-          href="/assess"
-          className="flex-shrink-0 text-sm text-blue-400 border border-blue-500/30 hover:bg-blue-500/10 px-4 py-2 rounded-lg transition"
-        >
-          Re-assess
-        </Link>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link
+            href="/assess"
+            className="text-sm text-blue-400 border border-blue-500/30 hover:bg-blue-500/10 px-4 py-2 rounded-lg transition"
+          >
+            Re-assess
+          </Link>
+          <DeleteSystemButton assessmentId={id} />
+        </div>
       </div>
 
       {/* Risk banner */}

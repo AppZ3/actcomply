@@ -39,7 +39,7 @@ export default async function BillingPage() {
     try {
       const stripe = getStripe()
       const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id)
-      nextBillingDate = new Date((sub as { current_period_end: number }).current_period_end * 1000)
+      nextBillingDate = new Date(((sub as unknown) as { current_period_end: number }).current_period_end * 1000)
         .toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
     } catch { /* subscription may not exist */ }
   }
