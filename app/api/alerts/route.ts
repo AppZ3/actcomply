@@ -44,6 +44,47 @@ const SEED_ALERTS = [
   },
 ]
 
+// POST /api/alerts — create a new alert and email all active paid users (internal use)
+export async function POST(req: Request) {
+  const authHeader = req.headers.get('authorization')
+  if (authHeader !== `Bearer ${process.env.ALERTS_ADMIN_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { title, summary, article_refs, severity } = await req.json()
+  if (!title || !summary || !article_refs || !severity) {
+    return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+  }
+
+  const admin = getSupabaseAdmin()
+
+  // Insert alert
+  const { data: alert, error } = await admin
+    .from('regulatory_alerts')
+    .insert({ title, summary, article_refs, severity, published_at: new Date().toISOString() })
+    .select()
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Email all active paid users
+  const { data: profiles } = await admin
+    .from('profiles')
+    .select('email')
+    .eq('subscription_status', 'active')
+    .neq('plan', 'free')
+
+  const { sendAlertEmail } = await import('@/lib/resend')
+  const results = await Promise.allSettled(
+    (profiles ?? []).map(p =>
+      sendAlertEmail({ to: p.email, title, summary, articleRefs: article_refs, severity })
+    )
+  )
+
+  const sent = results.filter(r => r.status === 'fulfilled').length
+  return NextResponse.json({ alert, emailsSent: sent })
+}
+
 export async function GET() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

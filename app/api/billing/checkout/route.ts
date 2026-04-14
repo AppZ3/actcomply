@@ -1,36 +1,52 @@
-// POST /api/billing/checkout — create a Stripe checkout session for a plan upgrade
+// POST /api/billing/checkout — unified Stripe checkout for all entry points
+// Works for logged-in users (dashboard upgrade) and anonymous users (landing page)
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getStripe, PLANS } from '@/lib/stripe'
 
 export async function POST(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const { plan } = await req.json()
+  const { plan, annual } = await req.json()
   const planConfig = PLANS[plan as keyof typeof PLANS]
   if (!planConfig) return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('stripe_customer_id')
-    .eq('id', user.id)
-    .single()
-
-  const stripe = getStripe()
+  const priceId = annual ? planConfig.annualPriceId : planConfig.priceId
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://getactcomply.com'
+  const stripe = getStripe()
+
+  // Try to get logged-in user for a better checkout experience
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let customerId: string | undefined
+  let customerEmail: string | undefined
+  let userId: string | undefined
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('stripe_customer_id')
+      .eq('id', user.id)
+      .single()
+
+    customerId = profile?.stripe_customer_id || undefined
+    customerEmail = customerId ? undefined : user.email
+    userId = user.id
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
     payment_method_types: ['card'],
-    line_items: [{ price: planConfig.priceId, quantity: 1 }],
-    customer: profile?.stripe_customer_id || undefined,
-    customer_email: profile?.stripe_customer_id ? undefined : user.email,
-    metadata: { user_id: user.id, plan },
-    success_url: `${baseUrl}/dashboard/billing?upgraded=1`,
-    cancel_url: `${baseUrl}/dashboard/billing`,
+    line_items: [{ price: priceId, quantity: 1 }],
+    customer: customerId,
+    customer_email: customerEmail,
+    billing_address_collection: 'required',
+    automatic_tax: { enabled: true },
+    metadata: { plan, ...(userId ? { user_id: userId } : {}) },
+    success_url: user
+      ? `${baseUrl}/dashboard/billing?upgraded=1`
+      : `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: user ? `${baseUrl}/dashboard/billing` : `${baseUrl}/cancel`,
   })
 
   return NextResponse.json({ url: session.url })
