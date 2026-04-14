@@ -19,12 +19,14 @@ export async function GET() {
     'STRIPE_ENTERPRISE_ANNUAL_PRICE_ID',
     'ANTHROPIC_API_KEY',
     'NEXT_PUBLIC_APP_URL',
+    'RESEND_API_KEY',
+    'ALERTS_ADMIN_SECRET',
   ]
   const missingEnvVars = requiredEnvVars.filter(k => !process.env[k])
   results.env_vars = {
     ok: missingEnvVars.length === 0,
     detail: missingEnvVars.length === 0
-      ? `All ${requiredEnvVars.length} required env vars present`
+      ? `All ${requiredEnvVars.length} required env vars present (${requiredEnvVars.length})`
       : `Missing: ${missingEnvVars.join(', ')}`,
   }
 
