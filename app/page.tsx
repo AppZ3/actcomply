@@ -15,6 +15,13 @@ async function startCheckout(plan: string, annual: boolean) {
   else alert('Checkout error: ' + (data.error || 'Unknown error'))
 }
 
+function daysUntilEnforcement() {
+  const deadline = new Date('2026-08-02T00:00:00Z')
+  const now = new Date()
+  const diff = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  return Math.max(0, diff)
+}
+
 export default function LandingPage() {
   const [annual, setAnnual] = useState(false)
   return (
@@ -79,7 +86,7 @@ export default function LandingPage() {
           {[
             { value: '€35M', label: 'Maximum fine per violation' },
             { value: '7%', label: 'Of global turnover at risk' },
-            { value: '113 days', label: 'Until enforcement begins' },
+            { value: `${daysUntilEnforcement()} days`, label: 'Until enforcement begins' },
             { value: '600+', label: 'Compliance requirements mapped' },
           ].map(stat => (
             <div key={stat.label}>

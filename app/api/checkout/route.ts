@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/cancel`,
       billing_address_collection: 'required',
+      automatic_tax: { enabled: true },
       customer_email: undefined,
       metadata: { plan },
     })
