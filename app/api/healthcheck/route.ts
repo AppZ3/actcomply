@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getStripe, PLANS } from '@/lib/stripe'
 
 export async function GET() {
@@ -31,8 +30,8 @@ export async function GET() {
 
   // 2. Supabase connection
   try {
-    const db = supabaseAdmin
-    const { error } = await db.from('profiles').select('id').limit(1)
+    const { supabaseAdmin } = await import('@/lib/supabase-admin')
+    const { error } = await supabaseAdmin.from('profiles').select('id').limit(1)
     results.supabase = {
       ok: !error,
       detail: error ? error.message : 'Connected and profiles table accessible',
