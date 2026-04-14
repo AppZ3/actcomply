@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 const PLAN_LABELS: Record<string, string> = {
   free: 'Free',
@@ -15,9 +16,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('plan, subscription_status')
+  const admin = getSupabaseAdmin()
+
+  // Count unread alerts for badge
+  const [{ data: profile }, { count: totalAlerts }, { count: readAlerts }] = await Promise.all([
+    supabase.from('profiles').select('plan, subscription_status').eq('id', user.id).single(),
+    admin.from('regulatory_alerts').select('*', { count: 'exact', head: true }),
+    admin.from('alert_reads').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+  ])
+
+  const unreadAlerts = Math.max(0, (totalAlerts ?? 0) - (readAlerts ?? 0))
     .eq('id', user.id)
     .single()
 
@@ -51,6 +59,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <NavLink href="/dashboard/systems" label="AI Systems" icon={
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+            </svg>
+          } />
+          <NavLink href="/dashboard/alerts" label="Alerts" badge={unreadAlerts} icon={
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
           } />
           <Link
@@ -105,14 +118,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
   )
 }
 
-function NavLink({ href, label, icon }: { href: string; label: string; icon: React.ReactNode }) {
+function NavLink({ href, label, icon, badge }: { href: string; label: string; icon: React.ReactNode; badge?: number }) {
   return (
     <Link
       href={href}
       className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition"
     >
       {icon}
-      {label}
+      <span className="flex-1">{label}</span>
+      {badge != null && badge > 0 && (
+        <span className="bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0">
+          {badge > 9 ? '9+' : badge}
+        </span>
+      )}
     </Link>
   )
 }

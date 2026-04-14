@@ -1,7 +1,8 @@
 import { redirect, notFound } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
+import Link from 'next/link'
+import { ComplianceChecklist } from './checklist'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -25,9 +26,23 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
 
   if (!assessment) notFound()
 
+  // Fetch existing progress
+  const { data: progressRows } = await supabase
+    .from('requirement_progress')
+    .select('requirement_id, status, notes')
+    .eq('user_id', user.id)
+    .eq('assessment_id', id)
+
+  const progressMap: Record<string, { status: string; notes: string }> = {}
+  for (const row of progressRows ?? []) {
+    progressMap[row.requirement_id] = { status: row.status, notes: row.notes ?? '' }
+  }
+
   const config = RISK_CONFIG[assessment.risk_level as RiskLevel]
   const requirements = (assessment.requirements ?? []) as ComplianceRequirement[]
   const immediateActions = (assessment.immediate_actions ?? []) as string[]
+
+  const doneCount = requirements.filter(r => progressMap[r.id]?.status === 'done').length
 
   return (
     <div className="p-8 max-w-4xl">
@@ -93,32 +108,14 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
         </div>
       </div>
 
-      {/* Full requirements */}
+      {/* Interactive compliance checklist */}
       {requirements.length > 0 && (
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-          <h2 className="font-semibold mb-5">Compliance Requirements ({requirements.length})</h2>
-          <div className="space-y-3">
-            {requirements.map(req => (
-              <div key={req.id} className="border border-white/10 rounded-lg p-4">
-                <div className="flex items-start justify-between gap-3 mb-1">
-                  <div>
-                    <span className="text-xs font-mono text-blue-400 mr-2">{req.article}</span>
-                    <span className="text-sm font-semibold">{req.title}</span>
-                  </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold flex-shrink-0 ${
-                    req.effort === 'HIGH' ? 'bg-red-500/20 text-red-400' :
-                    req.effort === 'MEDIUM' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-green-500/20 text-green-400'
-                  }`}>
-                    {req.effort}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-400 mt-1">{req.description}</p>
-                <p className="text-xs text-gray-500 mt-1">Deadline: {req.deadline}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ComplianceChecklist
+          assessmentId={id}
+          requirements={requirements}
+          initialProgress={progressMap}
+          doneCount={doneCount}
+        />
       )}
     </div>
   )
