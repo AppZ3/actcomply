@@ -20,6 +20,14 @@ export default function LandingPage() {
   const [days, setDays] = useState<number | null>(null)
   const [requirementsMapped, setRequirementsMapped] = useState<number | null>(null)
 
+  // If Supabase redirects back here with a ?code= param, forward to the auth callback
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get('code')
+    if (code) {
+      window.location.replace(`/auth/callback?code=${code}`)
+    }
+  }, [])
+
   useEffect(() => {
     async function fetchStats() {
       try {
