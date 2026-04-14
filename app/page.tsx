@@ -223,6 +223,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
           <div>© 2026 ActComply. Built to make AI trustworthy.</div>
           <div className="flex gap-6">
+            <Link href="/support" className="hover:text-gray-300 transition">Support</Link>
             <Link href="/terms" className="hover:text-gray-300 transition">Terms</Link>
             <Link href="/privacy" className="hover:text-gray-300 transition">Privacy</Link>
           </div>
