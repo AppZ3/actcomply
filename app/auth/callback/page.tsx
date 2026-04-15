@@ -1,16 +1,31 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { createClient } from '@/lib/supabase'
 
-export default function ConfirmingPage() {
+export default function AuthCallbackPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
-    // Small delay so the UI renders before navigating, then go to dashboard
-    const t = setTimeout(() => router.replace('/dashboard'), 100)
-    return () => clearTimeout(t)
-  }, [router])
+    const code = searchParams.get('code')
+    const next = searchParams.get('redirect') || '/dashboard'
+
+    if (!code) {
+      router.replace('/login?error=auth_failed')
+      return
+    }
+
+    const supabase = createClient()
+    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      if (error) {
+        router.replace('/login?error=auth_failed')
+      } else {
+        router.replace(next)
+      }
+    })
+  }, [router, searchParams])
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-6">

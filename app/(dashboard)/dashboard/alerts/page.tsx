@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface Alert {
   id: string
@@ -19,6 +20,7 @@ const SEVERITY = {
 }
 
 export default function AlertsPage() {
+  const router = useRouter()
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -34,12 +36,14 @@ export default function AlertsPage() {
   async function markRead(id: string) {
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a))
     await fetch(`/api/alerts/${id}/read`, { method: 'POST' })
+    router.refresh()
   }
 
   async function markAllRead() {
     const unread = alerts.filter(a => !a.read)
     setAlerts(prev => prev.map(a => ({ ...a, read: true })))
     await Promise.all(unread.map(a => fetch(`/api/alerts/${a.id}/read`, { method: 'POST' })))
+    router.refresh()
   }
 
   const unreadCount = alerts.filter(a => !a.read).length
