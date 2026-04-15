@@ -22,6 +22,8 @@ export default function AuthCallbackPage() {
       if (error) {
         router.replace('/login?error=auth_failed')
       } else {
+        // Fire-and-forget welcome email for new signups
+        fetch('/api/welcome', { method: 'POST' }).catch(() => {})
         router.replace(next)
       }
     })

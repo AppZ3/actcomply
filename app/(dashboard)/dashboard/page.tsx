@@ -3,6 +3,12 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import type { AssessmentResult, RiskLevel } from '@/lib/eu-ai-act'
 import { OnboardingBanner } from './onboarding'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Dashboard — ActComply',
+  description: 'Overview of your AI systems, compliance scores, and EU AI Act deadline tracker.',
+}
 
 const RISK_BADGE: Record<RiskLevel, { label: string; class: string }> = {
   PROHIBITED:   { label: 'Prohibited',    class: 'bg-red-500/20 text-red-400 border-red-500/30' },
@@ -68,7 +74,7 @@ export default async function DashboardPage() {
             <p className="text-gray-400 text-sm">Upgrade to save unlimited assessments, get full compliance reports, and track changes over time.</p>
           </div>
           <Link
-            href="/#pricing"
+            href="/dashboard/billing"
             className="flex-shrink-0 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition"
           >
             Upgrade

@@ -1,7 +1,13 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import type { RiskLevel } from '@/lib/eu-ai-act'
+
+export const metadata: Metadata = {
+  title: 'AI Systems — ActComply',
+  description: 'All your assessed AI systems, risk levels, and compliance scores.',
+}
 
 const RISK_BADGE: Record<RiskLevel, { label: string; class: string }> = {
   PROHIBITED:   { label: 'Prohibited',    class: 'bg-red-500/20 text-red-400 border-red-500/30' },

@@ -1,7 +1,14 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { PLANS } from '@/lib/stripe'
 import Link from 'next/link'
+import { DeleteAccountButton } from './delete-account-button'
+
+export const metadata: Metadata = {
+  title: 'Settings — ActComply',
+  description: 'Manage your account settings and preferences.',
+}
 
 const PLAN_LABELS: Record<string, string> = {
   free: 'Free',
@@ -104,8 +111,8 @@ export default async function SettingsPage() {
         </div>
       </div>
 
-      {/* Danger zone */}
-      <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+      {/* Support */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Support</h2>
         <p className="text-sm text-gray-400 mb-3">
           Need help, have a question, or want to request a feature?
@@ -123,6 +130,18 @@ export default async function SettingsPage() {
           >
             support@getactcomply.com
           </a>
+        </div>
+      </div>
+
+      {/* Danger zone */}
+      <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-6">
+        <h2 className="text-sm font-semibold text-red-400 uppercase tracking-wide mb-4">Danger zone</h2>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium mb-1">Delete account</p>
+            <p className="text-xs text-gray-500">Permanently deletes your account and all assessment data. This cannot be undone.</p>
+          </div>
+          <DeleteAccountButton />
         </div>
       </div>
     </div>

@@ -1,0 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Assess Your AI System — ActComply',
+  description: 'Describe your AI system and get an instant EU AI Act risk classification, compliance score, and action plan.',
+}
+
+export default function AssessLayout({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
+}

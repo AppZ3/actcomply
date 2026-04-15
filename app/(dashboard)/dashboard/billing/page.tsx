@@ -1,6 +1,12 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { getStripe, PLANS } from '@/lib/stripe'
+
+export const metadata: Metadata = {
+  title: 'Billing — ActComply',
+  description: 'Manage your ActComply plan and payment details.',
+}
 import { ManageBillingButton } from './manage-button'
 import { UpgradeButton } from './upgrade-button'
 import { UpgradedBanner } from './upgraded-banner'
