@@ -4,9 +4,10 @@ import { createClient } from '@/lib/supabase-server'
 
 export async function POST(request: NextRequest) {
   try {
-    const body: AISystemInput = await request.json()
+    const body: AISystemInput & { prefillId?: string } = await request.json()
+    const { prefillId, ...assessmentInput } = body
 
-    if (!body.name || !body.description || !body.purpose || !body.sector) {
+    if (!assessmentInput.name || !assessmentInput.description || !assessmentInput.purpose || !assessmentInput.sector) {
       return NextResponse.json(
         { error: 'Missing required fields: name, description, purpose, sector' },
         { status: 400 }
@@ -14,13 +15,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate input before running the full assessment
-    const validation = await validateAssessmentInput(body)
+    const validation = await validateAssessmentInput(assessmentInput)
     if (!validation.valid) {
       return NextResponse.json({ error: validation.reason }, { status: 422 })
     }
 
     // Run the assessment
-    const result = await assessAISystem(body)
+    const result = await assessAISystem(assessmentInput)
 
     // If user is logged in, check plan limits and save
     const supabase = await createClient()
@@ -49,36 +50,50 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Save assessment
-      const { data: saved, error: saveError } = await supabase
-        .from('assessments')
-        .insert({
-          user_id: user.id,
-          name: body.name,
-          description: body.description,
-          purpose: body.purpose,
-          sector: body.sector,
-          uses_personal_data: body.usesPersonalData,
-          makes_autonomous_decisions: body.makesAutonomousDecisions,
-          affects_individuals: body.affectsIndividuals,
-          current_safeguards: body.currentSafeguards,
-          risk_level: result.riskLevel,
-          compliance_score: result.complianceScore,
-          risk_rationale: result.riskRationale,
-          regulatory_basis: result.regulatoryBasis,
-          requirements: result.requirements,
-          prohibited_reason: result.prohibitedReason ?? null,
-          immediate_actions: result.immediateActions,
-          estimated_effort: result.estimatedEffort,
-        })
-        .select('id')
-        .single()
-
-      if (saveError) {
-        console.error('Failed to save assessment:', saveError.message)
+      const assessmentData = {
+        name: assessmentInput.name,
+        description: assessmentInput.description,
+        purpose: assessmentInput.purpose,
+        sector: assessmentInput.sector,
+        uses_personal_data: assessmentInput.usesPersonalData,
+        makes_autonomous_decisions: assessmentInput.makesAutonomousDecisions,
+        affects_individuals: assessmentInput.affectsIndividuals,
+        current_safeguards: assessmentInput.currentSafeguards,
+        risk_level: result.riskLevel,
+        compliance_score: result.complianceScore,
+        risk_rationale: result.riskRationale,
+        regulatory_basis: result.regulatoryBasis,
+        requirements: result.requirements,
+        prohibited_reason: result.prohibitedReason ?? null,
+        immediate_actions: result.immediateActions,
+        estimated_effort: result.estimatedEffort,
       }
 
-      return NextResponse.json({ ...result, savedId: saved?.id ?? null })
+      let savedId: string | null = null
+
+      if (prefillId) {
+        // Re-assess: update existing record (verify ownership first)
+        const { data: updated, error: updateError } = await supabase
+          .from('assessments')
+          .update(assessmentData)
+          .eq('id', prefillId)
+          .eq('user_id', user.id)
+          .select('id')
+          .single()
+        if (updateError) console.error('Failed to update assessment:', updateError.message)
+        savedId = updated?.id ?? prefillId
+      } else {
+        // New assessment: insert
+        const { data: saved, error: saveError } = await supabase
+          .from('assessments')
+          .insert({ user_id: user.id, ...assessmentData })
+          .select('id')
+          .single()
+        if (saveError) console.error('Failed to save assessment:', saveError.message)
+        savedId = saved?.id ?? null
+      }
+
+      return NextResponse.json({ ...result, savedId })
     }
 
     return NextResponse.json(result)

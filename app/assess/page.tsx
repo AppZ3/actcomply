@@ -201,6 +201,8 @@ export default function AssessPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPaidUser, setIsPaidUser] = useState(false)
   const [prefillLoaded, setPrefillLoaded] = useState(false)
+  const [prefillId, setPrefillId] = useState<string | null>(null)
+  const [atLimit, setAtLimit] = useState(false)
 
   const [form, setForm] = useState({
     name: '',
@@ -217,20 +219,37 @@ export default function AssessPage() {
     const supabase = createClient()
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) return
+
+      const id = new URLSearchParams(window.location.search).get('prefill')
+      if (id) setPrefillId(id)
+
       const { data: profile } = await supabase
         .from('profiles')
-        .select('plan')
+        .select('plan, systems_limit')
         .eq('id', user.id)
         .single()
-      if (profile && profile.plan !== 'free') setIsPaidUser(true)
+
+      const isPaid = profile?.plan && profile.plan !== 'free'
+      if (isPaid) setIsPaidUser(true)
+
+      // Check if free user is at their limit (only matters if not re-assessing)
+      if (!isPaid && !id) {
+        const limit = profile?.systems_limit ?? 1
+        if (limit !== -1) {
+          const { count } = await supabase
+            .from('assessments')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+          if ((count ?? 0) >= limit) setAtLimit(true)
+        }
+      }
 
       // Pre-fill form if ?prefill=id is set
-      const prefillId = new URLSearchParams(window.location.search).get('prefill')
-      if (prefillId && !prefillLoaded) {
+      if (id && !prefillLoaded) {
         const { data: existing } = await supabase
           .from('assessments')
           .select('name, description, purpose, sector, uses_personal_data, makes_autonomous_decisions, affects_individuals, current_safeguards')
-          .eq('id', prefillId)
+          .eq('id', id)
           .eq('user_id', user.id)
           .single()
         if (existing) {
@@ -259,7 +278,7 @@ export default function AssessPage() {
       const res = await fetch('/api/assess', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, prefillId }),
       })
 
       const data = await res.json()
@@ -428,6 +447,21 @@ export default function AssessPage() {
           </p>
         </div>
 
+        {atLimit && (
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-5 mb-6">
+            <p className="text-sm font-semibold text-yellow-400 mb-1">You&apos;ve used your free assessment</p>
+            <p className="text-sm text-gray-400 mb-3">
+              The free plan includes 1 saved AI system. Upgrade to assess more systems and unlock full compliance reports.
+            </p>
+            <Link
+              href="/dashboard/billing"
+              className="inline-block bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+            >
+              View plans →
+            </Link>
+          </div>
+        )}
+
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-4 mb-6 text-sm">
             {error}
@@ -528,9 +562,10 @@ export default function AssessPage() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-4 rounded-xl text-lg transition"
+            disabled={atLimit && !prefillId}
+            className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-xl text-lg transition"
           >
-            Run compliance assessment →
+            {prefillId ? 'Re-run assessment →' : 'Run compliance assessment →'}
           </button>
 
           <p className="text-xs text-gray-500 text-center">
