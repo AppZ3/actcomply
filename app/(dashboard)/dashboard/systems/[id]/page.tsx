@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ComplianceChecklist } from './checklist'
 import { TechnicalDocumentation } from './docs'
 import { DeleteSystemButton } from './delete-button'
+import { AuditTrail } from './audit-trail'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -125,6 +126,11 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           doneCount={doneCount}
         />
       )}
+
+      {/* Audit trail */}
+      <div className="mt-6">
+        <AuditTrail assessmentId={id} />
+      </div>
 
       {/* Technical documentation */}
       <div className="mt-6">
