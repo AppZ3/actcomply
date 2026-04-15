@@ -24,7 +24,7 @@ export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOu
   const navContent = (
     <>
       <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xs">AI</div>
           <span className="font-semibold">ActComply</span>
         </Link>
@@ -118,7 +118,7 @@ export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOu
 
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-gray-950 border-b border-white/10 flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xs">AI</div>
           <span className="font-semibold">ActComply</span>
         </Link>
