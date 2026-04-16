@@ -200,7 +200,7 @@ export default function LandingPage() {
             return (
               <div
                 key={plan.name}
-                className={`rounded-2xl p-8 border ${
+                className={`rounded-2xl p-8 border flex flex-col ${
                   i === 1
                     ? 'bg-blue-600 border-blue-500'
                     : 'bg-white/5 border-white/10'
@@ -224,7 +224,7 @@ export default function LandingPage() {
                 <p className={`text-sm mb-6 ${i === 1 ? 'text-blue-100' : 'text-gray-400'}`}>
                   {plan.limit === -1 ? 'Unlimited AI systems' : `Up to ${plan.limit} AI systems`}
                 </p>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map(f => (
                     <li key={f} className="flex items-start gap-2 text-sm">
                       <span className={i === 1 ? 'text-blue-200' : 'text-blue-400'}>✓</span>
@@ -234,7 +234,7 @@ export default function LandingPage() {
                 </ul>
                 <button
                   onClick={() => startCheckout(key, annual)}
-                  className={`w-full font-semibold py-3 rounded-xl transition cursor-pointer ${
+                  className={`w-full font-semibold py-3 rounded-xl transition cursor-pointer mt-auto ${
                     i === 1
                       ? 'bg-white text-blue-600 hover:bg-blue-50'
                       : 'bg-white/10 hover:bg-white/20 text-white'
