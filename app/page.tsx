@@ -242,14 +242,6 @@ export default function LandingPage() {
                 >
                   Get started
                 </button>
-                {i === 0 && (
-                  <a
-                    href="/test-buy"
-                    className="block w-full text-center text-xs text-yellow-400 border border-yellow-500/30 hover:border-yellow-500/60 py-2 rounded-xl transition mt-2"
-                  >
-                    [TEST] Buy test price
-                  </a>
-                )}
               </div>
             )
           })}
