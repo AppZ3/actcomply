@@ -8,11 +8,8 @@ import { getDaysUntilEnforcement, REQUIREMENTS_MAPPED } from '@/lib/eu-ai-act'
 export const revalidate = 60 // cache for 60s
 
 export async function GET() {
-  // Round down to nearest 5 so the number grows in clean increments as requirements are added
-  const rounded = Math.floor(REQUIREMENTS_MAPPED / 5) * 5
-
   return NextResponse.json({
     daysUntilEnforcement: getDaysUntilEnforcement(),
-    requirementsMapped: rounded,
+    requirementsMapped: REQUIREMENTS_MAPPED,
   })
 }

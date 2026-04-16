@@ -184,6 +184,110 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
   },
 ]
 
+// General provider obligations (Articles 16–27)
+export const GENERAL_PROVIDER_REQUIREMENTS: ComplianceRequirement[] = [
+  {
+    id: 'quality-management',
+    article: 'Article 17',
+    title: 'Quality Management System',
+    description: 'Providers of high-risk AI systems must implement a quality management system covering strategy, design, development, testing, post-market monitoring, and documentation.',
+    deadline: 'Before deployment',
+    effort: 'HIGH',
+  },
+  {
+    id: 'record-keeping',
+    article: 'Article 18',
+    title: 'Documentation Retention',
+    description: 'Keep technical documentation and quality management records for at least 10 years after the AI system is placed on the market or put into service.',
+    deadline: 'Ongoing',
+    effort: 'LOW',
+  },
+  {
+    id: 'corrective-actions',
+    article: 'Article 20',
+    title: 'Corrective Actions and Incident Reporting',
+    description: 'Take immediate corrective actions for non-compliant AI systems and inform distributors and deployers. Report serious incidents to relevant market surveillance authorities.',
+    deadline: 'Ongoing after deployment',
+    effort: 'MEDIUM',
+  },
+  {
+    id: 'authority-cooperation',
+    article: 'Article 21',
+    title: 'Cooperation with Authorities',
+    description: 'Cooperate with competent national authorities upon request. Provide all necessary information and documentation to demonstrate conformity with the regulation.',
+    deadline: 'Ongoing',
+    effort: 'LOW',
+  },
+  {
+    id: 'deployer-obligations',
+    article: 'Article 26',
+    title: 'Deployer Obligations',
+    description: 'Deployers must use AI systems in accordance with instructions, assign human oversight to competent persons, monitor operation, and report incidents to the provider.',
+    deadline: 'Before deployment',
+    effort: 'MEDIUM',
+  },
+  {
+    id: 'fundamental-rights-impact',
+    article: 'Article 27',
+    title: 'Fundamental Rights Impact Assessment',
+    description: 'Deployers of certain high-risk AI systems must conduct a fundamental rights impact assessment before deployment. Register assessment results in the EU database.',
+    deadline: 'Before deployment',
+    effort: 'HIGH',
+  },
+]
+
+// GPAI model obligations (Articles 53–55)
+export const GPAI_REQUIREMENTS: ComplianceRequirement[] = [
+  {
+    id: 'gpai-technical-docs',
+    article: 'Article 53(1)(a)',
+    title: 'GPAI Technical Documentation',
+    description: 'Providers of general-purpose AI models must draw up and maintain technical documentation including training process, data used, evaluation results, and energy consumption.',
+    deadline: 'Before making available',
+    effort: 'HIGH',
+  },
+  {
+    id: 'gpai-instructions',
+    article: 'Article 53(1)(b)',
+    title: 'GPAI Instructions for Use',
+    description: 'Provide information and documentation to downstream providers to enable compliance. Must include capabilities, limitations, and integration guidance.',
+    deadline: 'Before making available',
+    effort: 'MEDIUM',
+  },
+  {
+    id: 'gpai-copyright-policy',
+    article: 'Article 53(1)(c)',
+    title: 'Copyright Compliance Policy',
+    description: 'Establish a policy to comply with EU copyright law, including reservations of rights by rightsholders under Article 4(3) of Directive 2019/790.',
+    deadline: 'Before making available',
+    effort: 'MEDIUM',
+  },
+  {
+    id: 'gpai-training-summary',
+    article: 'Article 53(1)(d)',
+    title: 'Training Data Summary',
+    description: 'Publish a sufficiently detailed summary of the content used for training the GPAI model, in accordance with templates provided by the AI Office.',
+    deadline: 'Before making available',
+    effort: 'MEDIUM',
+  },
+  {
+    id: 'gpai-systemic-risk-eval',
+    article: 'Article 55(1)(a)',
+    title: 'Systemic Risk Evaluation',
+    description: 'Providers of GPAI models with systemic risk must conduct adversarial testing to identify and mitigate systemic risks at EU level.',
+    deadline: 'Ongoing',
+    effort: 'HIGH',
+  },
+  {
+    id: 'gpai-incident-reporting',
+    article: 'Article 55(1)(c)',
+    title: 'GPAI Incident Reporting',
+    description: 'Report serious incidents and possible corrective measures to the AI Office without undue delay after becoming aware of them.',
+    deadline: 'Ongoing after deployment',
+    effort: 'MEDIUM',
+  },
+]
+
 // Limited risk requirements (transparency obligations)
 export const LIMITED_RISK_REQUIREMENTS: ComplianceRequirement[] = [
   {
@@ -224,8 +328,9 @@ export function getDaysUntilEnforcement(): number {
 }
 
 // Total compliance obligations currently defined in this file.
-// Add more requirement objects to HIGH_RISK_REQUIREMENTS or LIMITED_RISK_REQUIREMENTS
-// and this number will update automatically — the landing page rounds to nearest 5.
+// Derived from all requirement arrays — add items to any array and this updates automatically.
 export const REQUIREMENTS_MAPPED =
   HIGH_RISK_REQUIREMENTS.length +
-  LIMITED_RISK_REQUIREMENTS.length
+  LIMITED_RISK_REQUIREMENTS.length +
+  GENERAL_PROVIDER_REQUIREMENTS.length +
+  GPAI_REQUIREMENTS.length
