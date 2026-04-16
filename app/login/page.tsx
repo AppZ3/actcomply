@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -65,7 +66,7 @@ function LoginForm() {
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-4 mb-6 text-sm">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-xl p-4 mb-6 text-sm">
           {error}
         </div>
       )}
@@ -80,7 +81,7 @@ function LoginForm() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="you@company.com"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
+            className="w-full bg-gray-50 border border-gray-200 dark:bg-white/5 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-blue-500 transition"
           />
         </div>
         <button
@@ -94,7 +95,7 @@ function LoginForm() {
 
       <p className="mt-6 text-center text-sm text-gray-500">
         Don&apos;t have an account?{' '}
-        <Link href="/#pricing" className="text-blue-400 hover:text-blue-300 transition">
+        <Link href="/#pricing" className="text-blue-600 dark:text-blue-400 hover:underline transition">
           View plans
         </Link>
       </p>
@@ -104,13 +105,16 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white flex items-center justify-center px-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         <Link href="/" className="flex items-center gap-2 justify-center mb-10">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">AI</div>
+          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">AI</div>
           <span className="font-semibold text-lg">ActComply</span>
         </Link>
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+        <div className="bg-white border border-gray-200 dark:bg-white/5 dark:border-white/10 rounded-2xl p-8">
           <Suspense>
             <LoginForm />
           </Suspense>
