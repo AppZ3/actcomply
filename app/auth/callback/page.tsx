@@ -43,14 +43,24 @@ function CallbackInner() {
 
     // Implicit flow — #access_token= in hash (invite links)
     if (typeof window !== 'undefined' && window.location.hash.includes('access_token=')) {
-      supabase.auth.getSession().then(({ data, error }) => {
-        if (error || !data.session) {
-          router.replace('/login?error=auth_failed')
-        } else {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          subscription.unsubscribe()
           fetch('/api/welcome', { method: 'POST' }).catch(() => {})
           router.replace('/dashboard')
         }
       })
+      // Fallback if no auth event fires within 5 seconds
+      setTimeout(() => {
+        subscription.unsubscribe()
+        supabase.auth.getSession().then(({ data }) => {
+          if (data.session) {
+            router.replace('/dashboard')
+          } else {
+            router.replace('/login?error=auth_failed')
+          }
+        })
+      }, 5000)
       return
     }
 
