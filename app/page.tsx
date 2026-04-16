@@ -174,13 +174,13 @@ export default function LandingPage() {
         <p className="text-gray-400 text-center mb-8">Cheaper than one hour of compliance consulting. Cancel anytime.</p>
 
         {/* Billing toggle */}
-        <div className="flex items-center justify-center gap-4 mb-12">
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
           <span className={`text-sm ${!annual ? 'text-white' : 'text-gray-400'}`}>Monthly</span>
           <button
             onClick={() => setAnnual(v => !v)}
-            className={`relative w-12 h-6 rounded-full transition-colors ${annual ? 'bg-blue-600' : 'bg-white/20'}`}
+            className={`relative shrink-0 w-12 h-6 rounded-full transition-colors ${annual ? 'bg-blue-600' : 'bg-white/20'}`}
           >
-            <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${annual ? 'translate-x-6' : ''}`} />
+            <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200 ${annual ? 'translate-x-6' : 'translate-x-0'}`} />
           </button>
           <span className={`text-sm ${annual ? 'text-white' : 'text-gray-400'}`}>
             Annual <span className="text-green-400 font-semibold">2 months free</span>
