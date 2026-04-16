@@ -41,26 +41,24 @@ function CallbackInner() {
       return
     }
 
-    // Implicit flow — #access_token= in hash (invite links)
+    // Implicit flow — #access_token= in hash (magic links and invite links)
     if (typeof window !== 'undefined' && window.location.hash.includes('access_token=')) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          subscription.unsubscribe()
-          fetch('/api/welcome', { method: 'POST' }).catch(() => {})
-          router.replace('/dashboard')
-        }
-      })
-      // Fallback if no auth event fires within 5 seconds
-      setTimeout(() => {
-        subscription.unsubscribe()
-        supabase.auth.getSession().then(({ data }) => {
-          if (data.session) {
-            router.replace('/dashboard')
-          } else {
-            router.replace('/login?error=auth_failed')
-          }
-        })
-      }, 5000)
+      const params = new URLSearchParams(window.location.hash.slice(1))
+      const accessToken = params.get('access_token')
+      const refreshToken = params.get('refresh_token')
+      if (accessToken && refreshToken) {
+        supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+          .then(({ error }) => {
+            if (error) {
+              router.replace('/login?error=auth_failed')
+            } else {
+              fetch('/api/welcome', { method: 'POST' }).catch(() => {})
+              router.replace('/dashboard')
+            }
+          })
+      } else {
+        router.replace('/login?error=auth_failed')
+      }
       return
     }
 

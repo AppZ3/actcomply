@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         if (!existingProfile) {
           // New user — Supabase sends the invite email with a magic link
           const { error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?redirect=/dashboard`,
+            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?redirect=/dashboard`,
           })
           if (inviteError) console.error('Invite error:', inviteError.message)
           await new Promise(resolve => setTimeout(resolve, 2000))
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
             type: 'magiclink',
             email,
             options: {
-              redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?redirect=/dashboard`,
+              redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?redirect=/dashboard`,
             },
           })
           if (linkError) {
