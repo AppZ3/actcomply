@@ -14,9 +14,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem('theme') as Theme | null
-    const resolved = stored ?? 'light'
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const resolved = stored ?? (systemDark ? 'dark' : 'light')
     setTheme(resolved)
     document.documentElement.classList.toggle('dark', resolved === 'dark')
+
+    // Follow OS changes only when the user hasn't set a manual preference
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    function onSystemChange(e: MediaQueryListEvent) {
+      if (localStorage.getItem('theme')) return
+      const next: Theme = e.matches ? 'dark' : 'light'
+      setTheme(next)
+      document.documentElement.classList.toggle('dark', next === 'dark')
+    }
+    mq.addEventListener('change', onSystemChange)
+    return () => mq.removeEventListener('change', onSystemChange)
   }, [])
 
   function toggle() {
