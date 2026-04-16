@@ -20,11 +20,17 @@ export default function LandingPage() {
   const [days, setDays] = useState<number | null>(null)
   const [requirementsMapped, setRequirementsMapped] = useState<number | null>(null)
 
-  // If Supabase redirects back here with a ?code= param, forward to the auth callback
+  // Handle Supabase auth redirects that land on homepage
   useEffect(() => {
+    // PKCE flow: ?code= in query string
     const code = new URLSearchParams(window.location.search).get('code')
     if (code) {
       window.location.replace(`/auth/callback?code=${code}`)
+      return
+    }
+    // Implicit flow: #access_token= in hash (invite links)
+    if (window.location.hash.includes('access_token=')) {
+      window.location.replace(`/auth/callback${window.location.hash}`)
     }
   }, [])
 

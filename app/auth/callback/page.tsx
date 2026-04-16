@@ -26,21 +26,35 @@ function CallbackInner() {
   useEffect(() => {
     const code = searchParams.get('code')
     const next = searchParams.get('redirect') || '/dashboard'
+    const supabase = createClient()
 
-    if (!code) {
-      router.replace('/login?error=auth_failed')
+    // PKCE flow — ?code= in query string
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) {
+          router.replace('/login?error=auth_failed')
+        } else {
+          fetch('/api/welcome', { method: 'POST' }).catch(() => {})
+          router.replace(next)
+        }
+      })
       return
     }
 
-    const supabase = createClient()
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (error) {
-        router.replace('/login?error=auth_failed')
-      } else {
-        fetch('/api/welcome', { method: 'POST' }).catch(() => {})
-        router.replace(next)
-      }
-    })
+    // Implicit flow — #access_token= in hash (invite links)
+    if (typeof window !== 'undefined' && window.location.hash.includes('access_token=')) {
+      supabase.auth.getSession().then(({ data, error }) => {
+        if (error || !data.session) {
+          router.replace('/login?error=auth_failed')
+        } else {
+          fetch('/api/welcome', { method: 'POST' }).catch(() => {})
+          router.replace('/dashboard')
+        }
+      })
+      return
+    }
+
+    router.replace('/login?error=auth_failed')
   }, [router, searchParams])
 
   return <Spinner />
