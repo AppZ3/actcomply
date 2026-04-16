@@ -62,8 +62,8 @@ export default function LandingPage() {
             <span className="font-semibold text-lg">ActComply</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="#pricing" className="hidden sm:block text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
-            <Link href="/login" className="hidden sm:block text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
+            <Link href="#pricing" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
+            <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
             <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg transition">
               Check Your AI Systems
             </Link>
