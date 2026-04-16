@@ -64,8 +64,9 @@ export async function GET() {
 
   // 4. App URL config
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || ''
+  const validUrls = ['https://getactcomply.com', 'https://www.getactcomply.com']
   results.app_url = {
-    ok: appUrl === 'https://getactcomply.com',
+    ok: validUrls.includes(appUrl),
     detail: appUrl || 'not set',
   }
 
