@@ -15,8 +15,50 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ActComply — EU AI Act Compliance Platform",
-  description: "Assess your AI systems against the EU AI Act. Risk classification, compliance roadmap, and audit-ready documentation. Enforcement begins August 2026.",
+  metadataBase: new URL('https://www.getactcomply.com'),
+  title: {
+    default: 'ActComply — EU AI Act Compliance Platform',
+    template: '%s — ActComply',
+  },
+  description: 'Assess your AI systems against the EU AI Act in minutes. Automated risk classification, compliance checklist, and audit-ready documentation. Enforcement begins August 2, 2026.',
+  keywords: [
+    'EU AI Act compliance',
+    'EU AI Act compliance tool',
+    'EU AI Act compliance platform',
+    'EU AI Act risk classification',
+    'EU AI Act checklist',
+    'EU AI Act assessment',
+    'AI Act compliance software',
+    'high-risk AI systems',
+    'AI regulation compliance',
+    'GPAI compliance',
+    'EU AI Act 2026',
+  ],
+  authors: [{ name: 'ActComply', url: 'https://www.getactcomply.com' }],
+  creator: 'ActComply',
+  openGraph: {
+    type: 'website',
+    locale: 'en_GB',
+    url: 'https://www.getactcomply.com',
+    siteName: 'ActComply',
+    title: 'ActComply — EU AI Act Compliance Platform',
+    description: 'Assess your AI systems against the EU AI Act in minutes. Automated risk classification, compliance roadmap, and audit-ready documentation.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'ActComply — EU AI Act Compliance Platform' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ActComply — EU AI Act Compliance Platform',
+    description: 'Assess your AI systems against the EU AI Act in minutes. Enforcement begins August 2, 2026.',
+    images: ['/og-image.png'],
+  },
+  alternates: {
+    canonical: 'https://www.getactcomply.com',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large' },
+  },
 };
 
 export default function RootLayout({

@@ -51,8 +51,72 @@ export default function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://www.getactcomply.com/#organization',
+        name: 'ActComply',
+        url: 'https://www.getactcomply.com',
+        description: 'EU AI Act compliance platform for organisations operating AI systems in the European Union.',
+        contactPoint: { '@type': 'ContactPoint', email: 'support@getactcomply.com', contactType: 'customer support' },
+      },
+      {
+        '@type': 'SoftwareApplication',
+        '@id': 'https://www.getactcomply.com/#product',
+        name: 'ActComply',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web',
+        url: 'https://www.getactcomply.com',
+        description: 'Automated EU AI Act compliance platform. Risk classification, compliance checklists, and audit-ready documentation for AI systems.',
+        offers: {
+          '@type': 'AggregateOffer',
+          priceCurrency: 'EUR',
+          lowPrice: '49',
+          highPrice: '299',
+          offerCount: '3',
+        },
+      },
+      {
+        '@type': 'WebPage',
+        '@id': 'https://www.getactcomply.com/#webpage',
+        url: 'https://www.getactcomply.com',
+        name: 'ActComply — EU AI Act Compliance Platform',
+        description: 'Assess your AI systems against the EU AI Act. Risk classification, compliance roadmap, and audit-ready documentation.',
+        isPartOf: { '@id': 'https://www.getactcomply.com/#organization' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'What is the EU AI Act enforcement deadline?',
+            acceptedAnswer: { '@type': 'Answer', text: 'The EU AI Act (Regulation EU 2024/1689) begins full enforcement on August 2, 2026. High-risk AI systems must be compliant before this date.' },
+          },
+          {
+            '@type': 'Question',
+            name: 'What are the fines for non-compliance with the EU AI Act?',
+            acceptedAnswer: { '@type': 'Answer', text: 'Fines for prohibited AI practices can reach €35 million or 7% of global annual turnover, whichever is higher. High-risk AI non-compliance can result in fines of €30 million or 6% of global turnover.' },
+          },
+          {
+            '@type': 'Question',
+            name: 'Which AI systems are considered high-risk under the EU AI Act?',
+            acceptedAnswer: { '@type': 'Answer', text: 'High-risk AI systems include those used in biometric identification, critical infrastructure, education, employment/HR, credit scoring, law enforcement, migration/asylum decisions, and administration of justice.' },
+          },
+          {
+            '@type': 'Question',
+            name: 'How long does an EU AI Act compliance assessment take?',
+            acceptedAnswer: { '@type': 'Answer', text: 'ActComply can assess your AI system in under 5 minutes. Simply describe what your AI does, who it affects, and what sector it operates in to receive an instant risk classification with article references.' },
+          },
+        ],
+      },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Nav */}
       <nav className="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-gray-950 px-6 py-4">
@@ -257,7 +321,10 @@ export default function LandingPage() {
       <footer className="border-t border-gray-200 dark:border-white/10 px-6 py-8">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
           <div>© 2026 ActComply. Built to make AI trustworthy.</div>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-6">
+            <Link href="/eu-ai-act-compliance-checklist" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Compliance Checklist</Link>
+            <Link href="/eu-ai-act-high-risk-ai-systems" className="hover:text-gray-700 dark:hover:text-gray-300 transition">High-Risk AI Systems</Link>
+            <Link href="/eu-ai-act-risk-classification" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Risk Classification</Link>
             <Link href="/support" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Support</Link>
             <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Terms</Link>
             <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Privacy</Link>
