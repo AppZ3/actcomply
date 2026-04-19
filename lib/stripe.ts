@@ -6,6 +6,61 @@ export function getStripe() {
   })
 }
 
+export type PlanKey = 'free' | 'starter' | 'business' | 'enterprise'
+
+export interface PlanFeatures {
+  systemsLimit: number        // -1 = unlimited
+  techDocsEnabled: boolean    // auto-generated Article 11 documentation
+  auditTrailEnabled: boolean  // full audit log for regulators
+  alertFrequency: 'none' | 'monthly' | 'weekly'
+  apiAccess: boolean          // API access to assessment engine
+  whiteLabel: boolean         // white-label compliance reports
+  multiEntity: boolean        // manage multiple legal entities
+}
+
+export const PLAN_FEATURES: Record<PlanKey, PlanFeatures> = {
+  free: {
+    systemsLimit: 1,
+    techDocsEnabled: false,
+    auditTrailEnabled: false,
+    alertFrequency: 'none',
+    apiAccess: false,
+    whiteLabel: false,
+    multiEntity: false,
+  },
+  starter: {
+    systemsLimit: 5,
+    techDocsEnabled: false,
+    auditTrailEnabled: false,
+    alertFrequency: 'monthly',
+    apiAccess: false,
+    whiteLabel: false,
+    multiEntity: false,
+  },
+  business: {
+    systemsLimit: -1,
+    techDocsEnabled: true,
+    auditTrailEnabled: true,
+    alertFrequency: 'weekly',
+    apiAccess: false,
+    whiteLabel: false,
+    multiEntity: false,
+  },
+  enterprise: {
+    systemsLimit: -1,
+    techDocsEnabled: true,
+    auditTrailEnabled: true,
+    alertFrequency: 'weekly',
+    apiAccess: true,
+    whiteLabel: true,
+    multiEntity: true,
+  },
+}
+
+export function getPlanFeatures(plan: string | null | undefined): PlanFeatures {
+  return PLAN_FEATURES[(plan as PlanKey) ?? 'free'] ?? PLAN_FEATURES.free
+}
+
 export const PLANS = {
   starter: {
     name: 'Starter',

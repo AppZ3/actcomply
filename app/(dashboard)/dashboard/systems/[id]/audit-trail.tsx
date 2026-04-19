@@ -15,17 +15,31 @@ const STATUS_LABELS: Record<string, { label: string; class: string }> = {
   done:         { label: 'Done',        class: 'text-green-400' },
 }
 
-export function AuditTrail({ assessmentId }: { assessmentId: string }) {
+export function AuditTrail({ assessmentId, enabled = true }: { assessmentId: string; enabled?: boolean }) {
   const [entries, setEntries] = useState<AuditEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    if (!open) return
+    if (!open || !enabled) return
     fetch(`/api/audit?assessmentId=${assessmentId}`)
       .then(r => r.json())
       .then(d => { setEntries(d ?? []); setLoading(false) })
-  }, [open, assessmentId])
+  }, [open, assessmentId, enabled])
+
+  if (!enabled) {
+    return (
+      <div className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-center justify-between gap-4">
+        <div>
+          <p className="font-semibold text-sm mb-0.5">Audit Trail</p>
+          <p className="text-xs text-gray-500">Full change log for regulators — every compliance update timestamped and recorded.</p>
+        </div>
+        <a href="/dashboard/billing" className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
+          Business plan →
+        </a>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">

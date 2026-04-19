@@ -195,11 +195,65 @@ function UpgradePlans() {
   )
 }
 
+function EmailCapture({ riskLevel, systemName, sector }: { riskLevel: string; systemName: string; sector: string }) {
+  const [email, setEmail] = useState('')
+  const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    await fetch('/api/capture-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, riskLevel, systemName, sector }),
+    })
+    setSent(true)
+    setLoading(false)
+  }
+
+  if (sent) {
+    return (
+      <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-center">
+        <div className="text-2xl mb-2">📬</div>
+        <p className="font-semibold text-green-400 mb-1">Report sent!</p>
+        <p className="text-sm text-gray-400">Check your inbox — we&apos;ve emailed your full assessment result.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <h3 className="font-semibold mb-1">📧 Email me this report</h3>
+      <p className="text-sm text-gray-400 mb-4">Get your full assessment results, compliance checklist, and deadline reminders delivered to your inbox.</p>
+      <form onSubmit={handleSubmit} className="flex gap-3">
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="you@company.com"
+          className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition text-sm"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm shrink-0"
+        >
+          {loading ? 'Sending...' : 'Send report →'}
+        </button>
+      </form>
+      <p className="text-xs text-gray-600 mt-2">No spam. Unsubscribe anytime.</p>
+    </div>
+  )
+}
+
 export default function AssessPage() {
   const [step, setStep] = useState<'form' | 'loading' | 'result'>('form')
   const [result, setResult] = useState<AssessmentResult & { savedId?: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPaidUser, setIsPaidUser] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [prefillLoaded, setPrefillLoaded] = useState(false)
   const [prefillId, setPrefillId] = useState<string | null>(null)
   const [atLimit, setAtLimit] = useState(false)
@@ -229,6 +283,7 @@ export default function AssessPage() {
         .eq('id', user.id)
         .single()
 
+      setIsLoggedIn(true)
       const isPaid = profile?.plan && profile.plan !== 'free'
       if (isPaid) setIsPaidUser(true)
 
@@ -403,6 +458,13 @@ export default function AssessPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Email capture for unauthenticated users */}
+          {!isLoggedIn && (
+            <div className="mb-6">
+              <EmailCapture riskLevel={result.riskLevel} systemName={form.name} sector={form.sector} />
             </div>
           )}
 

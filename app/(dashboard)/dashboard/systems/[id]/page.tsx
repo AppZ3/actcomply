@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
+import { getPlanFeatures } from '@/lib/stripe'
 import Link from 'next/link'
 import { ComplianceChecklist } from './checklist'
 import { TechnicalDocumentation } from './docs'
@@ -43,6 +44,7 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
 
   const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single()
   const isPaid = profile?.plan && profile.plan !== 'free'
+  const planFeatures = getPlanFeatures(profile?.plan)
 
   const config = RISK_CONFIG[assessment.risk_level as RiskLevel]
   const requirements = (assessment.requirements ?? []) as ComplianceRequirement[]
@@ -129,7 +131,7 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
 
       {/* Audit trail */}
       <div className="mt-6">
-        <AuditTrail assessmentId={id} />
+        <AuditTrail assessmentId={id} enabled={planFeatures.auditTrailEnabled} />
       </div>
 
       {/* Technical documentation */}
@@ -137,7 +139,7 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
         <TechnicalDocumentation
           assessmentId={id}
           systemName={assessment.name}
-          isPaid={!!isPaid}
+          isPaid={planFeatures.techDocsEnabled}
         />
       </div>
     </div>

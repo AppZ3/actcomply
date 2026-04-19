@@ -6,6 +6,7 @@ export const maxDuration = 60 // Vercel Pro: respected. Hobby: ignored (10s cap 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getPlanFeatures } from '@/lib/stripe'
 import Anthropic from '@anthropic-ai/sdk'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -37,6 +38,16 @@ export async function POST(
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Check plan — tech docs require Business or Enterprise
+  const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single()
+  const features = getPlanFeatures(profile?.plan)
+  if (!features.techDocsEnabled) {
+    return NextResponse.json(
+      { error: 'upgrade_required', message: 'Auto-generated technical documentation requires the Business plan or higher.' },
+      { status: 403 }
+    )
+  }
 
   // Fetch the assessment
   const { data: assessment } = await supabase
