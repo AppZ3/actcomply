@@ -80,10 +80,13 @@ export async function assessAISystem(system: AISystemInput): Promise<AssessmentR
     Current safeguards in place: ${system.currentSafeguards}
   `
 
-  const prompt = `You are an expert in EU AI Act compliance (Regulation EU 2024/1689). Analyse the following AI system and provide a structured compliance assessment.
-
-AI SYSTEM TO ASSESS:
-${systemText}
+  const message = await client.messages.create({
+    model: 'claude-opus-4-6',
+    max_tokens: 1024,
+    system: [
+      {
+        type: 'text',
+        text: `You are an expert in EU AI Act compliance (Regulation EU 2024/1689). You analyse AI systems and provide structured compliance assessments.
 
 PROHIBITED INDICATORS TO CHECK:
 ${PROHIBITED_INDICATORS.join(', ')}
@@ -102,12 +105,11 @@ Provide your assessment in the following JSON format exactly:
   "estimatedEffort": "Realistic estimate e.g. '2-4 weeks with 1 compliance officer' or '3-6 months requiring legal counsel'"
 }
 
-Be precise, reference actual article numbers, and be conservative - if unsure, classify higher risk. Do not include markdown formatting, return only valid JSON.`
-
-  const message = await client.messages.create({
-    model: 'claude-opus-4-6',
-    max_tokens: 1024,
-    messages: [{ role: 'user', content: prompt }],
+Be precise, reference actual article numbers, and be conservative — if unsure, classify higher risk. Return only valid JSON, no markdown.`,
+        cache_control: { type: 'ephemeral' },
+      },
+    ],
+    messages: [{ role: 'user', content: `Analyse this AI system:\n\n${systemText}` }],
   })
 
   const content = message.content[0]
