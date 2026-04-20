@@ -45,6 +45,8 @@ export default function Image() {
         {/* Headline */}
         <div
           style={{
+            display: 'flex',
+            flexWrap: 'wrap',
             fontSize: '64px',
             fontWeight: 700,
             color: 'white',
@@ -54,7 +56,7 @@ export default function Image() {
             flex: 1,
           }}
         >
-          EU AI Act Compliance{' '}
+          <span>EU AI Act Compliance&nbsp;</span>
           <span style={{ color: '#3b82f6' }}>in minutes.</span>
         </div>
 
