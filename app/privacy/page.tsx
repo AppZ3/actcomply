@@ -3,6 +3,8 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const metadata = {
   title: 'Privacy Policy — ActComply',
+  alternates: { canonical: 'https://www.getactcomply.com/privacy' },
+  robots: { index: false, follow: false },
 }
 
 export default function PrivacyPage() {

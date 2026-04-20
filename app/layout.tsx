@@ -51,9 +51,6 @@ export const metadata: Metadata = {
     description: 'Assess your AI systems against the EU AI Act in minutes. Enforcement begins August 2, 2026.',
     images: ['/opengraph-image'],
   },
-  alternates: {
-    canonical: 'https://www.getactcomply.com',
-  },
   robots: {
     index: true,
     follow: true,

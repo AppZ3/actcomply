@@ -3,6 +3,8 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const metadata = {
   title: 'Terms of Service — ActComply',
+  alternates: { canonical: 'https://www.getactcomply.com/terms' },
+  robots: { index: false, follow: false },
 }
 
 export default function TermsPage() {
