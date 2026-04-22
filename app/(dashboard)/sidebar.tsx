@@ -25,7 +25,11 @@ export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOu
     <>
       <div className="px-5 py-5 border-b border-white/10 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xs">AI</div>
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 82 22 A 40 40 0 1 0 82 78" stroke="#FAF8F3" strokeWidth="2.8" strokeLinecap="round"/>
+              <path d="M 28 74 L 48 26 L 68 74" stroke="#6A93C4" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="35" y1="58" x2="61" y2="58" stroke="#6A93C4" strokeWidth="2.8" strokeLinecap="round"/>
+            </svg>
           <span className="font-semibold">ActComply</span>
         </Link>
         <button onClick={() => setMobileOpen(false)} className="md:hidden text-gray-400 hover:text-white">
@@ -119,7 +123,11 @@ export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOu
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-gray-950 border-b border-white/10 flex items-center justify-between px-4 py-3">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xs">AI</div>
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 82 22 A 40 40 0 1 0 82 78" stroke="#FAF8F3" strokeWidth="2.8" strokeLinecap="round"/>
+              <path d="M 28 74 L 48 26 L 68 74" stroke="#6A93C4" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="35" y1="58" x2="61" y2="58" stroke="#6A93C4" strokeWidth="2.8" strokeLinecap="round"/>
+            </svg>
           <span className="font-semibold">ActComply</span>
         </Link>
         <div className="flex items-center gap-3">

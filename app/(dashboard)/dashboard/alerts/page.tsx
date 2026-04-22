@@ -23,9 +23,11 @@ export default function AlertsPage() {
   const router = useRouter()
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [loading, setLoading] = useState(true)
+  const [upgradeRequired, setUpgradeRequired] = useState(false)
 
   async function load() {
     const res = await fetch('/api/alerts')
+    if (res.status === 403) { setUpgradeRequired(true); setLoading(false); return }
     const data = await res.json()
     setAlerts(data)
     setLoading(false)
@@ -69,6 +71,15 @@ export default function AlertsPage() {
 
       {loading ? (
         <div className="text-gray-500 text-sm">Loading...</div>
+      ) : upgradeRequired ? (
+        <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
+          <div className="text-3xl mb-3">🔔</div>
+          <h2 className="font-semibold mb-2">Regulatory Alerts require a paid plan</h2>
+          <p className="text-sm text-gray-400 mb-5 max-w-sm mx-auto">Get notified of EU AI Act updates, enforcement milestones, and deadline reminders. Available on Starter and above.</p>
+          <a href="/dashboard/billing" className="inline-block bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition">
+            Upgrade now →
+          </a>
+        </div>
       ) : (
         <div className="space-y-3">
           {alerts.map(alert => {

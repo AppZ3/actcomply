@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
-import { PLANS } from '@/lib/stripe'
+import { getPlanFeatures } from '@/lib/stripe'
 import Link from 'next/link'
 import { DeleteAccountButton } from './delete-account-button'
 
@@ -36,6 +36,7 @@ export default async function SettingsPage() {
     .single()
 
   const plan = profile?.plan ?? 'free'
+  const planFeatures = getPlanFeatures(plan)
   const status = profile?.subscription_status ?? null
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -109,6 +110,63 @@ export default async function SettingsPage() {
           </div>
           <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full">Active</span>
         </div>
+      </div>
+
+      {/* API Access */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-1">API Access</h2>
+            <p className="text-xs text-gray-500">Programmatically run assessments and retrieve compliance data via REST API.</p>
+          </div>
+          {!planFeatures.apiAccess && (
+            <span className="text-xs bg-gray-700 text-gray-400 px-2 py-0.5 rounded-full shrink-0">Enterprise</span>
+          )}
+        </div>
+        {planFeatures.apiAccess ? (
+          <div className="mt-4 space-y-3">
+            <div className="flex items-center justify-between py-3 border-b border-white/5">
+              <span className="text-sm text-gray-400">API key</span>
+              <a href="/dashboard/api-keys" className="text-sm text-blue-400 hover:text-blue-300 transition">Manage keys →</a>
+            </div>
+            <div className="flex items-center justify-between py-3">
+              <span className="text-sm text-gray-400">Documentation</span>
+              <a href="/api-docs" className="text-sm text-blue-400 hover:text-blue-300 transition">View docs →</a>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-center justify-between gap-4 py-3 bg-white/3 rounded-lg px-4">
+            <p className="text-sm text-gray-500">Upgrade to Enterprise to access the ActComply API.</p>
+            <a href="/dashboard/billing" className="shrink-0 text-sm text-blue-400 hover:text-blue-300 transition font-medium">
+              Upgrade →
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* Multi-entity */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-1">Multi-entity Management</h2>
+            <p className="text-xs text-gray-500">Manage compliance across multiple legal entities or subsidiaries from one account.</p>
+          </div>
+          {!planFeatures.multiEntity && (
+            <span className="text-xs bg-gray-700 text-gray-400 px-2 py-0.5 rounded-full shrink-0">Enterprise</span>
+          )}
+        </div>
+        {planFeatures.multiEntity ? (
+          <div className="mt-4 py-3">
+            <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full">Enabled</span>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-center justify-between gap-4 py-3 bg-white/3 rounded-lg px-4">
+            <p className="text-sm text-gray-500">Upgrade to Enterprise for multi-entity compliance management.</p>
+            <a href="/dashboard/billing" className="shrink-0 text-sm text-blue-400 hover:text-blue-300 transition font-medium">
+              Upgrade →
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Support */}

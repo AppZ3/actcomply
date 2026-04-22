@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getPlanFeatures } from '@/lib/stripe'
 
 // Seed alerts if none exist — real EU AI Act milestones
 const SEED_ALERTS = [
@@ -90,6 +91,13 @@ export async function GET() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single()
+  const { alertFrequency } = getPlanFeatures(profile?.plan)
+
+  if (alertFrequency === 'none') {
+    return NextResponse.json({ error: 'upgrade_required', plan_required: 'starter' }, { status: 403 })
+  }
+
   const admin = getSupabaseAdmin()
 
   // Seed if table is empty
@@ -101,11 +109,18 @@ export async function GET() {
     await admin.from('regulatory_alerts').insert(SEED_ALERTS)
   }
 
-  // Fetch alerts with read status for this user
-  const { data: alerts } = await admin
+  let query = admin
     .from('regulatory_alerts')
     .select('*')
     .order('published_at', { ascending: false })
+
+  if (alertFrequency === 'monthly') {
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - 30)
+    query = query.gte('published_at', cutoff.toISOString())
+  }
+
+  const { data: alerts } = await query
 
   const { data: reads } = await admin
     .from('alert_reads')

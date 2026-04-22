@@ -23,23 +23,12 @@ export default function Image() {
 
         {/* Logo row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
-          <div
-            style={{
-              width: '52px',
-              height: '52px',
-              background: '#3b82f6',
-              borderRadius: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '22px',
-              fontWeight: 700,
-              color: 'white',
-            }}
-          >
-            AI
-          </div>
-          <span style={{ fontSize: '28px', fontWeight: 600, color: 'white', letterSpacing: '-0.5px' }}>ActComply</span>
+          <svg width="52" height="52" viewBox="0 0 100 100" fill="none">
+            <path d="M 82 22 A 40 40 0 1 0 82 78" stroke="#FAF8F3" strokeWidth="2.8" strokeLinecap="round"/>
+            <path d="M 28 74 L 48 26 L 68 74" stroke="#6A93C4" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
+            <line x1="35" y1="58" x2="61" y2="58" stroke="#6A93C4" strokeWidth="2.8" strokeLinecap="round"/>
+          </svg>
+          <span style={{ fontSize: '28px', fontWeight: 300, color: 'white', letterSpacing: '-0.5px' }}>Act<span style={{ fontWeight: 700, color: '#6A93C4' }}>Comply</span></span>
         </div>
 
         {/* Headline */}

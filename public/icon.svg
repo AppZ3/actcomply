@@ -1,0 +1,11 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- C: open ring, gap on right — the compliance framework -->
+  <path d="M83 26 A 40 40 0 1 0 83 74"
+    stroke="#2563eb" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <!-- A: geometric triangle centered inside the ring — the AI system -->
+  <path d="M30 74 L50 18 L70 74"
+    stroke="#2563eb" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- A crossbar -->
+  <line x1="38" y1="52" x2="62" y2="52"
+    stroke="#2563eb" stroke-width="7" stroke-linecap="round"/>
+</svg>
