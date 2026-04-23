@@ -1,6 +1,78 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+const SECTIONS = [
+  'General Description',
+  'Intended Purpose and Deployment Context',
+  'Development and Training Methodology',
+  'Training Data and Data Governance',
+  'Performance Metrics and Validation Testing',
+  'Risk Management System',
+  'Human Oversight Measures',
+  'Transparency and Instructions for Use',
+  'Cybersecurity and Robustness',
+  'Post-Market Monitoring Plan',
+]
+
+function GeneratingProgress() {
+  const [elapsed, setElapsed] = useState(0)
+  const [activeSection, setActiveSection] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      setElapsed(s => s + 1)
+    }, 1000)
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [])
+
+  useEffect(() => {
+    // Advance one section roughly every 5s, capped at last section
+    setActiveSection(Math.min(Math.floor(elapsed / 5), SECTIONS.length - 1))
+  }, [elapsed])
+
+  return (
+    <div className="mt-5 space-y-3">
+      <div className="flex items-center justify-between text-xs text-gray-500">
+        <span>Claude is writing your documentation…</span>
+        <span className="font-mono tabular-nums">{elapsed}s</span>
+      </div>
+      <div className="space-y-1.5">
+        {SECTIONS.map((name, i) => {
+          const done = i < activeSection
+          const active = i === activeSection
+          return (
+            <div key={i} className="flex items-center gap-2.5">
+              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 ${
+                done ? 'bg-green-500' : active ? 'bg-blue-500' : 'bg-white/10'
+              }`}>
+                {done && (
+                  <svg className="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+                {active && (
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                )}
+              </div>
+              <span className={`text-xs transition-colors duration-300 ${
+                done ? 'text-green-400' : active ? 'text-white' : 'text-gray-600'
+              }`}>
+                {name}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+      {elapsed > 45 && (
+        <p className="text-xs text-yellow-500/80 pt-1">
+          Taking longer than usual — still working, don't close this tab.
+        </p>
+      )}
+    </div>
+  )
+}
 
 interface DocSection {
   id: string
@@ -99,9 +171,8 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
           </button>
         </div>
         {generating && (
-          <div className="mt-4 text-xs text-gray-500">
-            Claude is drafting all 10 Annex IV sections — this takes about 20 seconds...
-          </div>
+          <div>
+            <GeneratingProgress /></div>
         )}
       </div>
     )
