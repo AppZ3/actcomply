@@ -1,7 +1,7 @@
 // GET  /api/docs/[assessmentId]  → fetch existing technical doc
 // POST /api/docs/[assessmentId]  → generate new doc with Claude, save to DB
 
-export const maxDuration = 300 // Vercel Pro supports up to 300s
+export const maxDuration = 300
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
@@ -10,6 +10,34 @@ import { getPlanFeatures } from '@/lib/stripe'
 import Anthropic from '@anthropic-ai/sdk'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+const DOC_TOOL: Anthropic.Tool = {
+  name: 'generate_documentation',
+  description: 'Generate EU AI Act Article 11 + Annex IV technical documentation',
+  input_schema: {
+    type: 'object' as const,
+    required: ['title', 'generated_at', 'risk_level', 'regulatory_basis', 'sections'],
+    properties: {
+      title: { type: 'string' },
+      generated_at: { type: 'string' },
+      risk_level: { type: 'string' },
+      regulatory_basis: { type: 'string' },
+      sections: {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['id', 'title', 'article_ref', 'content'],
+          properties: {
+            id: { type: 'string' },
+            title: { type: 'string' },
+            article_ref: { type: 'string' },
+            content: { type: 'string' },
+          },
+        },
+      },
+    },
+  },
+}
 
 export async function GET(
   _req: NextRequest,
@@ -39,7 +67,6 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Check plan — tech docs require Business or Enterprise
   const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single()
   const features = getPlanFeatures(profile?.plan)
   if (!features.techDocsEnabled) {
@@ -49,7 +76,6 @@ export async function POST(
     )
   }
 
-  // Fetch the assessment
   const { data: assessment } = await supabase
     .from('assessments')
     .select('*')
@@ -60,16 +86,17 @@ export async function POST(
   if (!assessment) return NextResponse.json({ error: 'Assessment not found' }, { status: 404 })
 
   try {
-  const msg = await ai.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 2000,
-    system: `You are an EU AI Act compliance expert. Generate Article 11 + Annex IV technical documentation. Return ONLY valid JSON, no markdown, structured exactly as:
-{"title":"Technical Documentation — [system name]","generated_at":"[ISO timestamp]","risk_level":"[risk level]","regulatory_basis":"[regulatory basis]","sections":[{"id":"s1","title":"1. General Description","article_ref":"Annex IV, Section 1","content":"..."},{"id":"s2","title":"2. Intended Purpose and Deployment Context","article_ref":"Article 13, Annex IV Section 1(b)","content":"..."},{"id":"s3","title":"3. Development and Training Methodology","article_ref":"Annex IV, Section 2","content":"..."},{"id":"s4","title":"4. Training Data and Data Governance","article_ref":"Article 10, Annex IV Section 2(d)","content":"..."},{"id":"s5","title":"5. Performance Metrics and Validation Testing","article_ref":"Article 9(7), Annex IV Section 3","content":"..."},{"id":"s6","title":"6. Risk Management System","article_ref":"Article 9, Annex IV Section 5","content":"..."},{"id":"s7","title":"7. Human Oversight Measures","article_ref":"Article 14, Annex IV Section 5","content":"..."},{"id":"s8","title":"8. Transparency and Instructions for Use","article_ref":"Article 13, Annex IV Section 4","content":"..."},{"id":"s9","title":"9. Cybersecurity and Robustness","article_ref":"Article 15, Annex IV Section 5","content":"..."},{"id":"s10","title":"10. Post-Market Monitoring Plan","article_ref":"Article 72, Annex IV Section 6","content":"..."}]}
-Each section content: 2-3 concise paragraphs, specific to the system, audit-ready, citing real EU AI Act articles. No placeholder text.`,
-    messages: [{
-      role: 'user',
-      content: `Generate technical documentation for this AI system:
-
+    const msg = await ai.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
+      tools: [DOC_TOOL],
+      tool_choice: { type: 'tool', name: 'generate_documentation' },
+      system: `You are an EU AI Act compliance expert generating Article 11 + Annex IV technical documentation.
+Write 10 sections. Each section content: 2-3 concise paragraphs, specific to the system, audit-ready, citing real EU AI Act article numbers. No placeholder text.
+Sections required: General Description, Intended Purpose and Deployment Context, Development and Training Methodology, Training Data and Data Governance, Performance Metrics and Validation Testing, Risk Management System, Human Oversight Measures, Transparency and Instructions for Use, Cybersecurity and Robustness, Post-Market Monitoring Plan.`,
+      messages: [{
+        role: 'user',
+        content: `Generate technical documentation for this AI system:
 - Name: ${assessment.name}
 - Description: ${assessment.description}
 - Purpose: ${assessment.purpose}
@@ -81,27 +108,26 @@ Each section content: 2-3 concise paragraphs, specific to the system, audit-read
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}
 - Compliance score: ${assessment.compliance_score}%
+- generated_at: "${new Date().toISOString()}"`,
+      }],
+    })
 
-Use generated_at: "${new Date().toISOString()}", risk_level: "${assessment.risk_level}", regulatory_basis: "${assessment.regulatory_basis}"`,
-    }],
-  })
+    const toolBlock = msg.content.find(b => b.type === 'tool_use') as Anthropic.ToolUseBlock | undefined
+    if (!toolBlock) throw new Error('No tool response from Claude')
+    const doc = toolBlock.input
 
-  const raw = (msg.content[0] as { type: string; text: string }).text
-    .replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
-  const doc = JSON.parse(raw)
+    const admin = getSupabaseAdmin()
+    await admin
+      .from('technical_docs')
+      .upsert(
+        { user_id: user.id, assessment_id: assessmentId, content: doc, generated_at: new Date().toISOString() },
+        { onConflict: 'user_id,assessment_id' }
+      )
 
-  const admin = getSupabaseAdmin()
-  await admin
-    .from('technical_docs')
-    .upsert(
-      { user_id: user.id, assessment_id: assessmentId, content: doc, generated_at: new Date().toISOString() },
-      { onConflict: 'user_id,assessment_id' }
-    )
-
-  return NextResponse.json(doc)
+    return NextResponse.json(doc)
   } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Generation failed'
-    console.error('Docs generation error:', msg)
-    return NextResponse.json({ error: msg }, { status: 500 })
+    const message = err instanceof Error ? err.message : 'Generation failed'
+    console.error('Docs generation error:', message)
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
