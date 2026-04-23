@@ -48,7 +48,8 @@ export async function GET(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { data } = await supabase
+  const admin = getSupabaseAdmin()
+  const { data } = await admin
     .from('technical_docs')
     .select('*')
     .eq('assessment_id', assessmentId)
