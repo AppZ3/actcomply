@@ -58,10 +58,14 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
   return (
     <>
       <PrintTrigger />
-      <div className="max-w-3xl mx-auto px-10 py-12 bg-white text-gray-900 min-h-screen print:p-8">
+      <style>{`
+        @page { margin: 20mm 18mm; }
+        p, li { orphans: 3; widows: 3; }
+      `}</style>
+      <div className="max-w-3xl mx-auto px-10 py-12 bg-white text-gray-900 min-h-screen print:p-0">
 
-        {/* Header */}
-        <div className="border-b-2 border-gray-900 pb-6 mb-8">
+        {/* Header — keep together, never break inside */}
+        <div className="border-b-2 border-gray-900 pb-6 mb-8 break-inside-avoid">
           <div className="flex items-start justify-between">
             <div>
               {!planFeatures.whiteLabel && <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">ActComply · EU AI Act Compliance Report</div>}
@@ -86,11 +90,11 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Risk rationale */}
-        <section className="mb-8">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3">Risk Classification Rationale</h2>
+        <section className="mb-8 break-inside-avoid">
+          <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3 break-after-avoid">Risk Classification Rationale</h2>
           <p className="text-gray-700 leading-relaxed">{assessment.risk_rationale}</p>
           {assessment.prohibited_reason && (
-            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-800">
+            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-800 break-inside-avoid">
               <strong>Prohibition basis:</strong> {assessment.prohibited_reason}
             </div>
           )}
@@ -98,10 +102,10 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
 
         {/* Immediate actions */}
         <section className="mb-8">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3">Immediate Actions Required</h2>
+          <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3 break-after-avoid">Immediate Actions Required</h2>
           <ol className="space-y-2">
             {immediateActions.map((action, i) => (
-              <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
+              <li key={i} className="flex items-start gap-3 text-sm text-gray-700 break-inside-avoid">
                 <span className="w-5 h-5 bg-gray-900 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
                 {action}
               </li>
@@ -113,7 +117,7 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
         {/* Compliance requirements */}
         {requirements.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3 break-after-avoid">
               Compliance Requirements ({requirements.length})
             </h2>
             <div className="space-y-3">
@@ -121,7 +125,7 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
                 const p = progressMap[req.id]
                 const status = p?.status ?? 'not_started'
                 return (
-                  <div key={req.id} className={`border rounded p-3 ${status === 'done' ? 'border-green-300 bg-green-50' : status === 'in_progress' ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200'}`}>
+                  <div key={req.id} className={`border rounded p-3 break-inside-avoid ${status === 'done' ? 'border-green-300 bg-green-50' : status === 'in_progress' ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200'}`}>
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <div className="flex items-center gap-2">
                         <span className={`text-sm font-bold ${status === 'done' ? 'text-green-600' : status === 'in_progress' ? 'text-yellow-600' : 'text-gray-400'}`}>
@@ -149,14 +153,14 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
         {/* Technical documentation sections */}
         {doc?.sections && doc.sections.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500 mb-3 break-after-avoid">
               Article 11 Technical Documentation
             </h2>
             <div className="space-y-5">
               {doc.sections.map((s, i) => (
-                <div key={i}>
+                <div key={i} className="break-inside-avoid">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <h3 className="text-sm font-bold">{s.title}</h3>
+                    <h3 className="text-sm font-bold break-after-avoid">{s.title}</h3>
                     <span className="text-xs font-mono text-blue-500">{s.article_ref}</span>
                   </div>
                   <p className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">{s.content}</p>
@@ -167,7 +171,7 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
         )}
 
         {/* Footer */}
-        <div className="border-t border-gray-200 pt-6 text-xs text-gray-400 text-center">
+        <div className="border-t border-gray-200 pt-6 text-xs text-gray-400 text-center break-inside-avoid">
           {planFeatures.whiteLabel
             ? 'This document is for compliance guidance only and does not constitute legal advice.'
             : 'Generated by ActComply · getactcomply.com · This document is for compliance guidance only and does not constitute legal advice.'
