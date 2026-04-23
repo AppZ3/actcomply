@@ -11,33 +11,33 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-const DOC_TOOL: Anthropic.Tool = {
+const DOC_TOOL = {
   name: 'generate_documentation',
   description: 'Generate EU AI Act Article 11 + Annex IV technical documentation',
   input_schema: {
     type: 'object' as const,
     required: ['title', 'generated_at', 'risk_level', 'regulatory_basis', 'sections'],
     properties: {
-      title: { type: 'string' },
-      generated_at: { type: 'string' },
-      risk_level: { type: 'string' },
-      regulatory_basis: { type: 'string' },
+      title: { type: 'string' as const },
+      generated_at: { type: 'string' as const },
+      risk_level: { type: 'string' as const },
+      regulatory_basis: { type: 'string' as const },
       sections: {
-        type: 'array',
+        type: 'array' as const,
         items: {
-          type: 'object',
+          type: 'object' as const,
           required: ['id', 'title', 'article_ref', 'content'],
           properties: {
-            id: { type: 'string' },
-            title: { type: 'string' },
-            article_ref: { type: 'string' },
-            content: { type: 'string' },
+            id: { type: 'string' as const },
+            title: { type: 'string' as const },
+            article_ref: { type: 'string' as const },
+            content: { type: 'string' as const },
           },
         },
       },
     },
   },
-}
+} satisfies Anthropic.Tool
 
 export async function GET(
   _req: NextRequest,
