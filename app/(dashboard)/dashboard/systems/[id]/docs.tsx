@@ -106,21 +106,38 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
   const [doc, setDoc] = useState<TechnicalDoc | null>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
+  const [genError, setGenError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string | null>('s1')
 
   useEffect(() => {
     fetch(`/api/docs/${assessmentId}`)
       .then(r => r.json())
       .then(d => { setDoc(d?.content ?? null); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [assessmentId])
 
   async function generate() {
     setGenerating(true)
-    const res = await fetch(`/api/docs/${assessmentId}`, { method: 'POST' })
-    const data = await res.json()
-    setDoc(data)
-    setExpanded('s1')
-    setGenerating(false)
+    setGenError(null)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 120_000)
+    try {
+      const res = await fetch(`/api/docs/${assessmentId}`, { method: 'POST', signal: controller.signal })
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        setGenError(data.message ?? data.error ?? 'Generation failed — please try again.')
+      } else {
+        setDoc(data)
+        setExpanded('s1')
+      }
+    } catch (e) {
+      setGenError(e instanceof Error && e.name === 'AbortError'
+        ? 'Timed out after 2 minutes — please try again.'
+        : 'Something went wrong — please try again.')
+    } finally {
+      clearTimeout(timeout)
+      setGenerating(false)
+    }
   }
 
   if (!isPaid) {
@@ -177,6 +194,11 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
             ) : 'Generate documentation →'}
           </button>
         </div>
+        {genError && (
+          <div className="mt-4 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3">
+            {genError}
+          </div>
+        )}
         {generating && (
           <div>
             <GeneratingProgress /></div>

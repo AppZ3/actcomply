@@ -59,6 +59,7 @@ export async function POST(
 
   if (!assessment) return NextResponse.json({ error: 'Assessment not found' }, { status: 404 })
 
+  try {
   const msg = await ai.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 2000,
@@ -98,4 +99,9 @@ Use generated_at: "${new Date().toISOString()}", risk_level: "${assessment.risk_
     )
 
   return NextResponse.json(doc)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Generation failed'
+    console.error('Docs generation error:', msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 }
