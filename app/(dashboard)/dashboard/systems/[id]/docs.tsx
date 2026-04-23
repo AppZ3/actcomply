@@ -27,21 +27,22 @@ function GeneratingProgress() {
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [])
 
+  const allWritten = elapsed >= SECTIONS.length * 5
+
   useEffect(() => {
-    // Advance one section roughly every 5s, capped at last section
     setActiveSection(Math.min(Math.floor(elapsed / 5), SECTIONS.length - 1))
   }, [elapsed])
 
   return (
     <div className="mt-5 space-y-3">
       <div className="flex items-center justify-between text-xs text-gray-500">
-        <span>Claude is writing your documentation…</span>
+        <span>{allWritten ? 'Finalising and saving…' : 'Claude is writing your documentation…'}</span>
         <span className="font-mono tabular-nums">{elapsed}s</span>
       </div>
       <div className="space-y-1.5">
         {SECTIONS.map((name, i) => {
-          const done = i < activeSection
-          const active = i === activeSection
+          const done = allWritten || i < activeSection
+          const active = !allWritten && i === activeSection
           return (
             <div key={i} className="flex items-center gap-2.5">
               <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 ${
@@ -65,9 +66,15 @@ function GeneratingProgress() {
           )
         })}
       </div>
-      {elapsed > 45 && (
+      {elapsed > 60 && !allWritten && (
         <p className="text-xs text-yellow-500/80 pt-1">
           Taking longer than usual — still working, don't close this tab.
+        </p>
+      )}
+      {allWritten && (
+        <p className="text-xs text-blue-400/80 pt-1 flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin inline-block" />
+          All sections written — saving to your account…
         </p>
       )}
     </div>

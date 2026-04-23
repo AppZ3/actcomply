@@ -1,7 +1,7 @@
 // GET  /api/docs/[assessmentId]  → fetch existing technical doc
 // POST /api/docs/[assessmentId]  → generate new doc with Claude, save to DB
 
-export const maxDuration = 60 // Vercel Pro: respected. Hobby: ignored (10s cap applies)
+export const maxDuration = 300 // Vercel Pro supports up to 300s
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
