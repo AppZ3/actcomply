@@ -13,6 +13,47 @@ const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
+// Retry wrapper with exponential backoff for transient Anthropic API failures
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  let lastError: unknown
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (err) {
+      lastError = err
+      const isRetryable =
+        err instanceof Anthropic.APIError &&
+        (err.status === 429 || err.status === 529 || err.status >= 500)
+      if (!isRetryable || attempt === maxRetries - 1) throw err
+      await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000))
+    }
+  }
+  throw lastError
+}
+
+// Strip common prompt-injection patterns from user-supplied text
+function sanitizeInput(text: string): string {
+  return text
+    .replace(/ignore\s+(all\s+)?(previous|prior|above)\s+(instructions?|prompts?|context)/gi, '[removed]')
+    .replace(/system\s*prompt/gi, '[removed]')
+    .replace(/you\s+are\s+now\s+/gi, '[removed]')
+    .replace(/<\s*\/?(?:system|prompt|instruction)[^>]*>/gi, '[removed]')
+    .slice(0, 2000)
+}
+
+// Mask common PII patterns before sending user content to the Anthropic API
+function maskPII(text: string): string {
+  return text
+    .replace(/\b[\w.+-]+@[\w-]+\.[a-z]{2,}\b/gi, '[email]')
+    .replace(/\b(?:\+?\d[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g, '[phone]')
+    .replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[card]')
+    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[ssn]')
+}
+
+function prepareInput(text: string): string {
+  return maskPII(sanitizeInput(text))
+}
+
 export interface AISystemInput {
   name: string
   description: string
@@ -29,7 +70,7 @@ export interface AISystemInput {
 export async function validateAssessmentInput(
   system: AISystemInput
 ): Promise<{ valid: boolean; reason?: string }> {
-  const msg = await client.messages.create({
+  const msg = await withRetry(() => client.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 128,
     messages: [
@@ -38,10 +79,10 @@ export async function validateAssessmentInput(
         content: `You are validating whether a form submission describes a real AI system for an EU AI Act compliance assessment.
 
 Submission:
-Name: ${system.name}
-Description: ${system.description}
-Purpose: ${system.purpose}
-Sector: ${system.sector}
+Name: ${prepareInput(system.name)}
+Description: ${prepareInput(system.description)}
+Purpose: ${prepareInput(system.purpose)}
+Sector: ${prepareInput(system.sector)}
 
 Rules — respond INVALID if any of the following are true:
 - The text is gibberish, random characters, or clearly meaningless
@@ -55,7 +96,7 @@ If INVALID, add a colon and a short user-facing reason (under 15 words), e.g.:
 INVALID: Please describe a real AI system — this doesn't look like a valid submission.`,
       },
     ],
-  })
+  }))
 
   const text = (msg.content[0] as { type: string; text: string }).text.trim()
 
@@ -68,19 +109,23 @@ INVALID: Please describe a real AI system — this doesn't look like a valid sub
   return { valid: false, reason }
 }
 
-export async function assessAISystem(system: AISystemInput): Promise<AssessmentResult> {
+export async function assessAISystem(
+  system: AISystemInput,
+  context?: { userId?: string; assessmentId?: string }
+): Promise<AssessmentResult> {
   const systemText = `
-    System Name: ${system.name}
-    Description: ${system.description}
-    Purpose: ${system.purpose}
-    Sector: ${system.sector}
+    System Name: ${prepareInput(system.name)}
+    Description: ${prepareInput(system.description)}
+    Purpose: ${prepareInput(system.purpose)}
+    Sector: ${prepareInput(system.sector)}
     Uses personal data: ${system.usesPersonalData}
     Makes autonomous decisions: ${system.makesAutonomousDecisions}
     Affects individuals: ${system.affectsIndividuals}
-    Current safeguards in place: ${system.currentSafeguards}
+    Current safeguards in place: ${prepareInput(system.currentSafeguards ?? '')}
   `
 
-  const message = await client.messages.create({
+  const startedAt = Date.now()
+  const message = await withRetry(() => client.messages.create({
     model: 'claude-opus-4-6',
     max_tokens: 1024,
     system: [
@@ -110,7 +155,7 @@ Be precise, reference actual article numbers, and be conservative — if unsure,
       },
     ],
     messages: [{ role: 'user', content: `Analyse this AI system:\n\n${systemText}` }],
-  })
+  }))
 
   const content = message.content[0]
   if (content.type !== 'text') {
@@ -129,7 +174,7 @@ Be precise, reference actual article numbers, and be conservative — if unsure,
     requirements = LIMITED_RISK_REQUIREMENTS
   }
 
-  return {
+  const result: AssessmentResult = {
     riskLevel,
     riskRationale: parsed.riskRationale,
     regulatoryBasis: parsed.regulatoryBasis,
@@ -139,4 +184,25 @@ Be precise, reference actual article numbers, and be conservative — if unsure,
     immediateActions: parsed.immediateActions,
     estimatedEffort: parsed.estimatedEffort,
   }
+
+  // Write AI decision audit log entry (best-effort, never block the response)
+  if (context?.userId) {
+    const { getSupabaseAdmin } = await import('./supabase-admin')
+    const admin = getSupabaseAdmin()
+    admin.from('audit_log').insert({
+      user_id: context.userId,
+      assessment_id: context.assessmentId ?? null,
+      action: 'ai_assessment',
+      detail: {
+        model: 'claude-opus-4-6',
+        risk_level: riskLevel,
+        compliance_score: parsed.complianceScore,
+        latency_ms: Date.now() - startedAt,
+        input_tokens: message.usage.input_tokens,
+        output_tokens: message.usage.output_tokens,
+      },
+    }).then(() => {}, () => {})
+  }
+
+  return result
 }

@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ActComply — EU AI Act Compliance Platform
 
-## Getting Started
+AI-powered compliance platform that classifies AI systems under the EU AI Act (Regulation EU 2024/1689), generates Article 11 technical documentation, and tracks compliance progress toward the August 2, 2026 enforcement deadline.
 
-First, run the development server:
+**Live:** [getactcomply.com](https://getactcomply.com)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## What it does
+
+1. **Assess** — Describe an AI system; Claude classifies it as Prohibited, High-Risk, Limited-Risk, or Minimal-Risk with article-level regulatory basis
+2. **Document** — Generates Annex IV-compliant technical documentation (10 sections) as a downloadable PDF
+3. **Track** — Checklist of compliance requirements per system with progress tracking
+4. **Alert** — Regulatory change alerts with severity levels pushed to users by email
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router, server components) |
+| Language | TypeScript |
+| AI | Anthropic Claude (Opus for assessments, Haiku for docs/validation) |
+| Auth | Supabase Auth (magic link + OAuth) |
+| Database | Supabase (Postgres + RLS) |
+| Payments | Stripe (subscriptions + usage-based billing) |
+| Email | Resend |
+| Deployment | Vercel |
+
+---
+
+## Architecture
+
+```
+app/
+  (dashboard)/        # Authenticated dashboard routes
+    dashboard/
+      systems/[id]/   # System detail, checklist, docs, print/PDF
+  api/
+    assess/           # POST — run AI assessment via Claude
+    docs/[id]/        # GET/POST — fetch or generate technical documentation
+    audit/            # GET — AI decision audit trail (Business plan+)
+    alerts/           # GET/PATCH — regulatory alerts
+    progress/         # POST — update compliance checklist items
+    billing/          # Stripe checkout and portal
+    webhooks/stripe/  # Stripe webhook handler
+    welcome/          # Post-signup welcome email trigger
+lib/
+  anthropic.ts        # Claude integration: assessment, validation, PII masking, retry
+  eu-ai-act.ts        # Risk categories, requirements, prohibited indicators
+  stripe.ts           # Plan definitions and feature gates
+  supabase-server.ts  # Server-side Supabase client (SSR cookies)
+  supabase-admin.ts   # Service role client for RLS bypass
+  resend.ts           # Transactional email helpers
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API reference
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### `POST /api/assess`
+Run an EU AI Act compliance assessment.
 
-## Learn More
+**Request body:**
+```json
+{
+  "name": "string",
+  "description": "string",
+  "purpose": "string",
+  "sector": "string",
+  "usesPersonalData": true,
+  "makesAutonomousDecisions": false,
+  "affectsIndividuals": true,
+  "currentSafeguards": "string"
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+**Response:**
+```json
+{
+  "riskLevel": "HIGH_RISK",
+  "riskRationale": "string",
+  "regulatoryBasis": "Articles 6, 10, Annex III",
+  "complianceScore": 42,
+  "immediateActions": ["..."],
+  "estimatedEffort": "2-4 months",
+  "requirements": [...],
+  "savedId": "uuid"
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### `GET /api/docs/:assessmentId`
+Fetch existing technical documentation for an assessment.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### `POST /api/docs/:assessmentId`
+Generate Annex IV technical documentation via Claude. Requires Business plan.
 
-## Deploy on Vercel
+### `GET /api/audit?assessmentId=:id`
+Retrieve AI decision audit log for an assessment. Requires Business plan.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### `GET /api/alerts`
+List regulatory alerts for the authenticated user.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### `POST /api/progress`
+Update compliance checklist item status (`not_started` | `in_progress` | `done`).
+
+---
+
+## AI governance
+
+All Claude API calls include:
+
+- **Input sanitisation** — prompt injection patterns stripped before sending user content
+- **PII masking** — emails, phone numbers, card numbers, SSNs masked before reaching the Anthropic API
+- **Retry with backoff** — up to 3 retries on 429/5xx responses with exponential backoff
+- **Audit logging** — every AI assessment decision logged to `audit_log` with model, risk level, score, latency, and token usage
+- **Structured output** — assessments use tool_use / JSON-mode to prevent unstructured generation
+
+---
+
+## Environment variables
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+ANTHROPIC_API_KEY=
+
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+
+RESEND_API_KEY=
+
+NEXT_PUBLIC_SITE_URL=https://getactcomply.com
+```
+
+---
+
+## Local development
+
+```bash
+npm install
+cp .env.example .env.local   # fill in env vars
+npm run dev                   # http://localhost:3000
+```
+
+Supabase migrations are in `supabase/migrations/`. Run with `supabase db push`.
+
+---
+
+## Plans
+
+| Plan | Systems | Tech docs | Audit trail | White label |
+|---|---|---|---|---|
+| Free | 1 | — | — | — |
+| Starter | 5 | — | — | — |
+| Business | Unlimited | ✓ | ✓ | — |
+| Enterprise | Unlimited | ✓ | ✓ | ✓ |
+
+---
+
+## License
+
+Private — all rights reserved. Not open source.

@@ -20,12 +20,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: validation.reason }, { status: 422 })
     }
 
-    // Run the assessment
-    const result = await assessAISystem(assessmentInput)
-
-    // If user is logged in, check plan limits and save
+    // Resolve user before assessment so we can pass context for audit logging
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
+
+    // Run the assessment
+    const result = await assessAISystem(assessmentInput, { userId: user?.id })
+
+    // If user is logged in, check plan limits and save
 
     if (user) {
       const { data: profile } = await supabase
