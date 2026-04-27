@@ -100,8 +100,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    console.error('Assessment error:', message)
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('Assessment error:', error instanceof Error ? error.stack : String(error))
+    return NextResponse.json({ error: 'Assessment failed. Please try again.' }, { status: 500 })
   }
 }

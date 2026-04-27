@@ -127,8 +127,7 @@ Sections required: General Description, Intended Purpose and Deployment Context,
 
     return NextResponse.json(doc)
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Generation failed'
-    console.error('Docs generation error:', message)
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('Docs generation error:', err instanceof Error ? err.stack : String(err))
+    return NextResponse.json({ error: 'Documentation generation failed. Please try again.' }, { status: 500 })
   }
 }
