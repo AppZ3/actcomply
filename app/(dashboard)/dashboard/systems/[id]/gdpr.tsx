@@ -228,9 +228,9 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
     )
   }
 
-  const hasSpecialCategory = assessment.processing_activities.some(a => a.special_category)
-  const highRisks = assessment.risks.filter(r => r.severity.toLowerCase() === 'high' || r.likelihood.toLowerCase() === 'high').length
-  const highRights = assessment.fundamental_rights_impacts.filter(r => r.impact_level.toLowerCase() === 'high').length
+  const hasSpecialCategory = (assessment.processing_activities ?? []).some(a => a.special_category)
+  const highRisks = (assessment.risks ?? []).filter(r => r.severity?.toLowerCase() === 'high' || r.likelihood?.toLowerCase() === 'high').length
+  const highRights = (assessment.fundamental_rights_impacts ?? []).filter(r => r.impact_level?.toLowerCase() === 'high').length
 
   return (
     <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
@@ -252,7 +252,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
           </div>
           <p className="text-xs text-gray-500 mt-0.5">
             Generated {new Date(assessment.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-            {' · '}{assessment.risks.length} risks · {assessment.fundamental_rights_impacts.length} rights assessed
+            {' · '}{(assessment.risks ?? []).length} risks · {(assessment.fundamental_rights_impacts ?? []).length} rights assessed
             {highRisks > 0 && <span className="text-red-400"> · {highRisks} high-risk</span>}
           </p>
         </div>
@@ -309,7 +309,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Processing Activities</p>
             </div>
             <div className="divide-y divide-white/5">
-              {assessment.processing_activities.map(activity => (
+              {(assessment.processing_activities ?? []).map(activity => (
                 <div key={activity.id} className="px-6 py-4">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <span className="text-sm font-medium">{activity.name}</span>
@@ -336,7 +336,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Risk Register</p>
             </div>
             <div className="divide-y divide-white/5">
-              {assessment.risks.map(risk => (
+              {(assessment.risks ?? []).map(risk => (
                 <div key={risk.id}>
                   <button
                     onClick={() => setExpandedRisk(expandedRisk === risk.id ? null : risk.id)}
@@ -367,11 +367,11 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
           </div>
 
           {/* Safeguards */}
-          {assessment.safeguards.length > 0 && (
+          {(assessment.safeguards ?? []).length > 0 && (
             <div className="px-6 py-4 border-t border-white/10">
               <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Safeguards</p>
               <ul className="space-y-1.5">
-                {assessment.safeguards.map((s, i) => (
+                {(assessment.safeguards ?? []).map((s, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
                     <span className="text-green-500 mt-0.5 shrink-0">✓</span>
                     {s}
@@ -391,7 +391,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
             <p className="text-sm text-gray-300">{assessment.fria_rationale}</p>
           </div>
           <div className="divide-y divide-white/5">
-            {assessment.fundamental_rights_impacts.map((item, i) => (
+            {(assessment.fundamental_rights_impacts ?? []).map((item, i) => (
               <div key={i}>
                 <button
                   onClick={() => setExpandedRight(expandedRight === item.right ? null : item.right)}
