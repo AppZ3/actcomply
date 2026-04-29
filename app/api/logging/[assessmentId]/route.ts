@@ -113,7 +113,7 @@ export async function POST(
   try {
     const msg = await ai.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
+      max_tokens: 3000,
       tools: [LOGGING_TOOL],
       tool_choice: { type: 'tool', name: 'generate_logging_spec' },
       system: `You are an EU AI Act compliance expert generating Article 12 logging specifications and Article 19 retention schedules.
@@ -141,7 +141,7 @@ Generate a precise, implementable logging specification tailored to the specific
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}
 
-Determine the correct Article 19 retention period based on the sector and purpose. Generate 6–10 specific logging events relevant to this system's actual operation. For each event, specify the exact fields the system must record.`,
+Determine the correct Article 19 retention period based on the sector and purpose. Generate 4–6 specific logging events relevant to this system's actual operation. For each event, specify the exact fields the system must record. Keep descriptions concise — 1–2 sentences each.`,
       }],
     })
 
