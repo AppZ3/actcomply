@@ -121,7 +121,7 @@ export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOu
       </aside>
 
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-gray-950 border-b border-white/10 flex items-center justify-between px-4 py-3">
+      <div className="md:hidden print:hidden fixed top-0 left-0 right-0 z-40 bg-gray-950 border-b border-white/10 flex items-center justify-between px-4 py-3">
         <Link href="/dashboard" className="flex items-center gap-2">
           <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M 82 22 A 40 40 0 1 0 82 78" stroke="#FAF8F3" strokeWidth="2.8" strokeLinecap="round"/>
