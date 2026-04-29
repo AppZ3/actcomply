@@ -340,10 +340,10 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
                 <div key={risk.id}>
                   <button
                     onClick={() => setExpandedRisk(expandedRisk === risk.id ? null : risk.id)}
-                    className="w-full flex items-center justify-between px-6 py-3 hover:bg-white/5 transition text-left"
+                    className="w-full flex items-start justify-between px-6 py-3 hover:bg-white/5 transition text-left"
                   >
                     <span className="text-sm text-gray-200 flex-1 pr-4">{risk.risk}</span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0 mt-0.5">
                       <span className="text-xs text-gray-500">L:</span><LevelBadge level={risk.likelihood} />
                       <span className="text-xs text-gray-500">S:</span><LevelBadge level={risk.severity} />
                       <svg className={`w-4 h-4 text-gray-500 transition-transform ${expandedRisk === risk.id ? 'rotate-180' : ''}`}
