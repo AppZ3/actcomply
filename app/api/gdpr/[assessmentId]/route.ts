@@ -128,7 +128,7 @@ export async function POST(
   try {
     const msg = await ai.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 6000,
+      max_tokens: 3500,
       tools: [GDPR_TOOL],
       tool_choice: { type: 'tool', name: 'generate_gdpr_assessment' },
       system: `You are an expert in GDPR (Regulation EU 2016/679) and the EU AI Act (Regulation EU 2024/1689), specialising in Data Protection Impact Assessments (DPIA) and Fundamental Rights Impact Assessments (FRIA).
@@ -156,7 +156,7 @@ Generate a precise, integrated assessment. Be specific to the system's actual pr
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}
 
-Assess whether a DPIA and FRIA are each required. Identify 2–4 processing activities. Generate a risk register with 4–6 specific risks. Assess fundamental rights impacts across relevant rights (non-discrimination, privacy, fair trial, effective remedy, etc.). Write an Article 86 explainability statement specific to this system. List existing and recommended safeguards.`,
+Assess whether a DPIA and FRIA are each required. Identify 2–3 processing activities. Generate a risk register with 3–4 specific risks. Assess fundamental rights impacts across 3–4 relevant rights (non-discrimination, privacy, fair trial, effective remedy). Write a concise Article 86 explainability statement specific to this system. List 3–5 safeguards. Keep each text field to 2–3 sentences maximum.`,
       }],
     })
 

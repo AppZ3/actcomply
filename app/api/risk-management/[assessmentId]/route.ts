@@ -145,7 +145,7 @@ export async function POST(
   try {
     const msg = await ai.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 6000,
+      max_tokens: 3500,
       tools: [RISK_MGMT_TOOL],
       tool_choice: { type: 'tool', name: 'generate_risk_management_plan' },
       system: `You are an expert in EU AI Act Article 9 risk management for high-risk AI systems.
@@ -175,7 +175,7 @@ Generate a precise, actionable Article 9 risk management plan. Identify failure 
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}${existingContext}${modelChangeNote}
 
-Identify 5–7 specific risks with probability/severity/residual risk ratings. Generate 4–6 change triggers with urgency ratings. Generate 4–6 testing requirements with frequency and method. Specify the review interval (6, 12, or 24 months based on risk level). Write a residual risk communication statement describing what residual risks remain after mitigations and how they will be communicated to deployers/users.`,
+Identify 4–5 specific risks with probability/severity/residual risk ratings. Generate 3–4 change triggers with urgency ratings. Generate 3–4 testing requirements with frequency and method. Specify the review interval (6, 12, or 24 months based on risk level). Write a concise residual risk communication statement (3–4 sentences) describing what residual risks remain and how they will be communicated to deployers/users.`,
       }],
     })
 
