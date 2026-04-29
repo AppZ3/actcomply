@@ -150,7 +150,7 @@ Sections required: General Description, Intended Purpose and Deployment Context,
         { onConflict: 'user_id,assessment_id' }
       )
 
-    if (upsertError) throw new Error(`DB save failed: ${upsertError.message}`)
+    if (upsertError) return NextResponse.json({ error: 'db_error', message: `DB save failed: ${upsertError.message}` }, { status: 500 })
 
     return NextResponse.json(doc)
   } catch (err) {

@@ -185,7 +185,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
             </p>
           </div>
           {generating && (
-            <p className="text-xs text-gray-500 w-full mb-2">This takes ~30 seconds — please keep this tab open.</p>
+            <p className="text-xs text-gray-500 w-full mb-2">This takes ~2 minutes — please keep this tab open.</p>
           )}
           <button
             onClick={generate}
