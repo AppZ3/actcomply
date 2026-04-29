@@ -86,14 +86,37 @@ export async function POST(
 
   if (!assessment) return NextResponse.json({ error: 'Assessment not found' }, { status: 404 })
 
+  // Fetch existing doc to preserve version history
+  const admin = getSupabaseAdmin()
+  const { data: existing } = await admin
+    .from('technical_docs')
+    .select('content')
+    .eq('assessment_id', assessmentId)
+    .eq('user_id', user.id)
+    .single()
+
+  const existingContent = existing?.content as Record<string, unknown> | null
+  const previousVersions: unknown[] = Array.isArray(existingContent?.previous_versions)
+    ? existingContent.previous_versions as unknown[]
+    : []
+  const nextVersion = typeof existingContent?.version === 'number' ? existingContent.version + 1 : 1
+
+  // Archive current doc into version history (keep last 10)
+  if (existingContent) {
+    const archived = { ...existingContent }
+    delete archived.previous_versions
+    previousVersions.push(archived)
+    if (previousVersions.length > 10) previousVersions.shift()
+  }
+
   try {
     const msg = await ai.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 4096,
+      model: 'claude-sonnet-4-6',
+      max_tokens: 8192,
       tools: [DOC_TOOL],
       tool_choice: { type: 'tool', name: 'generate_documentation' },
       system: `You are an EU AI Act compliance expert generating Article 11 + Annex IV technical documentation.
-Write 10 sections. Each section content: 2-3 concise paragraphs, specific to the system, audit-ready, citing real EU AI Act article numbers. No placeholder text.
+Write 10 sections. Each section content: 2-3 substantive paragraphs, specific to the system, audit-ready, citing real EU AI Act article numbers. No placeholder text. Be precise and thorough — this documentation may be reviewed by regulators or legal counsel.
 Sections required: General Description, Intended Purpose and Deployment Context, Development and Training Methodology, Training Data and Data Governance, Performance Metrics and Validation Testing, Risk Management System, Human Oversight Measures, Transparency and Instructions for Use, Cybersecurity and Robustness, Post-Market Monitoring Plan.`,
       messages: [{
         role: 'user',
@@ -115,9 +138,11 @@ Sections required: General Description, Intended Purpose and Deployment Context,
 
     const toolBlock = msg.content.find(b => b.type === 'tool_use') as Anthropic.ToolUseBlock | undefined
     if (!toolBlock) throw new Error('No tool response from Claude')
-    const doc = toolBlock.input
+    const doc = toolBlock.input as Record<string, unknown>
 
-    const admin = getSupabaseAdmin()
+    doc.version = nextVersion
+    doc.previous_versions = previousVersions
+
     await admin
       .from('technical_docs')
       .upsert(

@@ -7,6 +7,9 @@ import { ComplianceChecklist } from './checklist'
 import { TechnicalDocumentation } from './docs'
 import { DeleteSystemButton } from './delete-button'
 import { AuditTrail } from './audit-trail'
+import { LoggingSpec } from './logging'
+import { GdprAssessment } from './gdpr'
+import { RiskManagementPlan } from './risk-management'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -72,6 +75,14 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           >
             Re-assess
           </Link>
+          <Link
+            href={`/dashboard/systems/${id}/conformity`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-white bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition font-medium"
+          >
+            Conformity Pack →
+          </Link>
           <DeleteSystemButton assessmentId={id} />
         </div>
       </div>
@@ -132,6 +143,30 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
       {/* Audit trail */}
       <div className="mt-6">
         <AuditTrail assessmentId={id} enabled={planFeatures.auditTrailEnabled} />
+      </div>
+
+      {/* Logging spec */}
+      <div className="mt-6">
+        <LoggingSpec
+          assessmentId={id}
+          isPaid={planFeatures.techDocsEnabled}
+        />
+      </div>
+
+      {/* GDPR DPIA + FRIA */}
+      <div className="mt-6">
+        <GdprAssessment
+          assessmentId={id}
+          isPaid={planFeatures.techDocsEnabled}
+        />
+      </div>
+
+      {/* Article 9 risk management */}
+      <div className="mt-6">
+        <RiskManagementPlan
+          assessmentId={id}
+          isPaid={planFeatures.techDocsEnabled}
+        />
       </div>
 
       {/* Technical documentation */}

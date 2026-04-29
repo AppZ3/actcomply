@@ -31,6 +31,7 @@ function LoginForm() {
       setError(error.message)
       setLoading(false)
     } else {
+      setLoading(false)
       setSubmitted(true)
     }
   }

@@ -60,6 +60,10 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
       <PrintTrigger />
       <style>{`
         @page { margin: 20mm 18mm; }
+        @media print {
+          aside, header, nav { display: none !important; }
+          main { margin: 0 !important; padding: 0 !important; }
+        }
         p, li { orphans: 3; widows: 3; }
       `}</style>
       <div className="max-w-3xl mx-auto px-10 py-12 bg-white text-gray-900 min-h-screen print:p-0">

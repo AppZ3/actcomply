@@ -94,6 +94,8 @@ interface TechnicalDoc {
   risk_level: string
   regulatory_basis: string
   sections: DocSection[]
+  version?: number
+  previous_versions?: TechnicalDoc[]
 }
 
 interface Props {
@@ -108,6 +110,8 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
   const [generating, setGenerating] = useState(false)
   const [genError, setGenError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string | null>('s1')
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [viewingVersion, setViewingVersion] = useState<TechnicalDoc | null>(null)
 
   useEffect(() => {
     fetch(`/api/docs/${assessmentId}`)
@@ -120,7 +124,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
     setGenerating(true)
     setGenError(null)
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 120_000)
+    const timeout = setTimeout(() => controller.abort(), 180_000)
     try {
       const res = await fetch(`/api/docs/${assessmentId}`, { method: 'POST', signal: controller.signal })
       const data = await res.json()
@@ -129,10 +133,12 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
       } else {
         setDoc(data)
         setExpanded('s1')
+        setViewingVersion(null)
+        setHistoryOpen(false)
       }
     } catch (e) {
       setGenError(e instanceof Error && e.name === 'AbortError'
-        ? 'Timed out after 2 minutes — please try again.'
+        ? 'Timed out — please try again.'
         : 'Something went wrong — please try again.')
     } finally {
       clearTimeout(timeout)
@@ -207,40 +213,91 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
     )
   }
 
+  const activeDoc = viewingVersion ?? doc
+
   return (
     <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
       <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
         <div>
-          <h2 className="font-semibold">Article 11 Technical Documentation</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold">Article 11 Technical Documentation</h2>
+            {doc.version != null && (
+              <span className="text-xs font-mono bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full">
+                v{viewingVersion?.version ?? doc.version}
+              </span>
+            )}
+            {viewingVersion && (
+              <span className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded-full">
+                viewing history
+              </span>
+            )}
+          </div>
           <p className="text-xs text-gray-500 mt-0.5">
-            Generated {new Date(doc.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-            {' · '}Annex IV compliant · {doc.sections.length} sections
+            {viewingVersion ? 'Historical version · ' : 'Generated '}
+            {new Date(activeDoc.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            {' · '}Annex IV compliant · {activeDoc.sections.length} sections
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <a
-            href={`/dashboard/systems/${assessmentId}/print`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-white bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 font-medium"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            Download PDF
-          </a>
-          <button
-            onClick={generate}
-            disabled={generating}
-            className="text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
-          >
-            {generating ? 'Regenerating...' : 'Regenerate'}
-          </button>
+          {doc.previous_versions && doc.previous_versions.length > 0 && (
+            <button
+              onClick={() => setHistoryOpen(h => { if (h) setViewingVersion(null); return !h })}
+              className="text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-lg transition"
+            >
+              History ({doc.previous_versions.length})
+            </button>
+          )}
+          {!viewingVersion && (
+            <a
+              href={`/dashboard/systems/${assessmentId}/print`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-white bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 font-medium"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download PDF
+            </a>
+          )}
+          {viewingVersion ? (
+            <button
+              onClick={() => setViewingVersion(null)}
+              className="text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-lg transition"
+            >
+              Back to current
+            </button>
+          ) : (
+            <button
+              onClick={generate}
+              disabled={generating}
+              className="text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/20 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
+            >
+              {generating ? 'Regenerating...' : 'Regenerate'}
+            </button>
+          )}
         </div>
       </div>
 
+      {historyOpen && doc.previous_versions && doc.previous_versions.length > 0 && (
+        <div className="border-b border-white/10 px-6 py-3 bg-white/5">
+          <p className="text-xs text-gray-500 mb-2">Version history</p>
+          <div className="flex flex-wrap gap-2">
+            {[...doc.previous_versions].reverse().map((v, i) => (
+              <button
+                key={i}
+                onClick={() => { setViewingVersion(v); setHistoryOpen(false) }}
+                className="text-xs border border-white/10 hover:border-white/30 px-3 py-1.5 rounded-lg transition text-gray-400 hover:text-white"
+              >
+                v{v.version ?? (doc.previous_versions!.length - i)} — {new Date(v.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="divide-y divide-white/5">
-        {doc.sections.map(section => (
+        {activeDoc.sections.map(section => (
           <div key={section.id}>
             <button
               onClick={() => setExpanded(expanded === section.id ? null : section.id)}
