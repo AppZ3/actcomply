@@ -135,20 +135,25 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
   if (!plan) {
     return (
       <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-        <h2 className="font-semibold mb-1">Article 9 — Risk Management Plan</h2>
+        <div className="flex items-start justify-between gap-4 mb-1">
+          <h2 className="font-semibold">Article 9 — Risk Management Plan</h2>
+          <button
+            onClick={() => generate(false)}
+            disabled={generating}
+            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg transition flex-shrink-0"
+          >
+            {generating ? 'Generating…' : 'Generate Risk Management Plan'}
+          </button>
+        </div>
         <p className="text-sm text-gray-400 mb-4">
           Generate a lifecycle risk register, change triggers, and testing requirements under EU AI Act Article 9.
         </p>
         {error && error !== 'upgrade' && (
           <p className="text-sm text-red-400 mb-3">{error}</p>
         )}
-        <button
-          onClick={() => generate(false)}
-          disabled={generating}
-          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
-        >
-          {generating ? 'Generating…' : 'Generate Risk Management Plan'}
-        </button>
+        {generating && (
+          <p className="text-xs text-gray-500">This takes ~2 minutes — please keep this tab open.</p>
+        )}
       </div>
     )
   }
