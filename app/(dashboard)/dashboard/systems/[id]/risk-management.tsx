@@ -278,6 +278,8 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
         </div>
       </div>
 
+      {generating && <div className="px-6 pb-2"><GeneratingProgress /></div>}
+
       {/* Rationale */}
       <p className="text-sm text-gray-300 mb-5">{plan.overall_rationale}</p>
 

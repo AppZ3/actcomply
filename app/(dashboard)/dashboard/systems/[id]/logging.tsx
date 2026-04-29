@@ -229,6 +229,8 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
         </button>
       </div>
 
+      {generating && <div className="px-6 pb-2"><GeneratingProgress /></div>}
+
       {/* Retention rationale banner */}
       <div className="px-6 py-3 bg-orange-500/5 border-b border-orange-500/10 text-xs text-orange-300/80">
         <span className="font-semibold text-orange-400">Article 19 determination: </span>

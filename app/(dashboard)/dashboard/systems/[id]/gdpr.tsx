@@ -265,6 +265,8 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
         </button>
       </div>
 
+      {generating && <div className="px-6 pb-2"><GeneratingProgress /></div>}
+
       {/* Consultation warning */}
       {assessment.consultation_required && (
         <div className="px-6 py-3 bg-yellow-500/5 border-b border-yellow-500/10 text-xs text-yellow-300/80">
