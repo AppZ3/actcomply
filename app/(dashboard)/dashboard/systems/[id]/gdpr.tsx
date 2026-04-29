@@ -115,10 +115,10 @@ const LEVEL_STYLES: Record<string, string> = {
 }
 
 function LevelBadge({ level }: { level: string }) {
-  const normalized = level.toLowerCase()
+  const word = level.toLowerCase().split(/[\s—\-]/)[0]
   return (
-    <span className={`text-xs font-medium px-2 py-0.5 rounded border capitalize ${LEVEL_STYLES[normalized] ?? LEVEL_STYLES.low}`}>
-      {normalized}
+    <span className={`text-xs font-medium px-2 py-0.5 rounded border capitalize ${LEVEL_STYLES[word] ?? LEVEL_STYLES.low}`}>
+      {word}
     </span>
   )
 }
@@ -356,6 +356,8 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
                   </button>
                   {expandedRisk === risk.id && (
                     <div className="px-6 pb-4 space-y-2">
+                      {risk.likelihood.length > 10 && <p className="text-xs text-gray-400">Likelihood: <span className="text-gray-300">{risk.likelihood}</span></p>}
+                      {risk.severity.length > 10 && <p className="text-xs text-gray-400">Severity: <span className="text-gray-300">{risk.severity}</span></p>}
                       <p className="text-xs text-gray-400">Mitigation: <span className="text-gray-300">{risk.mitigation}</span></p>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-400">Residual risk:</span>
