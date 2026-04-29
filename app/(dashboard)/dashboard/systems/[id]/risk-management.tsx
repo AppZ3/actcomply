@@ -1,6 +1,63 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+
+const RISK_STEPS = [
+  'Identifying foreseeable risks',
+  'Assessing probability and severity',
+  'Mapping risk mitigation measures',
+  'Defining change triggers',
+  'Writing testing requirements',
+  'Computing review schedule',
+]
+
+function GeneratingProgress() {
+  const [elapsed, setElapsed] = useState(0)
+  const [activeStep, setActiveStep] = useState(0)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    intervalRef.current = setInterval(() => setElapsed(s => s + 1), 1000)
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [])
+
+  const allDone = elapsed >= RISK_STEPS.length * 10
+
+  useEffect(() => {
+    setActiveStep(Math.min(Math.floor(elapsed / 10), RISK_STEPS.length - 1))
+  }, [elapsed])
+
+  return (
+    <div className="mt-5 space-y-3">
+      <div className="flex items-center justify-between text-xs text-gray-500">
+        <span>{allDone ? 'Finalising and saving…' : 'Claude is generating your risk management plan…'}</span>
+        <span className="font-mono tabular-nums">{elapsed}s</span>
+      </div>
+      <div className="space-y-1.5">
+        {RISK_STEPS.map((name, i) => {
+          const done = allDone || i < activeStep
+          const active = !allDone && i === activeStep
+          return (
+            <div key={i} className="flex items-center gap-2.5">
+              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-500 ${done ? 'bg-green-500' : active ? 'bg-blue-500' : 'bg-white/10'}`}>
+                {done && <svg className="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                {active && <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />}
+              </div>
+              <span className={`text-xs transition-colors duration-300 ${done ? 'text-green-400' : active ? 'text-white' : 'text-gray-600'}`}>{name}</span>
+            </div>
+          )
+        })}
+      </div>
+      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual — still working, don't close this tab.</p>}
+      {allDone && (
+        <p className="text-xs text-blue-400/80 pt-1 flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin inline-block" />
+          All sections written — saving to your account…
+        </p>
+      )}
+    </div>
+  )
+}
 
 interface RiskItem {
   id: string
@@ -151,9 +208,7 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
         {error && error !== 'upgrade' && (
           <p className="text-sm text-red-400 mb-3">{error}</p>
         )}
-        {generating && (
-          <p className="text-xs text-gray-500">This takes ~2 minutes — please keep this tab open.</p>
-        )}
+        {generating && <GeneratingProgress />}
       </div>
     )
   }
