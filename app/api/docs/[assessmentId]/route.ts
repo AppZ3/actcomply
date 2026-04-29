@@ -56,7 +56,7 @@ export async function GET(
     .eq('user_id', user.id)
     .single()
 
-  return NextResponse.json(data ?? null)
+  return NextResponse.json(data ? { ...data, content: data.sections } : null)
 }
 
 export async function POST(
@@ -146,7 +146,7 @@ Sections required: General Description, Intended Purpose and Deployment Context,
     const { error: upsertError } = await admin
       .from('technical_docs')
       .upsert(
-        { user_id: user.id, assessment_id: assessmentId, content: doc, generated_at: new Date().toISOString() },
+        { user_id: user.id, assessment_id: assessmentId, sections: doc, generated_at: new Date().toISOString() },
         { onConflict: 'user_id,assessment_id' }
       )
 
