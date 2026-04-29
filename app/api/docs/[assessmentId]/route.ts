@@ -143,12 +143,14 @@ Sections required: General Description, Intended Purpose and Deployment Context,
     doc.version = nextVersion
     doc.previous_versions = previousVersions
 
-    await admin
+    const { error: upsertError } = await admin
       .from('technical_docs')
       .upsert(
         { user_id: user.id, assessment_id: assessmentId, content: doc, generated_at: new Date().toISOString() },
         { onConflict: 'user_id,assessment_id' }
       )
+
+    if (upsertError) throw new Error(`DB save failed: ${upsertError.message}`)
 
     return NextResponse.json(doc)
   } catch (err) {
