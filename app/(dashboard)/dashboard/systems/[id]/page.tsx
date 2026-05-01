@@ -12,6 +12,7 @@ import { GdprAssessment } from './gdpr'
 import { RiskManagementPlan } from './risk-management'
 import { EUDatabaseGuidance } from './eu-database'
 import { Article22Guidance } from './article22-guidance'
+import { ShareConformityButton } from './share-button'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -85,6 +86,7 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           >
             Export JSON
           </a>
+          <ShareConformityButton assessmentId={id} />
           <Link
             href={`/dashboard/systems/${id}/conformity`}
             target="_blank"
