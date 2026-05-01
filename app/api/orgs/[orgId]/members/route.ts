@@ -20,15 +20,36 @@ export async function POST(
       return NextResponse.json({ error: 'role must be admin, member, or viewer' }, { status: 400 })
     }
 
-    // Verify requester owns or admins this org
-    const { data: org } = await supabase.from('organizations').select('id').eq('id', orgId).single()
-    if (!org) return NextResponse.json({ error: 'Organisation not found' }, { status: 404 })
-
     const admin = getSupabaseAdmin()
 
-    // Check if invitee has an account
-    const { data: existingUser } = await admin.auth.admin.listUsers()
-    const invitee = existingUser?.users.find(u => u.email === email.trim().toLowerCase())
+    // Verify requester owns or admins this org (use admin client to bypass RLS)
+    const { data: org } = await admin
+      .from('organizations')
+      .select('id, owner_id')
+      .eq('id', orgId)
+      .single()
+    if (!org) return NextResponse.json({ error: 'Organisation not found' }, { status: 404 })
+
+    const isOwner = org.owner_id === user.id
+    if (!isOwner) {
+      const { data: adminRow } = await admin
+        .from('org_members')
+        .select('id')
+        .eq('org_id', orgId)
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .eq('status', 'active')
+        .single()
+      if (!adminRow) return NextResponse.json({ error: 'Permission denied' }, { status: 403 })
+    }
+
+    // Check if invitee already has an account by looking up profiles
+    const { data: inviteeProfile } = await admin
+      .from('profiles')
+      .select('id')
+      .ilike('email', email.trim())
+      .single()
+    const inviteeUserId = inviteeProfile?.id ?? null
 
     const { data, error } = await admin
       .from('org_members')
@@ -36,9 +57,9 @@ export async function POST(
         org_id: orgId,
         email: email.trim().toLowerCase(),
         role,
-        user_id: invitee?.id ?? null,
-        status: invitee ? 'active' : 'pending',
-        accepted_at: invitee ? new Date().toISOString() : null,
+        user_id: inviteeUserId,
+        status: inviteeUserId ? 'active' : 'pending',
+        accepted_at: inviteeUserId ? new Date().toISOString() : null,
       })
       .select()
       .single()
