@@ -235,7 +235,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
           <p className="text-xs text-gray-500 mt-0.5">
             {viewingVersion ? 'Historical version · ' : 'Generated '}
             {new Date(activeDoc.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-            {' · '}Annex IV compliant · {activeDoc.sections.length} sections
+            {' · '}Annex IV compliant · {activeDoc.sections?.length ?? 0} sections
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -297,7 +297,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
       )}
 
       <div className="divide-y divide-white/5">
-        {activeDoc.sections.map(section => (
+        {(activeDoc.sections ?? []).map(section => (
           <div key={section.id}>
             <button
               onClick={() => setExpanded(expanded === section.id ? null : section.id)}

@@ -90,12 +90,12 @@ export async function POST(
   const admin = getSupabaseAdmin()
   const { data: existing } = await admin
     .from('technical_docs')
-    .select('content')
+    .select('sections')
     .eq('assessment_id', assessmentId)
     .eq('user_id', user.id)
     .single()
 
-  const existingContent = existing?.content as Record<string, unknown> | null
+  const existingContent = existing?.sections as Record<string, unknown> | null
   const previousVersions: unknown[] = Array.isArray(existingContent?.previous_versions)
     ? existingContent.previous_versions as unknown[]
     : []
