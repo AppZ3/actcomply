@@ -53,7 +53,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
   const admin = getSupabaseAdmin()
 
   const [{ data: docRow }, { data: progressRows }, { data: profile }, { data: loggingRow }, { data: gdprRow }, { data: riskRow }] = await Promise.all([
-    admin.from('technical_docs').select('content').eq('assessment_id', id).eq('user_id', user.id).single(),
+    admin.from('technical_docs').select('sections').eq('assessment_id', id).eq('user_id', user.id).single(),
     supabase.from('requirement_progress').select('requirement_id, status, notes').eq('user_id', user.id).eq('assessment_id', id),
     supabase.from('profiles').select('plan, email').eq('id', user.id).single(),
     admin.from('logging_specs').select('content').eq('assessment_id', id).eq('user_id', user.id).single(),
@@ -80,7 +80,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
     progressMap[row.requirement_id] = { status: row.status, notes: row.notes ?? '' }
   }
 
-  const doc = docRow?.content as {
+  const doc = docRow?.sections as {
     version?: number
     generated_at?: string
     sections?: { id: string; title: string; article_ref: string; content: string }[]
