@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
-import { resend } from '@/lib/resend'
+import { getResend } from '@/lib/resend'
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       MINIMAL_RISK: 'Good news — your AI system has <strong>minimal obligations</strong> under the EU AI Act. No mandatory requirements apply, though voluntary codes of conduct are encouraged.',
     }
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: 'ActComply <hello@getactcomply.com>',
       to: email,
       subject: `Your EU AI Act assessment result: ${label}${systemName ? ` — ${systemName}` : ''}`,

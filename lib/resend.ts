@@ -1,9 +1,15 @@
 import { Resend } from 'resend'
 
-export const resend = new Resend(process.env.RESEND_API_KEY!)
+// Lazy singleton — avoids "Missing API key" crash during Next.js build
+// when RESEND_API_KEY is not available in the build environment.
+let _resend: Resend | null = null
+export function getResend(): Resend {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY!)
+  return _resend
+}
 
 export async function sendWelcomeEmail({ to }: { to: string }) {
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'ActComply <hello@getactcomply.com>',
     to,
     subject: 'Welcome to ActComply',
@@ -62,7 +68,7 @@ export async function sendAlertDigestEmail({
     `
   }).join('')
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'ActComply Alerts <alerts@getactcomply.com>',
     to,
     subject: `${subjectPrefix} unread EU AI Act alerts — ActComply weekly digest`,
@@ -106,7 +112,7 @@ export async function sendAlertEmail({
 }) {
   const severityLabel = severity === 'critical' ? '🔴 Critical' : severity === 'warning' ? '🟡 Warning' : '🔵 Info'
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: 'ActComply Alerts <alerts@getactcomply.com>',
     to,
     subject: `[${severityLabel}] ${title}`,

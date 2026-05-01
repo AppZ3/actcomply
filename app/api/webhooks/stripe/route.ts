@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripe, PLANS } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { resend } from '@/lib/resend'
+import { getResend } from '@/lib/resend'
 import type Stripe from 'stripe'
 
 const PRICE_TO_PLAN: Record<string, { plan: string; limit: number }> = {
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
           } else {
             const magicLink = linkData?.properties?.action_link
             if (magicLink) {
-              await resend.emails.send({
+              await getResend().emails.send({
                 from: 'ActComply <hello@getactcomply.com>',
                 to: email,
                 subject: 'Your ActComply subscription is active — sign in here',
