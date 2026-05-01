@@ -372,12 +372,12 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
         <div className="space-y-3">
           {plan.testing_requirements?.map((t, i) => (
             <div key={i} className="border border-white/10 rounded-lg p-4">
-              <div className="flex items-start justify-between gap-3 mb-2">
-                <p className="text-sm font-medium text-white">{t.test}</p>
-                <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded flex-shrink-0">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded shrink-0">
                   {t.frequency}
                 </span>
               </div>
+              <p className="text-sm font-medium text-white mb-1">{t.test}</p>
               <p className="text-xs text-gray-400 mb-1.5">{t.article_ref}</p>
               <p className="text-sm text-gray-300">{t.method}</p>
             </div>
