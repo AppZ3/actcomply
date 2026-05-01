@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
+import { PrintButton } from './print-button'
 
 const RISK_LABELS: Record<RiskLevel, string> = {
   PROHIBITED:   'PROHIBITED',
@@ -143,12 +144,7 @@ export default async function PublicConformityPage({ params }: { params: Promise
         <p className="text-xs text-blue-700">
           <span className="font-semibold">Shared conformity pack</span> — {assessment.name} · Read-only view
         </p>
-        <a
-          href="javascript:window.print()"
-          className="text-xs text-blue-600 hover:text-blue-800 border border-blue-300 px-3 py-1 rounded transition"
-        >
-          Print / Save PDF
-        </a>
+        <PrintButton />
       </div>
 
       <div className="max-w-3xl mx-auto px-10 py-12 bg-white text-gray-900 min-h-screen print:p-0 text-sm">

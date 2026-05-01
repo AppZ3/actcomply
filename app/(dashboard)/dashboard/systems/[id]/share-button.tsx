@@ -9,9 +9,29 @@ interface Props {
 export function ShareConformityButton({ assessmentId }: Props) {
   const [loading, setLoading] = useState(false)
   const [shareUrl, setShareUrl] = useState<string | null>(null)
+  const [hasChecked, setHasChecked] = useState(false)
   const [copied, setCopied] = useState(false)
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  async function openPanel() {
+    setOpen(true)
+    if (hasChecked) return
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/share/conformity?assessmentId=${assessmentId}`)
+      const data = await res.json()
+      if (data?.token) {
+        setShareUrl(`${window.location.origin}/share/conformity/${data.token}`)
+      }
+    } catch {
+      // If check fails, user can still generate a new link
+    } finally {
+      setLoading(false)
+      setHasChecked(true)
+    }
+  }
 
   async function generateLink() {
     setLoading(true)
@@ -24,8 +44,7 @@ export function ShareConformityButton({ assessmentId }: Props) {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Failed to create link')
-      const url = `${window.location.origin}/share/conformity/${data.token}`
-      setShareUrl(url)
+      setShareUrl(`${window.location.origin}/share/conformity/${data.token}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create link')
     } finally {
@@ -57,7 +76,7 @@ export function ShareConformityButton({ assessmentId }: Props) {
   return (
     <div className="relative">
       <button
-        onClick={() => { setOpen(o => !o); if (!open && !shareUrl) generateLink() }}
+        onClick={() => open ? setOpen(false) : openPanel()}
         className="text-sm text-gray-400 border border-white/10 hover:bg-white/5 px-4 py-2 rounded-lg transition"
       >
         Share Pack
@@ -70,11 +89,10 @@ export function ShareConformityButton({ assessmentId }: Props) {
             <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-white text-xs">✕</button>
           </div>
 
-          {loading && <p className="text-xs text-gray-400">Generating link...</p>}
+          {loading && <p className="text-xs text-gray-400">Loading...</p>}
+          {error && <p className="text-xs text-red-400 mb-2">{error}</p>}
 
-          {error && <p className="text-xs text-red-400">{error}</p>}
-
-          {shareUrl && !loading && (
+          {!loading && shareUrl && (
             <>
               <p className="text-xs text-gray-400 mb-2">
                 Anyone with this link can view the conformity pack — no login required.
@@ -101,13 +119,36 @@ export function ShareConformityButton({ assessmentId }: Props) {
                 >
                   Preview →
                 </a>
-                <button
-                  onClick={revokeLink}
-                  className="text-xs text-red-400 hover:text-red-300 transition"
-                >
-                  Revoke link
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={generateLink}
+                    className="text-xs text-gray-500 hover:text-gray-300 transition"
+                    title="Create a new link — this will invalidate the current one"
+                  >
+                    Regenerate
+                  </button>
+                  <button
+                    onClick={revokeLink}
+                    className="text-xs text-red-400 hover:text-red-300 transition"
+                  >
+                    Revoke
+                  </button>
+                </div>
               </div>
+            </>
+          )}
+
+          {!loading && !shareUrl && (
+            <>
+              <p className="text-xs text-gray-400 mb-3">
+                Generate a link to share this conformity pack with auditors, legal counsel, or regulators. No login required to view.
+              </p>
+              <button
+                onClick={generateLink}
+                className="w-full text-sm bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition"
+              >
+                Generate share link
+              </button>
             </>
           )}
         </div>

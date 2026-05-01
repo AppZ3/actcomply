@@ -1,9 +1,30 @@
-// POST /api/share/conformity — create a share token for an assessment's conformity pack
-// DELETE /api/share/conformity — revoke a share token
+// GET  /api/share/conformity?assessmentId=xxx — fetch existing share token (null if none)
+// POST /api/share/conformity — create/replace share token for an assessment
+// DELETE /api/share/conformity — revoke share token
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { randomBytes } from 'crypto'
+
+export async function GET(req: NextRequest) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const assessmentId = req.nextUrl.searchParams.get('assessmentId')
+  if (!assessmentId) return NextResponse.json({ error: 'assessmentId required' }, { status: 400 })
+
+  const admin = getSupabaseAdmin()
+  const { data } = await admin
+    .from('conformity_share_tokens')
+    .select('token, expires_at, created_at')
+    .eq('assessment_id', assessmentId)
+    .eq('user_id', user.id)
+    .single()
+
+  return NextResponse.json(data ?? null)
+}
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
@@ -14,7 +35,6 @@ export async function POST(req: NextRequest) {
     const { assessmentId, label, expiresInDays } = await req.json()
     if (!assessmentId) return NextResponse.json({ error: 'assessmentId required' }, { status: 400 })
 
-    // Confirm ownership
     const { data: assessment } = await supabase
       .from('assessments')
       .select('id')
@@ -26,13 +46,14 @@ export async function POST(req: NextRequest) {
 
     const admin = getSupabaseAdmin()
 
-    // Revoke any existing token for this assessment first (one active token per assessment)
+    // Revoke any existing token for this assessment
     await admin
       .from('conformity_share_tokens')
       .delete()
       .eq('assessment_id', assessmentId)
       .eq('user_id', user.id)
 
+    const token = randomBytes(24).toString('base64url')
     const expiresAt = expiresInDays
       ? new Date(Date.now() + expiresInDays * 86_400_000).toISOString()
       : null
@@ -42,6 +63,7 @@ export async function POST(req: NextRequest) {
       .insert({
         assessment_id: assessmentId,
         user_id: user.id,
+        token,
         label: label ?? null,
         expires_at: expiresAt,
       })
