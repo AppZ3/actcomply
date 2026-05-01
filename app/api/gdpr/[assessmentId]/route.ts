@@ -166,6 +166,29 @@ Assess whether a DPIA and FRIA are each required. Identify 2–3 processing acti
     result.generated_at = new Date().toISOString()
 
     const admin = getSupabaseAdmin()
+    const { data: existing } = await admin
+      .from('gdpr_assessments')
+      .select('content')
+      .eq('assessment_id', assessmentId)
+      .eq('user_id', user.id)
+      .single()
+
+    const existingContent = existing?.content as Record<string, unknown> | null
+    const previousVersions: unknown[] = Array.isArray(existingContent?.previous_versions)
+      ? existingContent.previous_versions as unknown[]
+      : []
+    const nextVersion = typeof existingContent?.version === 'number' ? existingContent.version + 1 : 1
+
+    if (existingContent) {
+      const archived = { ...existingContent }
+      delete archived.previous_versions
+      previousVersions.push(archived)
+      if (previousVersions.length > 10) previousVersions.shift()
+    }
+
+    result.version = nextVersion
+    result.previous_versions = previousVersions
+
     await admin
       .from('gdpr_assessments')
       .upsert(

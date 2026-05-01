@@ -138,6 +138,19 @@ export async function POST(
     ? '\n\nIMPORTANT: The operator has flagged a model change event. Re-evaluate all risks under Article 9(4) — in particular data drift, performance degradation, and any new failure modes introduced by the updated model. Update monitoring indicators and change triggers accordingly.'
     : ''
 
+  const existingContent = existing?.content as Record<string, unknown> | null
+  const previousVersions: unknown[] = Array.isArray(existingContent?.previous_versions)
+    ? existingContent.previous_versions as unknown[]
+    : []
+  const nextVersion = typeof existingContent?.version === 'number' ? existingContent.version + 1 : 1
+
+  if (existingContent) {
+    const archived = { ...existingContent }
+    delete archived.previous_versions
+    previousVersions.push(archived)
+    if (previousVersions.length > 10) previousVersions.shift()
+  }
+
   const existingContext = existing
     ? `\n\nPrevious risk plan summary (update it — do not simply repeat):\n- Overall level: ${(existing.content as Record<string,unknown>).overall_risk_level}\n- ${((existing.content as Record<string, unknown>).risk_items as unknown[])?.length ?? 0} risks identified\n- Review interval: ${(existing.content as Record<string,unknown>).review_interval_months} months`
     : ''
@@ -184,6 +197,8 @@ Identify 4–5 specific risks with probability/severity/residual risk ratings. G
     const result = toolBlock.input as Record<string, unknown>
     result.generated_at = new Date().toISOString()
     result.model_changed_trigger = modelChanged
+    result.version = nextVersion
+    result.previous_versions = previousVersions
 
     await admin
       .from('risk_management_plans')

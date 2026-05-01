@@ -46,6 +46,7 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
   })
   const [saving, setSaving] = useState<string | null>(null)
   const [saved, setSaved] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [expandedNotes, setExpandedNotes] = useState<string | null>(null)
 
   const doneCount = Object.values(progress).filter(p => p.status === 'done').length
@@ -57,33 +58,44 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
     const next = STATUS_CONFIG[current].next
     setProgress(prev => ({ ...prev, [reqId]: { ...prev[reqId], status: next } }))
     setSaving(reqId)
-    await fetch('/api/progress', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        assessmentId,
-        requirementId: reqId,
-        status: next,
-        notes: progress[reqId]?.notes ?? '',
-      }),
-    })
-    setSaving(null)
-    setSaved(reqId)
-    setTimeout(() => setSaved(s => s === reqId ? null : s), 1500)
+    setSaveError(null)
+    try {
+      await fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assessmentId,
+          requirementId: reqId,
+          status: next,
+          notes: progress[reqId]?.notes ?? '',
+        }),
+      })
+      setSaved(reqId)
+      setTimeout(() => setSaved(s => s === reqId ? null : s), 1500)
+    } catch {
+      setSaveError('Failed to save — please try again.')
+      setProgress(prev => ({ ...prev, [reqId]: { ...prev[reqId], status: current } }))
+    } finally {
+      setSaving(null)
+    }
   }
 
   async function saveNotes(reqId: string, notes: string) {
     setProgress(prev => ({ ...prev, [reqId]: { ...prev[reqId], notes } }))
-    await fetch('/api/progress', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        assessmentId,
-        requirementId: reqId,
-        status: progress[reqId]?.status ?? 'not_started',
-        notes,
-      }),
-    })
+    try {
+      await fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assessmentId,
+          requirementId: reqId,
+          status: progress[reqId]?.status ?? 'not_started',
+          notes,
+        }),
+      })
+    } catch {
+      setSaveError('Failed to save notes — please try again.')
+    }
   }
 
   return (
@@ -105,6 +117,9 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
         </div>
         <span className="text-sm font-semibold text-green-400 w-10 text-right">{pct}%</span>
       </div>
+      {saveError && (
+        <p className="text-xs text-red-400 mt-1">{saveError}</p>
+      )}
 
       <div className="flex gap-4 text-xs text-gray-500 mb-6">
         <span className="text-green-400">{doneCount} done</span>

@@ -34,20 +34,24 @@ export async function POST(req: Request) {
     userId = user.id
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
-    payment_method_types: ['card'],
-    line_items: [{ price: priceId, quantity: 1 }],
-    customer: customerId,
-    customer_email: customerEmail,
-    billing_address_collection: 'required',
-    automatic_tax: { enabled: true },
-    metadata: { plan, ...(userId ? { user_id: userId } : {}) },
-    success_url: user
-      ? `${baseUrl}/dashboard/billing?upgraded=1`
-      : `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: user ? `${baseUrl}/dashboard/billing` : `${baseUrl}/cancel`,
-  })
-
-  return NextResponse.json({ url: session.url })
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [{ price: priceId, quantity: 1 }],
+      customer: customerId,
+      customer_email: customerEmail,
+      billing_address_collection: 'required',
+      automatic_tax: { enabled: true },
+      metadata: { plan, ...(userId ? { user_id: userId } : {}) },
+      success_url: user
+        ? `${baseUrl}/dashboard/billing?upgraded=1`
+        : `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: user ? `${baseUrl}/dashboard/billing` : `${baseUrl}/cancel`,
+    })
+    return NextResponse.json({ url: session.url })
+  } catch (err) {
+    console.error('Stripe checkout error:', err)
+    return NextResponse.json({ error: 'Failed to create checkout session. Please try again.' }, { status: 500 })
+  }
 }

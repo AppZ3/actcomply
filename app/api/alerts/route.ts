@@ -59,31 +59,34 @@ export async function POST(req: Request) {
 
   const admin = getSupabaseAdmin()
 
-  // Insert alert
-  const { data: alert, error } = await admin
-    .from('regulatory_alerts')
-    .insert({ title, summary, article_refs, severity, published_at: new Date().toISOString() })
-    .select()
-    .single()
+  try {
+    const { data: alert, error } = await admin
+      .from('regulatory_alerts')
+      .insert({ title, summary, article_refs, severity, published_at: new Date().toISOString() })
+      .select()
+      .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Email all active paid users
-  const { data: profiles } = await admin
-    .from('profiles')
-    .select('email')
-    .eq('subscription_status', 'active')
-    .neq('plan', 'free')
+    const { data: profiles } = await admin
+      .from('profiles')
+      .select('email')
+      .eq('subscription_status', 'active')
+      .neq('plan', 'free')
 
-  const { sendAlertEmail } = await import('@/lib/resend')
-  const results = await Promise.allSettled(
-    (profiles ?? []).map(p =>
-      sendAlertEmail({ to: p.email, title, summary, articleRefs: article_refs, severity })
+    const { sendAlertEmail } = await import('@/lib/resend')
+    const results = await Promise.allSettled(
+      (profiles ?? []).map(p =>
+        sendAlertEmail({ to: p.email, title, summary, articleRefs: article_refs, severity })
+      )
     )
-  )
 
-  const sent = results.filter(r => r.status === 'fulfilled').length
-  return NextResponse.json({ alert, emailsSent: sent })
+    const sent = results.filter(r => r.status === 'fulfilled').length
+    return NextResponse.json({ alert, emailsSent: sent })
+  } catch (err) {
+    console.error('Alert creation error:', err instanceof Error ? err.stack : String(err))
+    return NextResponse.json({ error: 'Failed to create alert.' }, { status: 500 })
+  }
 }
 
 export async function GET() {

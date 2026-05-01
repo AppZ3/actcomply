@@ -6,13 +6,21 @@ import { useRouter } from 'next/navigation'
 export function DeleteSystemButton({ assessmentId }: { assessmentId: string }) {
   const [confirming, setConfirming] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   async function handleDelete() {
     setLoading(true)
-    await fetch(`/api/assessments/${assessmentId}`, { method: 'DELETE' })
-    router.push('/dashboard/systems')
-    router.refresh()
+    setError(null)
+    try {
+      const res = await fetch(`/api/assessments/${assessmentId}`, { method: 'DELETE' })
+      if (!res.ok) { setError('Delete failed. Please try again.'); setLoading(false); return }
+      router.push('/dashboard/systems')
+      router.refresh()
+    } catch {
+      setError('Delete failed. Please try again.')
+      setLoading(false)
+    }
   }
 
   if (confirming) {
@@ -32,6 +40,7 @@ export function DeleteSystemButton({ assessmentId }: { assessmentId: string }) {
         >
           Cancel
         </button>
+        {error && <span className="text-xs text-red-400">{error}</span>}
       </div>
     )
   }

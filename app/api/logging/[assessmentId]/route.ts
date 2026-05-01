@@ -151,6 +151,29 @@ Determine the correct Article 19 retention period based on the sector and purpos
     spec.generated_at = new Date().toISOString()
 
     const admin = getSupabaseAdmin()
+    const { data: existing } = await admin
+      .from('logging_specs')
+      .select('content')
+      .eq('assessment_id', assessmentId)
+      .eq('user_id', user.id)
+      .single()
+
+    const existingContent = existing?.content as Record<string, unknown> | null
+    const previousVersions: unknown[] = Array.isArray(existingContent?.previous_versions)
+      ? existingContent.previous_versions as unknown[]
+      : []
+    const nextVersion = typeof existingContent?.version === 'number' ? existingContent.version + 1 : 1
+
+    if (existingContent) {
+      const archived = { ...existingContent }
+      delete archived.previous_versions
+      previousVersions.push(archived)
+      if (previousVersions.length > 10) previousVersions.shift()
+    }
+
+    spec.version = nextVersion
+    spec.previous_versions = previousVersions
+
     await admin
       .from('logging_specs')
       .upsert(

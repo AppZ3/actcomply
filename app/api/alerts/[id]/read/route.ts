@@ -13,10 +13,15 @@ export async function POST(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const admin = getSupabaseAdmin()
-  await admin
-    .from('alert_reads')
-    .upsert({ user_id: user.id, alert_id: id }, { onConflict: 'user_id,alert_id' })
+  try {
+    const admin = getSupabaseAdmin()
+    await admin
+      .from('alert_reads')
+      .upsert({ user_id: user.id, alert_id: id }, { onConflict: 'user_id,alert_id' })
 
-  return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('Alert read error:', err instanceof Error ? err.stack : String(err))
+    return NextResponse.json({ error: 'Failed to mark alert as read.' }, { status: 500 })
+  }
 }

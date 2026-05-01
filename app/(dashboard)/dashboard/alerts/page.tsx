@@ -24,27 +24,33 @@ export default function AlertsPage() {
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [loading, setLoading] = useState(true)
   const [upgradeRequired, setUpgradeRequired] = useState(false)
+  const [genError, setGenError] = useState<string | null>(null)
 
   async function load() {
-    const res = await fetch('/api/alerts')
-    if (res.status === 403) { setUpgradeRequired(true); setLoading(false); return }
-    const data = await res.json()
-    setAlerts(data)
-    setLoading(false)
+    try {
+      const res = await fetch('/api/alerts')
+      if (res.status === 403) { setUpgradeRequired(true); setLoading(false); return }
+      const data = await res.json()
+      setAlerts(data)
+    } catch {
+      setGenError('Failed to load alerts. Please refresh.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
 
   async function markRead(id: string) {
     setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a))
-    await fetch(`/api/alerts/${id}/read`, { method: 'POST' })
+    await fetch(`/api/alerts/${id}/read`, { method: 'POST' }).catch(() => {})
     router.refresh()
   }
 
   async function markAllRead() {
     const unread = alerts.filter(a => !a.read)
     setAlerts(prev => prev.map(a => ({ ...a, read: true })))
-    await Promise.all(unread.map(a => fetch(`/api/alerts/${a.id}/read`, { method: 'POST' })))
+    await Promise.all(unread.map(a => fetch(`/api/alerts/${a.id}/read`, { method: 'POST' }).catch(() => {})))
     router.refresh()
   }
 
@@ -71,6 +77,8 @@ export default function AlertsPage() {
 
       {loading ? (
         <div className="text-gray-500 text-sm">Loading...</div>
+      ) : genError ? (
+        <div className="text-red-400 text-sm">{genError}</div>
       ) : upgradeRequired ? (
         <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
           <div className="text-3xl mb-3">🔔</div>

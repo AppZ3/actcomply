@@ -25,6 +25,7 @@ export function AuditTrail({ assessmentId, enabled = true }: { assessmentId: str
     fetch(`/api/audit?assessmentId=${assessmentId}`)
       .then(r => r.json())
       .then(d => { setEntries(d ?? []); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [open, assessmentId, enabled])
 
   if (!enabled) {

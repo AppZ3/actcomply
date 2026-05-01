@@ -27,31 +27,35 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { assessmentId, requirementId, status, notes } = await req.json()
+  try {
+    const { assessmentId, requirementId, status, notes } = await req.json()
 
-  const { error } = await supabase
-    .from('requirement_progress')
-    .upsert(
-      {
-        user_id: user.id,
-        assessment_id: assessmentId,
-        requirement_id: requirementId,
-        status,
-        notes: notes ?? null,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id,assessment_id,requirement_id' }
-    )
+    const { error } = await supabase
+      .from('requirement_progress')
+      .upsert(
+        {
+          user_id: user.id,
+          assessment_id: assessmentId,
+          requirement_id: requirementId,
+          status,
+          notes: notes ?? null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id,assessment_id,requirement_id' }
+      )
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Write audit log entry
-  await supabase.from('audit_log').insert({
-    user_id: user.id,
-    assessment_id: assessmentId,
-    action: 'requirement_status_change',
-    detail: { requirement_id: requirementId, status, notes: notes ?? null },
-  }).then(() => {}) // fire and forget
+    await supabase.from('audit_log').insert({
+      user_id: user.id,
+      assessment_id: assessmentId,
+      action: 'requirement_status_change',
+      detail: { requirement_id: requirementId, status, notes: notes ?? null },
+    }).then(() => {})
 
-  return NextResponse.json({ ok: true })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('Progress update error:', err instanceof Error ? err.stack : String(err))
+    return NextResponse.json({ error: 'Failed to save progress. Please try again.' }, { status: 500 })
+  }
 }

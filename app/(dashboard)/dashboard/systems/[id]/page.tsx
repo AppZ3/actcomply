@@ -10,6 +10,8 @@ import { AuditTrail } from './audit-trail'
 import { LoggingSpec } from './logging'
 import { GdprAssessment } from './gdpr'
 import { RiskManagementPlan } from './risk-management'
+import { EUDatabaseGuidance } from './eu-database'
+import { Article22Guidance } from './article22-guidance'
 
 const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string }> = {
   PROHIBITED:   { label: 'PROHIBITED',    color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20' },
@@ -75,6 +77,14 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           >
             Re-assess
           </Link>
+          <a
+            href={`/api/export/${id}`}
+            download
+            className="text-sm text-gray-400 border border-white/10 hover:bg-white/5 px-4 py-2 rounded-lg transition"
+            title="Download all compliance records as JSON"
+          >
+            Export JSON
+          </a>
           <Link
             href={`/dashboard/systems/${id}/conformity`}
             target="_blank"
@@ -176,6 +186,16 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
           systemName={assessment.name}
           isPaid={planFeatures.techDocsEnabled}
         />
+      </div>
+
+      {/* EU Database Registration guidance */}
+      <div className="mt-6">
+        <EUDatabaseGuidance riskLevel={assessment.risk_level} />
+      </div>
+
+      {/* Article 22 Authorised Representative guidance */}
+      <div className="mt-6">
+        <Article22Guidance riskLevel={assessment.risk_level} />
       </div>
     </div>
   )

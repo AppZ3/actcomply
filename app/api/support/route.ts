@@ -14,19 +14,20 @@ export async function POST(req: NextRequest) {
 
   const body = `Name: ${name || 'Unknown'}\nEmail: ${email}\n\n${message}`
 
-  const res = await fetch(`${OUTREACH_URL}/api/support`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      source_email: email,
-      subject: subject || 'Support request',
-      body,
-    }),
-  })
-
-  if (!res.ok) {
-    return NextResponse.json({ error: 'Failed to submit request' }, { status: 500 })
+  try {
+    const res = await fetch(`${OUTREACH_URL}/api/support`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source_email: email,
+        subject: subject || 'Support request',
+        body,
+      }),
+    })
+    if (!res.ok) return NextResponse.json({ error: 'Failed to submit request' }, { status: 500 })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('Support route error:', err)
+    return NextResponse.json({ error: 'Failed to submit request. Please email support directly.' }, { status: 500 })
   }
-
-  return NextResponse.json({ ok: true })
 }

@@ -9,18 +9,21 @@ export async function DELETE() {
 
   const admin = getSupabaseAdmin()
 
-  // Delete all user data then the auth user
-  await Promise.all([
-    admin.from('assessments').delete().eq('user_id', user.id),
-    admin.from('requirement_progress').delete().eq('user_id', user.id),
-    admin.from('technical_docs').delete().eq('user_id', user.id),
-    admin.from('audit_log').delete().eq('user_id', user.id),
-    admin.from('alert_reads').delete().eq('user_id', user.id),
-  ])
+  try {
+    await Promise.all([
+      admin.from('assessments').delete().eq('user_id', user.id),
+      admin.from('requirement_progress').delete().eq('user_id', user.id),
+      admin.from('technical_docs').delete().eq('user_id', user.id),
+      admin.from('audit_log').delete().eq('user_id', user.id),
+      admin.from('alert_reads').delete().eq('user_id', user.id),
+    ])
 
-  await admin.from('profiles').delete().eq('id', user.id)
-  const { error } = await admin.auth.admin.deleteUser(user.id)
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ ok: true })
+    await admin.from('profiles').delete().eq('id', user.id)
+    const { error } = await admin.auth.admin.deleteUser(user.id)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error('Account deletion error:', err)
+    return NextResponse.json({ error: 'Account deletion failed. Please contact support.' }, { status: 500 })
+  }
 }

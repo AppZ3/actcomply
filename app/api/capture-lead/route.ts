@@ -6,9 +6,9 @@ export async function POST(req: NextRequest) {
   const { email, riskLevel, systemName, sector } = await req.json()
   if (!email || !riskLevel) return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
 
-  const admin = getSupabaseAdmin()
+  try {
+    const admin = getSupabaseAdmin()
 
-  // Upsert lead — don't duplicate if they submit twice
   await admin.from('leads').upsert(
     { email: email.toLowerCase().trim(), risk_level: riskLevel, system_name: systemName, sector, source: 'assess_page' },
     { onConflict: 'email', ignoreDuplicates: false }
@@ -89,4 +89,8 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('Lead capture error:', err instanceof Error ? err.stack : String(err))
+    return NextResponse.json({ success: true }) // don't fail the user flow even if email/DB fails
+  }
 }
