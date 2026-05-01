@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { PLANS } from '@/lib/stripe'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { createClient } from '@/lib/supabase'
 
 async function startCheckout(plan: string, annual: boolean) {
   const res = await fetch('/api/checkout', {
@@ -20,6 +21,13 @@ export default function LandingPage() {
   const [annual, setAnnual] = useState(false)
   const [days, setDays] = useState<number | null>(null)
   const [requirementsMapped, setRequirementsMapped] = useState<number | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    createClient().auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session)
+    })
+  }, [])
 
   // Handle Supabase auth redirects that land on homepage
   useEffect(() => {
@@ -127,7 +135,10 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-4">
             <Link href="#pricing" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
-            <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
+            {isLoggedIn
+              ? <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Dashboard</Link>
+              : <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
+            }
             <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-2 py-2 rounded-lg transition">
               Check Your AI Systems
             </Link>
