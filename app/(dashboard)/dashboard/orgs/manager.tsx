@@ -175,11 +175,11 @@ export function OrgManager({ userId }: { userId: string }) {
                         <select
                           value={inviteRole}
                           onChange={e => setInviteRole(e.target.value as typeof inviteRole)}
-                          className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none"
+                          className="bg-gray-800 text-white border border-white/10 rounded-lg px-3 py-2 text-sm outline-none"
                         >
-                          <option value="viewer">Viewer</option>
-                          <option value="member">Member</option>
-                          <option value="admin">Admin</option>
+                          <option value="viewer" className="bg-gray-800 text-white">Viewer</option>
+                          <option value="member" className="bg-gray-800 text-white">Member</option>
+                          <option value="admin" className="bg-gray-800 text-white">Admin</option>
                         </select>
                         <button
                           onClick={() => inviteMember(org.id)}
