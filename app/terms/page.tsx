@@ -69,7 +69,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">7. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, ActComply&apos;s total liability to you for any claim arising from use of the Service shall not exceed the amount you paid us in the 12 months preceding the claim. We are not liable for indirect, incidental, or consequential damages.</p>
+            <p>To the maximum extent permitted by law, ActComply&apos;s total liability to you for any claim arising from use of the Service shall not exceed the amount you paid us in the 12 months preceding the claim. We are not liable for indirect, incidental, or consequential damages. In particular, we are not liable for any regulatory fines, penalties, or enforcement actions arising from your reliance on AI-generated risk assessments, compliance scores, or documentation produced by the Service.</p>
           </section>
 
           <section>
