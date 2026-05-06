@@ -1,7 +1,5 @@
 import { PrintButton } from '../print-button'
 
-const EFFECTIVE_DATE = '1 May 2026'
-
 export default function PartnerAgreementTemplatePage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white print:bg-white print:text-gray-900">
@@ -11,7 +9,7 @@ export default function PartnerAgreementTemplatePage() {
           <div>
             <div className="text-xs text-gray-500 mb-1">ActComply · Partner Program</div>
             <h1 className="text-2xl font-bold">Partner Referral Agreement</h1>
-            <p className="text-gray-400 text-sm mt-1">Standard template — effective {EFFECTIVE_DATE}</p>
+            <p className="text-gray-400 text-sm mt-1">Standard template</p>
           </div>
           <PrintButton />
         </div>
@@ -20,7 +18,7 @@ export default function PartnerAgreementTemplatePage() {
 
           <div className="text-center pb-8 border-b border-white/10 print:border-gray-300">
             <h2 className="text-2xl font-bold text-white print:text-gray-900 mb-1">PARTNER REFERRAL AGREEMENT</h2>
-            <p className="text-gray-400 print:text-gray-600 mt-1">Effective date: {EFFECTIVE_DATE}</p>
+            <p className="text-gray-400 print:text-gray-600 mt-1">Effective date: ___________________</p>
           </div>
 
           <section>
