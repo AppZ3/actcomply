@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { assessAISystem, validateAssessmentInput, type AISystemInput } from '@/lib/anthropic'
 import { createClient } from '@/lib/supabase-server'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,8 +28,17 @@ export async function POST(request: NextRequest) {
     // Run the assessment
     const result = await assessAISystem(assessmentInput, { userId: user?.id })
 
-    // If user is logged in, check plan limits and save
+    // Log anonymised event for analytics (no PII)
+    getSupabaseAdmin().from('assessment_events').insert({
+      sector: assessmentInput.sector,
+      risk_level: result.riskLevel,
+      uses_personal_data: assessmentInput.usesPersonalData,
+      makes_autonomous_decisions: assessmentInput.makesAutonomousDecisions,
+      affects_individuals: assessmentInput.affectsIndividuals,
+      is_authenticated: !!user,
+    }).then(() => {}).catch(() => {})
 
+    // If user is logged in, check plan limits and save
     if (user) {
       const { data: profile } = await supabase
         .from('profiles')
