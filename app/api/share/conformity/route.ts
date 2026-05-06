@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 import { randomBytes } from 'crypto'
 
 export async function GET(req: NextRequest) {
@@ -75,6 +76,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ token: tokenRow.token })
   } catch (err) {
     console.error('Share token create error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/share/conformity', userId: user.id, context: { assessmentId: 'unknown' } })
     return NextResponse.json({ error: 'Failed to create share link.' }, { status: 500 })
   }
 }
@@ -98,6 +100,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true })
   } catch (err) {
     console.error('Share token delete error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'DELETE /api/share/conformity', userId: user.id })
     return NextResponse.json({ error: 'Failed to revoke share link.' }, { status: 500 })
   }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getStripe, PLANS } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { getResend } from '@/lib/resend'
+import { logError } from '@/lib/error-logger'
 import type Stripe from 'stripe'
 
 const PRICE_TO_PLAN: Record<string, { plan: string; limit: number }> = {
@@ -160,6 +161,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (err) {
     console.error('Webhook handler error:', err)
+    await logError(err, { route: `POST /api/webhooks/stripe [${event.type}]`, context: { event_type: event.type } })
     return NextResponse.json({ error: 'Handler failed' }, { status: 500 })
   }
 

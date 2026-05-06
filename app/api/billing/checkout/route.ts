@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getStripe, PLANS } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 
 export async function POST(req: Request) {
   const { plan, annual } = await req.json()
@@ -52,6 +53,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ url: session.url })
   } catch (err) {
     console.error('Stripe checkout error:', err)
+    await logError(err, { route: 'POST /api/billing/checkout', userId: userId, context: { plan } })
     return NextResponse.json({ error: 'Failed to create checkout session. Please try again.' }, { status: 500 })
   }
 }

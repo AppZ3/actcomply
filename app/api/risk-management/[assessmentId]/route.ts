@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 import Anthropic from '@anthropic-ai/sdk'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -210,6 +211,8 @@ Identify 4–5 specific risks with probability/severity/residual risk ratings. G
     return NextResponse.json(result)
   } catch (err) {
     console.error('Risk management plan error:', err instanceof Error ? err.stack : String(err))
+    const { data: profile } = await supabase.from('profiles').select('email, plan').eq('id', user.id).single()
+    await logError(err, { route: 'POST /api/risk-management/[assessmentId]', userId: user.id, userEmail: profile?.email, userPlan: profile?.plan, context: { assessmentId } })
     return NextResponse.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 }

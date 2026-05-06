@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 
 function calcDeadline(discoveryDate: string, severity: string): string | null {
   if (severity === 'near_miss') return null
@@ -75,6 +76,8 @@ export async function POST(
     return NextResponse.json(data)
   } catch (err) {
     console.error('Incident create error:', err instanceof Error ? err.stack : String(err))
+    const { data: profile } = await supabase.from('profiles').select('email, plan').eq('id', user.id).single()
+    await logError(err, { route: 'POST /api/incidents/[assessmentId]', userId: user.id, userEmail: profile?.email, userPlan: profile?.plan, context: { assessmentId } })
     return NextResponse.json({ error: 'Failed to log incident.' }, { status: 500 })
   }
 }
