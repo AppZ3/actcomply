@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       makes_autonomous_decisions: assessmentInput.makesAutonomousDecisions,
       affects_individuals: assessmentInput.affectsIndividuals,
       is_authenticated: !!user,
-    }).then(() => {}).catch(() => {})
+    }).then(() => {}, () => {})
 
     // If user is logged in, check plan limits and save
     if (user) {
