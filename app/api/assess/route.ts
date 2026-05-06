@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { assessAISystem, validateAssessmentInput, type AISystemInput } from '@/lib/anthropic'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 
 export async function POST(request: NextRequest) {
   try {
@@ -111,6 +112,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result)
   } catch (error) {
     console.error('Assessment error:', error instanceof Error ? error.stack : String(error))
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: profile } = user
+      ? await supabase.from('profiles').select('email, plan').eq('id', user.id).single()
+      : { data: null }
+    await logError(error, {
+      route: 'POST /api/assess',
+      userId: user?.id,
+      userEmail: profile?.email,
+      userPlan: profile?.plan,
+      context: {},
+    })
     return NextResponse.json({ error: 'Assessment failed. Please try again.' }, { status: 500 })
   }
 }

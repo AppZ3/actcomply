@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 import Anthropic from '@anthropic-ai/sdk'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -155,6 +156,14 @@ Sections required: General Description, Intended Purpose and Deployment Context,
     return NextResponse.json(doc)
   } catch (err) {
     console.error('Docs generation error:', err instanceof Error ? err.stack : String(err))
+    const { data: profile } = await supabase.from('profiles').select('email, plan').eq('id', user.id).single()
+    await logError(err, {
+      route: 'POST /api/docs/[assessmentId]',
+      userId: user.id,
+      userEmail: profile?.email,
+      userPlan: profile?.plan,
+      context: { assessmentId },
+    })
     return NextResponse.json({ error: 'Documentation generation failed. Please try again.' }, { status: 500 })
   }
 }
