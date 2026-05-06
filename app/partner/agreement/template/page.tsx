@@ -1,17 +1,17 @@
-import { PrintButton } from './print-button'
+import { PrintButton } from '../print-button'
 
 const EFFECTIVE_DATE = '1 May 2026'
 
-export default function PartnerAgreementPage() {
+export default function PartnerAgreementTemplatePage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white print:bg-white print:text-gray-900">
       <div className="max-w-4xl mx-auto px-8 py-12">
 
         <div className="flex items-start justify-between gap-4 mb-10 print:hidden">
           <div>
-            <div className="text-xs text-gray-500 mb-1">ActComply · Confidential</div>
+            <div className="text-xs text-gray-500 mb-1">ActComply · Partner Program</div>
             <h1 className="text-2xl font-bold">Partner Referral Agreement</h1>
-            <p className="text-gray-400 text-sm mt-1">Tariq Law Associates × ActComply</p>
+            <p className="text-gray-400 text-sm mt-1">Standard template — effective {EFFECTIVE_DATE}</p>
           </div>
           <PrintButton />
         </div>
@@ -31,7 +31,7 @@ export default function PartnerAgreementPage() {
                 <span className="font-semibold text-white print:text-gray-900">ActComply</span> — EU AI Act compliance platform, operated by its registered entity, accessible at getactcomply.com (&quot;ActComply&quot; or &quot;Company&quot;); and
               </div>
               <div>
-                <span className="font-semibold text-white print:text-gray-900">Tariq Law Associates</span> — a legal advisory firm (&quot;Partner&quot; or &quot;Referrer&quot;).
+                <span className="font-semibold text-white print:text-gray-900">[Partner Name]</span> — [Partner description] (&quot;Partner&quot; or &quot;Referrer&quot;).
               </div>
             </div>
             <p className="mt-3">Each a &quot;Party&quot;; together the &quot;Parties&quot;.</p>
@@ -48,7 +48,7 @@ export default function PartnerAgreementPage() {
             <h3 className="text-white print:text-gray-900 font-semibold text-base mb-3">3. Referral Process</h3>
             <ol className="list-decimal ml-6 space-y-2">
               <li>The Partner shall refer prospective customers (&quot;Referrals&quot;) to ActComply by directing them to getactcomply.com using a unique referral link or code provided by ActComply, or by making a written introduction by email (cc&apos;ing ActComply&apos;s designated contact).</li>
-              <li>A Referral is deemed &quot;qualified&quot; when the referred individual or entity subscribes to a paid ActComply plan within 90 days of the initial introduction.</li>
+              <li>A Referral is deemed &quot;qualified&quot; when the referred individual or entity subscribes to a paid ActComply plan within 60 days of the initial introduction.</li>
               <li>Each Referral must be a new customer with no prior paid subscription to ActComply. Referrals of existing customers, including plan upgrades, do not qualify unless otherwise agreed in writing.</li>
               <li>ActComply reserves the right to verify referral attribution. In the event of duplicate attribution, the earliest recorded introduction takes precedence.</li>
             </ol>
@@ -71,19 +71,19 @@ export default function PartnerAgreementPage() {
                     <td className="px-4 py-2">Starter</td>
                     <td className="px-4 py-2">€499/mo</td>
                     <td className="px-4 py-2">€4,990/yr</td>
-                    <td className="px-4 py-2 font-semibold text-green-400 print:text-green-700">20% of first 12 months</td>
+                    <td className="px-4 py-2 font-semibold text-green-400 print:text-green-700">15% of first 12 months</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-2">Business</td>
                     <td className="px-4 py-2">€1,499/mo</td>
                     <td className="px-4 py-2">€14,990/yr</td>
-                    <td className="px-4 py-2 font-semibold text-green-400 print:text-green-700">20% of first 12 months</td>
+                    <td className="px-4 py-2 font-semibold text-green-400 print:text-green-700">15% of first 12 months</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-2">Enterprise</td>
                     <td className="px-4 py-2">€2,999/mo</td>
                     <td className="px-4 py-2">€29,990/yr</td>
-                    <td className="px-4 py-2 font-semibold text-green-400 print:text-green-700">20% of first 12 months</td>
+                    <td className="px-4 py-2 font-semibold text-green-400 print:text-green-700">15% of first 12 months</td>
                   </tr>
                 </tbody>
               </table>
@@ -106,7 +106,7 @@ export default function PartnerAgreementPage() {
           <section>
             <h3 className="text-white print:text-gray-900 font-semibold text-base mb-3">6. Sandbox Account</h3>
             <p>
-              ActComply will provide the Partner with a complimentary Enterprise-tier sandbox account (&quot;Sandbox Account&quot;) for the duration of this Agreement. The Sandbox Account is for demonstration, evaluation, and client presentation purposes only. It may not be used to process commercial client engagements without a separate paid subscription.
+              ActComply will provide the Partner with a complimentary Business-tier sandbox account (&quot;Sandbox Account&quot;) for the duration of this Agreement. The Sandbox Account is for demonstration, evaluation, and client presentation purposes only. It may not be used to process commercial client engagements without a separate paid subscription.
             </p>
           </section>
 
@@ -164,7 +164,7 @@ export default function PartnerAgreementPage() {
                 <div className="font-semibold text-white print:text-gray-900 mb-3">ActComply</div>
                 <div className="text-gray-400 print:text-gray-600 space-y-1">
                   <div>getactcomply.com</div>
-                  <div>zaclowe@outlook.com.au</div>
+                  <div>hello@getactcomply.com</div>
                 </div>
                 <div className="mt-6 space-y-4">
                   <div>
@@ -182,7 +182,7 @@ export default function PartnerAgreementPage() {
                 </div>
               </div>
               <div>
-                <div className="font-semibold text-white print:text-gray-900 mb-3">Tariq Law Associates</div>
+                <div className="font-semibold text-white print:text-gray-900 mb-3">[Partner Name]</div>
                 <div className="text-gray-400 print:text-gray-600 space-y-1">
                   <div>&nbsp;</div>
                   <div>&nbsp;</div>
