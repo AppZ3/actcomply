@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Regulatory Alerts — ActComply',
+  title: 'Regulatory Alerts',
   description: 'EU AI Act updates, enforcement milestones, and regulatory alerts for your compliance team.',
 }
 

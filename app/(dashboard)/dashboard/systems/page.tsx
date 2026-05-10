@@ -6,7 +6,7 @@ import { getActiveOrgId } from '@/lib/active-org'
 import type { RiskLevel } from '@/lib/eu-ai-act'
 
 export const metadata: Metadata = {
-  title: 'AI Systems — ActComply',
+  title: 'AI Systems',
   description: 'All your assessed AI systems, risk levels, and compliance scores.',
 }
 

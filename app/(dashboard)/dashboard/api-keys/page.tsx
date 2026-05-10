@@ -48,7 +48,7 @@ export default async function ApiKeysPage() {
         <div className="space-y-6 text-sm text-gray-300">
           <div>
             <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-green-400">
-              POST https://getactcomply.com/api/v1/assess
+              POST https://www.getactcomply.com/api/v1/assess
             </div>
             <p className="text-gray-400 mb-3">Run an EU AI Act risk assessment. Returns risk level, compliance score, requirements, and immediate actions.</p>
             <div className="font-mono text-xs bg-black/30 rounded p-3 whitespace-pre text-gray-300">{`Authorization: Bearer ac_<your-key>
@@ -56,14 +56,13 @@ Content-Type: application/json
 
 {
   "name": "My AI System",
-  "description": "...",
-  "purpose": "...",
+  "description": "What the system does",
+  "purpose": "Business purpose and use case",
   "sector": "Healthcare",
   "usesPersonalData": true,
-  "isAutomatedDecision": false,
-  "affectsVulnerableGroups": false,
-  "deployedInEU": true,
-  "intendedUsers": "Medical professionals"
+  "makesAutonomousDecisions": false,
+  "affectsIndividuals": true,
+  "currentSafeguards": "Human reviewer signs off on outputs; bias testing at deploy"
 }`}</div>
           </div>
 
@@ -72,8 +71,8 @@ Content-Type: application/json
             <div className="font-mono text-xs bg-black/30 rounded p-3 whitespace-pre text-gray-300">{`{
   "risk_level": "HIGH_RISK",
   "compliance_score": 42,
-  "risk_rationale": "...",
-  "regulatory_basis": "Article 6(2)...",
+  "risk_rationale": "Why this system is classified as such...",
+  "regulatory_basis": "Annex III(1) biometrics — high-risk under Article 6(2) AI Act",
   "requirements": [...],
   "immediate_actions": [...],
   "estimated_effort": "120–180 hours"
@@ -87,6 +86,13 @@ Content-Type: application/json
               <li><span className="font-mono text-gray-200">description</span> — what the system does</li>
               <li><span className="font-mono text-gray-200">purpose</span> — business purpose and use case</li>
               <li><span className="font-mono text-gray-200">sector</span> — industry sector</li>
+            </ul>
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-2">Optional fields (improve classification accuracy)</div>
+            <ul className="space-y-1 text-gray-400">
+              <li><span className="font-mono text-gray-200">usesPersonalData</span> — boolean</li>
+              <li><span className="font-mono text-gray-200">makesAutonomousDecisions</span> — boolean</li>
+              <li><span className="font-mono text-gray-200">affectsIndividuals</span> — boolean</li>
+              <li><span className="font-mono text-gray-200">currentSafeguards</span> — string describing human oversight, testing, etc.</li>
             </ul>
           </div>
 

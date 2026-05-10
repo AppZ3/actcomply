@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const metadata = {
-  title: 'Privacy Policy — ActComply',
+  title: 'Privacy Policy',
   alternates: { canonical: 'https://www.getactcomply.com/privacy' },
   robots: { index: false, follow: false },
 }

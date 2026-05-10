@@ -6,7 +6,7 @@ import { OnboardingBanner } from './onboarding'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Dashboard — ActComply',
+  title: 'Dashboard',
   description: 'Overview of your AI systems, compliance scores, and EU AI Act deadline tracker.',
 }
 

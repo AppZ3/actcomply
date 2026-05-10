@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const metadata = {
-  title: 'Terms of Service — ActComply',
+  title: 'Terms of Service',
   alternates: { canonical: 'https://www.getactcomply.com/terms' },
   robots: { index: false, follow: false },
 }

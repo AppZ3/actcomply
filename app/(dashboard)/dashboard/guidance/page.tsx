@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase-server'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Compliance Guidance — ActComply',
+  title: 'Compliance Guidance',
   description: 'EU AI Act compliance guidance, EU database registration steps, and documentation templates.',
 }
 

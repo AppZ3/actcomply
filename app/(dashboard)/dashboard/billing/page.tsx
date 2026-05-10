@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getStripe, PLANS } from '@/lib/stripe'
 
 export const metadata: Metadata = {
-  title: 'Billing — ActComply',
+  title: 'Billing',
   description: 'Manage your ActComply plan and payment details.',
 }
 import { ManageBillingButton } from './manage-button'

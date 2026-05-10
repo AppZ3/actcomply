@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { DeleteAccountButton } from './delete-account-button'
 
 export const metadata: Metadata = {
-  title: 'Settings — ActComply',
+  title: 'Settings',
   description: 'Manage your account settings and preferences.',
 }
 
