@@ -4,6 +4,8 @@ import { getPlanFeatures } from '@/lib/stripe'
 import Link from 'next/link'
 import { OrgManager } from './manager'
 
+export const metadata = { title: 'Entities' }
+
 export default async function OrgsPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -4,6 +4,8 @@ import { getPlanFeatures } from '@/lib/stripe'
 import Link from 'next/link'
 import { ApiKeyManager } from './manager'
 
+export const metadata = { title: 'API Keys' }
+
 export default async function ApiKeysPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

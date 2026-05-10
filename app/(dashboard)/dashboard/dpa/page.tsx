@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { DpaPrintButton } from './print-button'
 
+export const metadata = { title: 'Data Processing Agreement' }
+
 export default async function DpaPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
