@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+.env*.local
+
+# database dumps — never commit; see ~/Backups/ for snapshots
+au_*.sql
+*_dump.sql
+*_data.sql

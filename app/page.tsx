@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { PLANS } from '@/lib/stripe'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { createClient } from '@/lib/supabase'
 
 async function startCheckout(plan: string, annual: boolean) {
@@ -329,6 +330,16 @@ export default function LandingPage() {
             Start free assessment →
           </Link>
         </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="px-6 py-12 max-w-2xl mx-auto">
+        <NewsletterSignup
+          source="homepage-footer"
+          variant="card"
+          heading="Practitioner briefs on the EU AI Act"
+          subheading="One short email when there's something Heads of Legal, Compliance, and AI should know. Unsubscribe in one click."
+        />
       </section>
 
       {/* Footer */}
