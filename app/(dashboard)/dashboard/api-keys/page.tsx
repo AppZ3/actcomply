@@ -98,9 +98,55 @@ Content-Type: application/json
             </ul>
           </div>
 
-          <div>
+          <div className="border-t border-white/10 pt-6">
+            <h3 className="text-sm font-semibold text-white mb-4">Multi-entity (white-label / partner integrations)</h3>
+            <div className="space-y-4">
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-blue-400">
+                  GET https://www.getactcomply.com/api/v1/orgs
+                </div>
+                <p className="text-gray-400">List the organisations your API key has access to (owner or active member). Use the returned <span className="font-mono">id</span> as the <span className="font-mono">org_id</span> parameter elsewhere.</p>
+              </div>
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-green-400">
+                  POST https://www.getactcomply.com/api/v1/assess
+                  <span className="text-gray-500"> + body field </span>
+                  <span className="text-blue-400">&quot;org_id&quot;: &quot;...&quot;</span>
+                </div>
+                <p className="text-gray-400">Pass an <span className="font-mono">org_id</span> in the body to scope the new assessment to a specific client/workspace. Without it, the assessment lands in your personal workspace.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-6">
+            <h3 className="text-sm font-semibold text-white mb-4">Read &amp; export</h3>
+            <div className="space-y-4">
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-blue-400">
+                  GET https://www.getactcomply.com/api/v1/assessments
+                </div>
+                <p className="text-gray-400">List assessments. Query params: <span className="font-mono">org_id</span> (filter to org, or <span className="font-mono">personal</span> for personal workspace), <span className="font-mono">limit</span> (default 50, max 200), <span className="font-mono">offset</span>.</p>
+              </div>
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-blue-400">
+                  GET https://www.getactcomply.com/api/v1/assessments/&#123;id&#125;
+                </div>
+                <p className="text-gray-400">Read one assessment plus every artefact bundled (technical doc, risk plan, logging spec, GDPR DPIA/FRIA, requirement progress, incidents).</p>
+              </div>
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-blue-400">
+                  GET https://www.getactcomply.com/api/v1/orgs/&#123;orgId&#125;/export
+                </div>
+                <p className="text-gray-400">Single-archive JSON of every assessment + child artefact for one organisation. Used by white-label partners to hand a complete client compliance pack at engagement end.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-6">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Rate limits</div>
             <p className="text-gray-400">Enterprise plan: 100 requests/day per API key. Contact support for higher limits.</p>
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-2">CORS</div>
+            <p className="text-gray-400">All <span className="font-mono">/api/v1/*</span> endpoints respond to OPTIONS preflight and set <span className="font-mono">Access-Control-Allow-Origin: *</span>. In-browser <span className="font-mono">fetch()</span> works from any origin as long as the request carries a valid bearer token.</p>
           </div>
         </div>
       </div>

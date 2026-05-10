@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
+import { getActiveOrgId, getUserOrgs } from '@/lib/active-org'
 import type { AssessmentResult, RiskLevel } from '@/lib/eu-ai-act'
 import { OnboardingBanner } from './onboarding'
 import type { Metadata } from 'next'
@@ -29,15 +30,30 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: profile }, { data: assessments }] = await Promise.all([
+  // Scope dashboard stats + recent list to the active workspace, same way
+  // /dashboard/systems does. Personal workspace = user's own org_id IS NULL
+  // rows; an active org = its own slice. Otherwise the headline KPIs would
+  // average across personal + every org (misleading for a consultancy
+  // managing many clients).
+  const [activeOrgId, allOrgs, { data: profile }] = await Promise.all([
+    getActiveOrgId(),
+    getUserOrgs(user.id),
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase
-      .from('assessments')
-      .select('id, name, sector, risk_level, compliance_score, created_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(5),
   ])
+
+  let assessmentQuery = supabase
+    .from('assessments')
+    .select('id, name, sector, risk_level, compliance_score, created_at')
+    .order('created_at', { ascending: false })
+    .limit(5)
+
+  assessmentQuery = activeOrgId
+    ? assessmentQuery.eq('org_id', activeOrgId)
+    : assessmentQuery.is('org_id', null).eq('user_id', user.id)
+
+  const { data: assessments } = await assessmentQuery
+  const activeOrg = activeOrgId ? allOrgs.find(o => o.id === activeOrgId) : null
+  const workspaceLabel = activeOrg ? activeOrg.name : 'Personal workspace'
 
   const total = assessments?.length ?? 0
   const highRisk = assessments?.filter(a => a.risk_level === 'HIGH_RISK' || a.risk_level === 'PROHIBITED').length ?? 0
@@ -54,7 +70,14 @@ export default async function DashboardPage() {
     <div className="p-8">
       {total === 0 && <OnboardingBanner userEmail={user.email ?? ''} />}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Overview</h1>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <h1 className="text-2xl font-bold">Overview</h1>
+          {allOrgs.length > 0 && (
+            <span className="text-xs px-2.5 py-1 rounded-full border border-white/10 bg-white/5 text-gray-300">
+              Workspace: <span className="text-white font-medium">{workspaceLabel}</span>
+            </span>
+          )}
+        </div>
         <p className="text-gray-400 text-sm mt-1">EU AI Act enforcement in <span className="text-red-400 font-semibold">{daysLeft} days</span></p>
       </div>
 

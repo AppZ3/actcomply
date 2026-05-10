@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { getPlanFeatures } from '@/lib/stripe'
+import { getActiveOrgId, getUserOrgs } from '@/lib/active-org'
 import Link from 'next/link'
 import { OrgManager } from './manager'
 
@@ -37,12 +38,24 @@ export default async function OrgsPage() {
     )
   }
 
+  const [activeOrgId, allOrgs] = await Promise.all([getActiveOrgId(), getUserOrgs(user.id)])
+  const activeOrg = activeOrgId ? allOrgs.find(o => o.id === activeOrgId) : null
+  const activeLabel = activeOrg ? activeOrg.name : 'Personal workspace'
+
   return (
     <div className="p-8 max-w-3xl">
       <h1 className="text-2xl font-bold mb-1">Entity Management</h1>
-      <p className="text-gray-400 text-sm mb-8">
+      <p className="text-gray-400 text-sm mb-6">
         Organise AI systems across legal entities. Invite team members to share compliance access.
       </p>
+
+      <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-8 flex items-center justify-between gap-3 flex-wrap">
+        <div className="text-sm text-gray-300">
+          Currently viewing <span className="font-semibold text-white">{activeLabel}</span>.
+          {' '}This page is for <em>managing</em> entities — to switch which entity&apos;s data you see across the dashboard, use the <span className="font-medium text-white">Workspace</span> dropdown in the sidebar.
+        </div>
+      </div>
+
       <OrgManager userId={user.id} />
     </div>
   )
