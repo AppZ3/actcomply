@@ -12,10 +12,10 @@ load_env
 header "Supabase — credentials + reachability"
 
 require_env NEXT_PUBLIC_SUPABASE_URL || finish
-require_env SUPABASE_SERVICE_KEY     || finish
+require_env SUPABASE_SERVICE_ROLE_KEY     || finish
 
 URL="${NEXT_PUBLIC_SUPABASE_URL%/}"
-KEY="$SUPABASE_SERVICE_KEY"
+KEY="$SUPABASE_SERVICE_ROLE_KEY"
 
 PING=$(curl -s -o /dev/null -w "%{http_code}" "$URL/rest/v1/" \
   -H "apikey: $KEY" -H "Authorization: Bearer $KEY")
