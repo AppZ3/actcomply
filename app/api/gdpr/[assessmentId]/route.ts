@@ -157,13 +157,79 @@ Generate a precise, integrated assessment. Be specific to the system's actual pr
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}
 
-Assess whether a DPIA and FRIA are each required. Identify 2–3 processing activities. Generate a risk register with 3–4 specific risks. Assess fundamental rights impacts across 3–4 relevant rights (non-discrimination, privacy, fair trial, effective remedy). Write a concise Article 86 explainability statement specific to this system. List 3–5 safeguards. Keep each text field to 2–3 sentences maximum.`,
+Produce ALL of the following — every field is required and every list must be populated. None of these are optional:
+
+1. dpia_required + dpia_rationale (1–2 sentences each)
+2. fria_required + fria_rationale (1–2 sentences each)
+3. processing_activities — 2–3 items with legal_basis (e.g. "Article 6(1)(b) GDPR — contract necessity"), special-category condition where applicable, necessity_assessment, proportionality
+4. risks — 3–4 specific risks (not generic). Each with likelihood, severity, mitigation, residual_risk
+5. fundamental_rights_impacts — 3–4 affected rights from {non-discrimination, privacy, fair trial, effective remedy, dignity, freedom of expression}, each with affected_groups, impact_level (none/low/medium/high), mitigation
+6. explainability_statement — 3–5 sentences, Article 86 compliant, specific to this system
+7. safeguards — 4–6 concrete safeguards. Examples for HR-AI: "quarterly bias audit on protected attributes", "human oversight: recruiter reviews top-30 cutoff before shortlist export", "dataset minimisation: store only fields required for scoring", "encryption at rest using AES-256", "right-to-explanation portal for candidates", "incident escalation path to DPO". Concrete actions, not platitudes.
+8. consultation_required (boolean) + consultation_rationale (1–2 sentences) — under GDPR Article 36, prior consultation with the supervisory authority is required when residual high risk remains after safeguards. State true only if at least one risk has residual_risk = "high" or higher, otherwise false. Always provide consultation_rationale explaining the determination.
+
+Keep each free-text field to 2–3 sentences maximum. Do not omit any field — empty arrays or missing fields will fail validation.`,
       }],
     })
 
     const toolBlock = msg.content.find(b => b.type === 'tool_use') as Anthropic.ToolUseBlock | undefined
     if (!toolBlock) throw new Error('No tool response from Claude')
-    const result = toolBlock.input as Record<string, unknown>
+    let result = toolBlock.input as Record<string, unknown>
+
+    // Detect Claude omissions BEFORE backfilling so we can decide whether to retry.
+    // Empty arrays from Claude = trust them. Missing fields = retry once.
+    const missingBeforeBackfill: string[] = []
+    if (typeof result.safeguards === 'undefined') missingBeforeBackfill.push('safeguards')
+    if (typeof result.consultation_required === 'undefined') missingBeforeBackfill.push('consultation_required')
+    if (typeof result.consultation_rationale === 'undefined') missingBeforeBackfill.push('consultation_rationale')
+    if (typeof result.fundamental_rights_impacts === 'undefined') missingBeforeBackfill.push('fundamental_rights_impacts')
+    if (typeof result.explainability_statement === 'undefined') missingBeforeBackfill.push('explainability_statement')
+
+    if (missingBeforeBackfill.length > 0) {
+      // One follow-up call asking Claude to fill ONLY the missing fields, with the
+      // existing fields echoed back as context so it doesn't drift.
+      const partial = JSON.stringify(result, null, 2).slice(0, 4000)
+      const retry = await ai.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        tools: [GDPR_TOOL],
+        tool_choice: { type: 'tool', name: 'generate_gdpr_assessment' },
+        messages: [{
+          role: 'user',
+          content: `Your previous tool call for the DPIA + FRIA on this AI system OMITTED these required fields: ${missingBeforeBackfill.join(', ')}.
+
+Re-emit the full tool call with EVERY field populated, including the previously-omitted ones. The fields you already produced are correct — keep them. The omitted fields must be substantive and specific to this system.
+
+System: ${assessment.name} (${assessment.sector}, risk level ${assessment.risk_level}).
+
+Previous (incomplete) call:
+${partial}`,
+        }],
+      })
+      const retryBlock = retry.content.find(b => b.type === 'tool_use') as Anthropic.ToolUseBlock | undefined
+      if (retryBlock) {
+        const retried = retryBlock.input as Record<string, unknown>
+        // Merge: retry takes precedence for fields it now provides
+        for (const k of Object.keys(retried)) {
+          if (typeof retried[k] !== 'undefined') result[k] = retried[k]
+        }
+      }
+    }
+
+    // Final defensive backfill in case the retry also missed something —
+    // never ship a half-populated artefact to the renderer.
+    if (typeof result.dpia_required !== 'boolean') result.dpia_required = false
+    if (typeof result.fria_required !== 'boolean') result.fria_required = false
+    if (typeof result.dpia_rationale !== 'string') result.dpia_rationale = ''
+    if (typeof result.fria_rationale !== 'string') result.fria_rationale = ''
+    if (!Array.isArray(result.processing_activities)) result.processing_activities = []
+    if (!Array.isArray(result.risks)) result.risks = []
+    if (!Array.isArray(result.fundamental_rights_impacts)) result.fundamental_rights_impacts = []
+    if (typeof result.explainability_statement !== 'string') result.explainability_statement = ''
+    if (!Array.isArray(result.safeguards)) result.safeguards = []
+    if (typeof result.consultation_required !== 'boolean') result.consultation_required = false
+    if (typeof result.consultation_rationale !== 'string') result.consultation_rationale = ''
+
     result.generated_at = new Date().toISOString()
 
     const admin = getSupabaseAdmin()

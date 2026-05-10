@@ -1,5 +1,7 @@
+import type { Metadata } from 'next'
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
+import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
 import { getPlanFeatures } from '@/lib/stripe'
 import Link from 'next/link'
@@ -20,6 +22,12 @@ const RISK_CONFIG: Record<RiskLevel, { label: string; color: string; bg: string 
   HIGH_RISK:    { label: 'HIGH RISK',     color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
   LIMITED_RISK: { label: 'LIMITED RISK',  color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
   MINIMAL_RISK: { label: 'MINIMAL RISK',  color: 'text-green-400',  bg: 'bg-green-500/10 border-green-500/20' },
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const { data } = await getSupabaseAdmin().from('assessments').select('name').eq('id', id).maybeSingle()
+  return { title: data?.name ?? 'AI System' }
 }
 
 export default async function SystemDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -70,7 +78,7 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold mb-1">{assessment.name}</h1>
-          <p className="text-gray-400 text-sm">{assessment.sector} · Assessed {new Date(assessment.created_at).toLocaleDateString()}</p>
+          <p className="text-gray-400 text-sm">{assessment.sector} · Assessed {new Date(assessment.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link

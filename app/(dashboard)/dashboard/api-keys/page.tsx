@@ -143,6 +143,67 @@ Content-Type: application/json
           </div>
 
           <div className="border-t border-white/10 pt-6">
+            <h3 className="text-sm font-semibold text-white mb-4">Webhooks</h3>
+            <p className="text-xs text-gray-400 mb-4">
+              Subscribe to events and receive HTTP POST callbacks. Each delivery is signed with your endpoint
+              secret using HMAC-SHA256 over the raw request body, in the <span className="font-mono">X-ActComply-Signature</span> header.
+              Verify with constant-time comparison before trusting the payload.
+            </p>
+            <div className="space-y-4">
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-blue-400">
+                  GET https://www.getactcomply.com/api/v1/webhooks
+                </div>
+                <p className="text-gray-400">List your endpoints (with last 20 deliveries per endpoint when reading one by id).</p>
+              </div>
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-green-400">
+                  POST https://www.getactcomply.com/api/v1/webhooks
+                </div>
+                <pre className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-gray-300 overflow-x-auto">{`{
+  "url": "https://your-app.example/webhooks/actcomply",
+  "enabled_events": ["assessment.created", "document.generated"],
+  "description": "Production integration",
+  "org_id": "1ec71...optional"
+}`}</pre>
+                <p className="text-gray-400">
+                  Creates a subscription. The response includes a one-time <span className="font-mono">secret</span> — store it now, it&apos;s not retrievable later.
+                  Omit <span className="font-mono">org_id</span> to receive events from every org you can access.
+                </p>
+              </div>
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-blue-400">
+                  GET https://www.getactcomply.com/api/v1/webhooks/&#123;id&#125;
+                </div>
+                <p className="text-gray-400">Read one endpoint plus its last 20 delivery attempts (status code, latency, attempt count).</p>
+              </div>
+              <div>
+                <div className="font-mono text-xs bg-black/30 rounded px-3 py-2 mb-2 text-red-400">
+                  DELETE https://www.getactcomply.com/api/v1/webhooks/&#123;id&#125;
+                </div>
+                <p className="text-gray-400">Remove a subscription. No further deliveries will be attempted.</p>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Supported events</div>
+                <ul className="text-gray-400 space-y-1 list-disc pl-5">
+                  <li><span className="font-mono text-blue-300">assessment.created</span> — a new risk assessment was saved (via dashboard or API)</li>
+                  <li><span className="font-mono text-blue-300">document.generated</span> — a tech doc / DPIA-FRIA / risk plan / logging spec finished generating</li>
+                  <li><span className="font-mono text-blue-300">alert.published</span> — a new regulatory alert was published platform-wide</li>
+                  <li><span className="font-mono text-blue-300">incident.created</span> — a new Article 72/73 incident was logged</li>
+                </ul>
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Delivery + retries</div>
+                <p className="text-gray-400">
+                  Each event POSTs the JSON payload to your <span className="font-mono">url</span> with a 15-second timeout.
+                  Non-2xx responses are recorded with their status code and the first 4KB of response body — retries are
+                  not automatic in this beta; check the deliveries endpoint and replay manually if you need it.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-6">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Rate limits</div>
             <p className="text-gray-400">Enterprise plan: 100 requests/day per API key. Contact support for higher limits.</p>
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-2">CORS</div>

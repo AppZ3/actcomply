@@ -200,6 +200,11 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
     )
   }
 
+  // Defensive defaults — Claude tool-use occasionally omits required array fields
+  // even when the schema lists them. Keep the renderer tolerant so a partial AI
+  // output never blanks the whole page.
+  const events = spec.events ?? []
+  const retentionSchedule = spec.retention_schedule ?? []
   const retentionMonths = spec.retention_period_months
   const retentionLabel = retentionMonths >= 36 ? `${retentionMonths / 12} years` : `${retentionMonths} months`
 
@@ -217,7 +222,8 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
           </div>
           <p className="text-xs text-gray-500 mt-0.5">
             Generated {new Date(spec.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-            {' · '}{spec.events.length} events · {spec.retention_schedule.length} retention rules
+            {' · '}{events.length} events
+            {retentionSchedule.length > 0 && ` · ${retentionSchedule.length} retention rules`}
           </p>
         </div>
         <button
@@ -249,7 +255,7 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
                 : 'text-gray-500 hover:text-gray-300'
             }`}
           >
-            {tab === 'events' ? `Events (${spec.events.length})` : tab === 'retention' ? 'Retention Schedule' : 'Logging Policy'}
+            {tab === 'events' ? `Events (${events.length})` : tab === 'retention' ? 'Retention Schedule' : 'Logging Policy'}
           </button>
         ))}
       </div>
@@ -257,7 +263,7 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
       {/* Events tab */}
       {activeTab === 'events' && (
         <div className="divide-y divide-white/5">
-          {spec.events.map(event => (
+          {events.map(event => (
             <div key={event.id}>
               <button
                 onClick={() => setExpandedEvent(expandedEvent === event.id ? null : event.id)}
@@ -327,30 +333,42 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
 
       {/* Retention schedule tab */}
       {activeTab === 'retention' && (
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-white/10 text-gray-500">
-                <th className="text-left px-6 py-3 font-medium">Record Type</th>
-                <th className="text-left px-4 py-3 font-medium">Retention</th>
-                <th className="text-left px-4 py-3 font-medium">Article</th>
-                <th className="text-left px-4 py-3 font-medium">Disposal</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {spec.retention_schedule.map((row, i) => (
-                <tr key={i} className="hover:bg-white/5 transition">
-                  <td className="px-6 py-3 text-gray-300 font-medium">{row.record_type}</td>
-                  <td className="px-4 py-3">
-                    <span className="text-orange-400 font-mono font-semibold">{row.retention_period}</span>
-                  </td>
-                  <td className="px-4 py-3 font-mono text-blue-400">{row.article}</td>
-                  <td className="px-4 py-3 text-gray-400">{row.disposal_method}</td>
+        retentionSchedule.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/10 text-gray-500">
+                  <th className="text-left px-6 py-3 font-medium">Record Type</th>
+                  <th className="text-left px-4 py-3 font-medium">Retention</th>
+                  <th className="text-left px-4 py-3 font-medium">Article</th>
+                  <th className="text-left px-4 py-3 font-medium">Disposal</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {retentionSchedule.map((row, i) => (
+                  <tr key={i} className="hover:bg-white/5 transition">
+                    <td className="px-6 py-3 text-gray-300 font-medium">{row.record_type}</td>
+                    <td className="px-4 py-3">
+                      <span className="text-orange-400 font-mono font-semibold">{row.retention_period}</span>
+                    </td>
+                    <td className="px-4 py-3 font-mono text-blue-400">{row.article}</td>
+                    <td className="px-4 py-3 text-gray-400">{row.disposal_method}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="px-6 py-8 text-sm text-gray-400 space-y-3">
+            <p>
+              No per-record-type retention schedule was generated. The Article 19 minimum determined for this system is
+              <span className="text-orange-400 font-semibold"> {retentionLabel}</span>, applied uniformly to all logged events.
+            </p>
+            <p className="text-xs text-gray-500">
+              Click <span className="text-gray-300 font-medium">Regenerate</span> to attempt a fresh schedule with per-record-type detail.
+            </p>
+          </div>
+        )
       )}
 
     </div>

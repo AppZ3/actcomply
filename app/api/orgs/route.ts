@@ -18,7 +18,7 @@ export async function GET() {
     // Orgs where user is owner or active member
     const { data: ownedOrgs } = await admin
       .from('organizations')
-      .select('*, org_members(id, email, role, status)')
+      .select('*, org_members(id, user_id, email, role, status)')
       .eq('owner_id', user.id)
       .order('created_at', { ascending: false })
 
@@ -34,7 +34,7 @@ export async function GET() {
     if (memberOrgIds.length > 0) {
       const { data } = await admin
         .from('organizations')
-        .select('*, org_members(id, email, role, status)')
+        .select('*, org_members(id, user_id, email, role, status)')
         .in('id', memberOrgIds)
         .order('created_at', { ascending: false })
       memberOrgs = data ?? []

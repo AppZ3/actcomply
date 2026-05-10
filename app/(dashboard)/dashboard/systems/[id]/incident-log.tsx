@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from 'react'
 
+// YYYY-MM-DD in the user's local timezone (default new Date().toISOString()
+// returns UTC, which is yesterday for evening AU timezones).
+function localToday(): string {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
 type Severity = 'immediate_risk' | 'serious' | 'malfunction' | 'near_miss'
 type Status = 'discovered' | 'under_review' | 'reported' | 'resolved'
 
@@ -56,7 +66,7 @@ export function IncidentLog({ assessmentId, isPaid }: Props) {
 
   const [form, setForm] = useState({
     title: '', description: '', severity: 'serious' as Severity,
-    discovery_date: new Date().toISOString().split('T')[0], notes: '',
+    discovery_date: localToday(), notes: '',
   })
 
   useEffect(() => {
@@ -82,7 +92,7 @@ export function IncidentLog({ assessmentId, isPaid }: Props) {
       if (!res.ok) throw new Error(data.error ?? 'Failed to log incident')
       setIncidents(prev => [data, ...prev])
       setShowForm(false)
-      setForm({ title: '', description: '', severity: 'serious', discovery_date: new Date().toISOString().split('T')[0], notes: '' })
+      setForm({ title: '', description: '', severity: 'serious', discovery_date: localToday(), notes: '' })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to log incident')
     } finally {

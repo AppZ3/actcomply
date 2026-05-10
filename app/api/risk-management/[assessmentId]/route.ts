@@ -196,6 +196,12 @@ Identify 4–5 specific risks with probability/severity/residual risk ratings. G
     const toolBlock = msg.content.find(b => b.type === 'tool_use') as Anthropic.ToolUseBlock | undefined
     if (!toolBlock) throw new Error('No tool response from Claude')
     const result = toolBlock.input as Record<string, unknown>
+
+    // Backfill required fields the model occasionally omits even when they are
+    // in the schema's `required` list. Keeps downstream renderers safe.
+    if (!Array.isArray(result.testing_requirements)) result.testing_requirements = []
+    if (typeof result.review_interval_months !== 'number') result.review_interval_months = 12
+
     result.generated_at = new Date().toISOString()
     result.model_changed_trigger = modelChanged
     result.version = nextVersion

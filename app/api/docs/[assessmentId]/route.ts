@@ -141,6 +141,13 @@ Sections required: General Description, Intended Purpose and Deployment Context,
     if (!toolBlock) throw new Error('No tool response from Claude')
     const doc = toolBlock.input as Record<string, unknown>
 
+    // Defensive backfill in case Claude omits a required field — keeps the
+    // renderer safe even if the model returns a partial structure.
+    if (typeof doc.title !== 'string') doc.title = 'EU AI Act Article 11 + Annex IV Technical Documentation'
+    if (typeof doc.regulatory_basis !== 'string') doc.regulatory_basis = ''
+    if (typeof doc.risk_level !== 'string') doc.risk_level = ''
+    if (!Array.isArray(doc.sections)) doc.sections = []
+
     doc.version = nextVersion
     doc.previous_versions = previousVersions
 

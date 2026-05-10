@@ -313,13 +313,13 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
             <div className="divide-y divide-white/5">
               {(assessment.processing_activities ?? []).map(activity => (
                 <div key={activity.id} className="px-6 py-4">
-                  <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
                     <span className="text-sm font-medium">{activity.name}</span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex flex-wrap items-center gap-2 min-w-0">
                       {activity.special_category && (
-                        <span className="text-xs bg-red-500/15 text-red-400 border border-red-500/30 px-2 py-0.5 rounded">Art. 9/10</span>
+                        <span className="text-xs bg-red-500/15 text-red-400 border border-red-500/30 px-2 py-0.5 rounded shrink-0">Art. 9/10</span>
                       )}
-                      <span className="text-xs font-mono text-blue-400">{activity.legal_basis}</span>
+                      <span className="text-xs font-mono text-blue-400 break-words min-w-0">{activity.legal_basis}</span>
                     </div>
                   </div>
                   {activity.special_category && activity.special_category_condition && (

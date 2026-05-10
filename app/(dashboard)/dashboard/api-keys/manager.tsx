@@ -131,9 +131,9 @@ export function ApiKeyManager() {
                 <div className="text-sm font-medium truncate">{k.name}</div>
                 <div className="text-xs text-gray-500 mt-0.5">
                   <span className="font-mono">{k.key_prefix}…</span>
-                  <span className="ml-3">Created {new Date(k.created_at).toLocaleDateString()}</span>
+                  <span className="ml-3">Created {new Date(k.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                   {k.last_used_at && (
-                    <span className="ml-3">Last used {new Date(k.last_used_at).toLocaleDateString()}</span>
+                    <span className="ml-3">Last used {new Date(k.last_used_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                   )}
                 </div>
               </div>

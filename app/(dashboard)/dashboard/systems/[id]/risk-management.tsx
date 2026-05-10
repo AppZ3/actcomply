@@ -243,7 +243,7 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
               </span>
             )}
             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${isOverdue ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-green-500/10 text-green-400 border-green-500/20'}`}>
-              {isOverdue ? 'Review overdue' : `Review due ${reviewDue.toLocaleDateString()}`}
+              {isOverdue ? 'Review overdue' : `Review due ${reviewDue.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`}
             </span>
           </div>
         </div>
@@ -393,8 +393,8 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-500">
-        <span>Review interval: every {plan.review_interval_months} months</span>
-        <span>Generated {new Date(plan.generated_at).toLocaleString()}</span>
+        <span>Review interval: every {plan.review_interval_months ?? 12} months</span>
+        <span>Generated {new Date(plan.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
       </div>
     </div>
   )

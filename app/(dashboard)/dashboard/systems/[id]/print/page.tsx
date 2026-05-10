@@ -1,9 +1,16 @@
+import type { Metadata } from 'next'
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
 import { PrintTrigger } from './print-trigger'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const { data } = await getSupabaseAdmin().from('assessments').select('name').eq('id', id).maybeSingle()
+  return { title: data?.name ? `${data.name} — Print` : 'Print' }
+}
 
 const RISK_LABELS: Record<RiskLevel, string> = {
   PROHIBITED:   'PROHIBITED',

@@ -97,6 +97,55 @@ export async function sendAlertDigestEmail({
   })
 }
 
+export async function sendInviteEmail({
+  to,
+  orgName,
+  inviterEmail,
+  role,
+}: {
+  to: string
+  orgName: string
+  inviterEmail: string
+  role: string
+}) {
+  const roleLabel = role.charAt(0).toUpperCase() + role.slice(1)
+  await getResend().emails.send({
+    from: 'ActComply <hello@getactcomply.com>',
+    to,
+    subject: `${inviterEmail} invited you to ${orgName} on ActComply`,
+    html: `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
+        <div style="background:#0f172a;padding:24px 32px;border-radius:12px 12px 0 0">
+          <span style="color:#fff;font-weight:700;font-size:18px">ActComply</span>
+        </div>
+        <div style="border:1px solid #e2e8f0;border-top:none;padding:32px;border-radius:0 0 12px 12px">
+          <h2 style="margin:0 0 12px;font-size:22px">You've been invited</h2>
+          <p style="color:#475569;line-height:1.6;margin:0 0 16px">
+            <strong>${inviterEmail}</strong> invited you to join
+            <strong>${orgName}</strong> on ActComply as a <strong>${roleLabel}</strong>.
+          </p>
+          <p style="color:#475569;line-height:1.6;margin:0 0 24px">
+            ActComply is the EU AI Act compliance platform — sign in with this email
+            address (no password needed) to accept the invite and access ${orgName}'s
+            AI inventory, risk classifications, and compliance docs.
+          </p>
+          <a href="https://www.getactcomply.com/login?email=${encodeURIComponent(to)}" style="background:#2563eb;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+            Accept invite →
+          </a>
+          <p style="margin-top:32px;font-size:13px;color:#64748b;line-height:1.6">
+            The invite is bound to <strong>${to}</strong> — sign in with that exact
+            address and you'll be added to ${orgName} automatically.
+          </p>
+          <p style="margin-top:24px;font-size:12px;color:#94a3b8">
+            Didn't expect this email? You can safely ignore it — no account is
+            created until you sign in.
+          </p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 export async function sendAlertEmail({
   to,
   title,

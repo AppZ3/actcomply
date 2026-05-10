@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 interface Member {
   id: string
+  user_id: string | null
   email: string
   role: string
   status: string
@@ -22,7 +23,8 @@ interface Org {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  admin: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
+  owner:  'text-amber-300 bg-amber-500/10 border-amber-500/30',
+  admin:  'text-purple-400 bg-purple-500/10 border-purple-500/30',
   member: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
   viewer: 'text-gray-400 bg-gray-500/10 border-gray-500/30',
 }
@@ -39,6 +41,8 @@ export function OrgManager({ userId }: { userId: string }) {
   const [inviting, setInviting] = useState<string | null>(null)
   const [brandingDraft, setBrandingDraft] = useState<Record<string, { brand_name: string; logo_url: string; brand_color: string }>>({})
   const [savingBranding, setSavingBranding] = useState<string | null>(null)
+  const [uploadingLogo, setUploadingLogo] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState<Record<string, string | null>>({})
 
   const load = useCallback(async () => {
     try {
@@ -134,6 +138,50 @@ export function OrgManager({ userId }: { userId: string }) {
       setError('Failed to save branding.')
     } finally {
       setSavingBranding(null)
+    }
+  }
+
+  async function uploadLogo(orgId: string, file: File) {
+    setUploadingLogo(orgId)
+    setLogoError(prev => ({ ...prev, [orgId]: null }))
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await fetch(`/api/orgs/${orgId}/branding/logo`, { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) {
+        setLogoError(prev => ({ ...prev, [orgId]: data.error ?? 'Upload failed.' }))
+        return
+      }
+      // Reflect the new URL both in the org row and in the in-flight draft so
+      // the preview updates and a follow-up "Save branding" doesn't overwrite
+      // the new URL with a stale one from the draft.
+      setOrgs(prev => prev.map(o => o.id === orgId ? { ...o, logo_url: data.logo_url } : o))
+      setBrandingDraft(prev => prev[orgId] ? { ...prev, [orgId]: { ...prev[orgId], logo_url: data.logo_url } } : prev)
+    } catch {
+      setLogoError(prev => ({ ...prev, [orgId]: 'Upload failed.' }))
+    } finally {
+      setUploadingLogo(null)
+    }
+  }
+
+  async function removeLogo(orgId: string) {
+    if (!confirm('Remove the org logo?')) return
+    setUploadingLogo(orgId)
+    setLogoError(prev => ({ ...prev, [orgId]: null }))
+    try {
+      const res = await fetch(`/api/orgs/${orgId}/branding/logo`, { method: 'DELETE' })
+      const data = await res.json()
+      if (!res.ok) {
+        setLogoError(prev => ({ ...prev, [orgId]: data.error ?? 'Failed to remove.' }))
+        return
+      }
+      setOrgs(prev => prev.map(o => o.id === orgId ? { ...o, logo_url: null } : o))
+      setBrandingDraft(prev => prev[orgId] ? { ...prev, [orgId]: { ...prev[orgId], logo_url: '' } } : prev)
+    } catch {
+      setLogoError(prev => ({ ...prev, [orgId]: 'Failed to remove.' }))
+    } finally {
+      setUploadingLogo(null)
     }
   }
 
@@ -253,14 +301,46 @@ export function OrgManager({ userId }: { userId: string }) {
                           />
                         </div>
                         <div className="sm:col-span-2">
-                          <label className="text-xs text-gray-400 block mb-1">Logo URL (https)</label>
-                          <input
-                            type="url"
-                            value={brandingDraft[org.id]?.logo_url ?? org.logo_url ?? ''}
-                            onChange={e => setDraftField(org.id, 'logo_url', e.target.value)}
-                            placeholder="https://example.com/logo.png"
-                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500/50"
-                          />
+                          <label className="text-xs text-gray-400 block mb-1">Logo</label>
+                          <div className="flex items-stretch gap-2">
+                            <input
+                              type="url"
+                              value={brandingDraft[org.id]?.logo_url ?? org.logo_url ?? ''}
+                              onChange={e => setDraftField(org.id, 'logo_url', e.target.value)}
+                              placeholder="https://example.com/logo.png — or click Upload"
+                              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500/50"
+                            />
+                            <label className={`text-sm border border-white/10 hover:bg-white/5 px-3 py-2 rounded-lg transition cursor-pointer flex items-center gap-1.5 ${uploadingLogo === org.id ? 'opacity-50 pointer-events-none' : ''}`}>
+                              {uploadingLogo === org.id ? 'Uploading…' : 'Upload'}
+                              <input
+                                type="file"
+                                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                                disabled={uploadingLogo === org.id}
+                                onChange={e => {
+                                  const f = e.target.files?.[0]
+                                  if (f) uploadLogo(org.id, f)
+                                  e.target.value = '' // allow re-uploading the same file
+                                }}
+                                className="hidden"
+                              />
+                            </label>
+                            {(brandingDraft[org.id]?.logo_url ?? org.logo_url) && (
+                              <button
+                                type="button"
+                                onClick={() => removeLogo(org.id)}
+                                disabled={uploadingLogo === org.id}
+                                className="text-sm border border-red-500/30 text-red-400 hover:bg-red-500/10 disabled:opacity-50 px-3 py-2 rounded-lg transition"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Paste an https URL or upload a file (PNG · JPG · WebP · SVG, ≤ 2 MB).
+                          </p>
+                          {logoError[org.id] && (
+                            <p className="text-xs text-red-400 mt-1">{logoError[org.id]}</p>
+                          )}
                         </div>
                         <div>
                           <label className="text-xs text-gray-400 block mb-1">Accent colour</label>
@@ -309,29 +389,33 @@ export function OrgManager({ userId }: { userId: string }) {
                   ) : (
                     <div className="space-y-2">
                       <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Members</div>
-                      {org.org_members.map(m => (
-                        <div key={m.id} className="flex items-center justify-between gap-3 bg-black/20 rounded-xl px-4 py-2.5">
-                          <div className="min-w-0">
-                            <div className="text-sm truncate">{m.email}</div>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className={`text-xs border px-1.5 py-0.5 rounded ${ROLE_COLORS[m.role] ?? ''}`}>
-                                {m.role}
-                              </span>
-                              {m.status === 'pending' && (
-                                <span className="text-xs text-yellow-400">pending</span>
-                              )}
+                      {org.org_members.map(m => {
+                        const isOwner = m.user_id === org.owner_id
+                        const displayRole = isOwner ? 'owner' : m.role
+                        return (
+                          <div key={m.id} className="flex items-center justify-between gap-3 bg-black/20 rounded-xl px-4 py-2.5">
+                            <div className="min-w-0">
+                              <div className="text-sm truncate">{m.email}</div>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span className={`text-xs border px-1.5 py-0.5 rounded ${ROLE_COLORS[displayRole] ?? ''}`}>
+                                  {displayRole}
+                                </span>
+                                {m.status === 'pending' && (
+                                  <span className="text-xs text-yellow-400">pending</span>
+                                )}
+                              </div>
                             </div>
+                            {org.owner_id === userId && !isOwner && (
+                              <button
+                                onClick={() => removeMember(org.id, m.id)}
+                                className="text-xs text-red-400 hover:text-red-300 border border-red-500/30 px-2.5 py-1 rounded-lg transition flex-shrink-0"
+                              >
+                                Remove
+                              </button>
+                            )}
                           </div>
-                          {org.owner_id === userId && (
-                            <button
-                              onClick={() => removeMember(org.id, m.id)}
-                              className="text-xs text-red-400 hover:text-red-300 border border-red-500/30 px-2.5 py-1 rounded-lg transition flex-shrink-0"
-                            >
-                              Remove
-                            </button>
-                          )}
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )}
                 </div>

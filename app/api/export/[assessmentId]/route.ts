@@ -24,6 +24,8 @@ export async function GET(
       { data: gdprAssessment },
       { data: riskPlan },
       { data: progress },
+      { data: incidents },
+      { data: auditLog },
     ] = await Promise.all([
       supabase.from('assessments').select('*').eq('id', assessmentId).eq('user_id', user.id).single(),
       admin.from('technical_docs').select('*').eq('assessment_id', assessmentId).eq('user_id', user.id).single(),
@@ -31,6 +33,8 @@ export async function GET(
       admin.from('gdpr_assessments').select('*').eq('assessment_id', assessmentId).eq('user_id', user.id).single(),
       admin.from('risk_management_plans').select('*').eq('assessment_id', assessmentId).eq('user_id', user.id).single(),
       supabase.from('requirement_progress').select('*').eq('assessment_id', assessmentId).eq('user_id', user.id),
+      admin.from('incidents').select('*').eq('assessment_id', assessmentId).eq('user_id', user.id).order('discovery_date', { ascending: false }),
+      admin.from('audit_log').select('*').eq('assessment_id', assessmentId).eq('user_id', user.id).order('created_at', { ascending: false }),
     ])
 
     if (!assessment) return NextResponse.json({ error: 'Assessment not found' }, { status: 404 })
@@ -49,6 +53,8 @@ export async function GET(
       logging_specification: loggingSpec ?? null,
       gdpr_dpia_fria: gdprAssessment ?? null,
       risk_management_plan: riskPlan ?? null,
+      incidents: incidents ?? [],
+      audit_log: auditLog ?? [],
     }
 
     const filename = `actcomply-${assessment.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${new Date().toISOString().split('T')[0]}.json`

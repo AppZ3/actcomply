@@ -1,6 +1,13 @@
+import type { Metadata } from 'next'
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const { data } = await getSupabaseAdmin().from('assessments').select('name').eq('id', id).maybeSingle()
+  return { title: data?.name ? `${data.name} — Conformity Pack` : 'Conformity Pack' }
+}
 import { getPlanFeatures } from '@/lib/stripe'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
 import { PrintTrigger } from '../print/print-trigger'
@@ -33,6 +40,24 @@ function statusColor(status: string) {
   if (status === 'done') return 'text-green-700 bg-green-50 border-green-200'
   if (status === 'in_progress') return 'text-yellow-700 bg-yellow-50 border-yellow-200'
   return 'text-gray-500 bg-gray-50 border-gray-200'
+}
+
+// audit_log.detail is a JSONB blob whose shape varies per action. Render it as
+// a compact, human-readable string so it never reaches React as a raw object.
+function formatAuditDetail(detail: unknown): string {
+  if (detail == null) return ''
+  if (typeof detail === 'string') return detail
+  if (typeof detail !== 'object') return String(detail)
+  const d = detail as Record<string, unknown>
+  if (typeof d.requirement_id === 'string' && typeof d.status === 'string') {
+    const status = String(d.status).replaceAll('_', ' ')
+    const note = typeof d.notes === 'string' && d.notes ? ` — ${d.notes}` : ''
+    return `${d.requirement_id} → ${status}${note}`
+  }
+  return Object.entries(d)
+    .filter(([, v]) => v != null && v !== '')
+    .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : String(v)}`)
+    .join(' · ')
 }
 
 export default async function ConformityPackPage({ params }: { params: Promise<{ id: string }> }) {
@@ -617,7 +642,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
               10. Audit Trail
             </h2>
             <p className="text-xs text-gray-400 mb-4">
-              Change log for this system — {auditRows.length} entries
+              Change log for this system — {auditRows.length} {auditRows.length === 1 ? 'entry' : 'entries'}
             </p>
             <table className="w-full text-xs border-collapse">
               <thead>
@@ -634,7 +659,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
                       {new Date(row.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="py-1.5 pr-3 text-gray-700 font-medium align-top">{row.action}</td>
-                    <td className="py-1.5 text-gray-600 align-top">{row.detail}</td>
+                    <td className="py-1.5 text-gray-600 align-top">{formatAuditDetail(row.detail)}</td>
                   </tr>
                 ))}
               </tbody>
