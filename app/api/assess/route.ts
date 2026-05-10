@@ -135,6 +135,22 @@ export async function POST(request: NextRequest) {
       userPlan: profile?.plan,
       context: {},
     })
+    // Distinguish upstream-AI quota / rate-limit issues from real failures so
+    // the user sees something actionable (and a partner like Tariq doesn't
+    // file a Tuesday-blocking bug for what is actually billing).
+    const msg = error instanceof Error ? error.message : String(error)
+    if (/credit balance is too low|insufficient_quota|over_capacity/i.test(msg)) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable: AI provider quota exhausted. Try again in a few minutes — this resolves automatically once topped up.' },
+        { status: 503 }
+      )
+    }
+    if (/rate.?limit/i.test(msg)) {
+      return NextResponse.json(
+        { error: 'AI provider is rate-limiting us right now. Wait 10–15 seconds and retry.' },
+        { status: 429 }
+      )
+    }
     return NextResponse.json({ error: 'Assessment failed. Please try again.' }, { status: 500 })
   }
 }
