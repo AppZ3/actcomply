@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 
 // Seed alerts if none exist — real EU AI Act milestones
 const SEED_ALERTS = [
@@ -30,11 +31,18 @@ const SEED_ALERTS = [
     published_at: '2026-01-15T00:00:00Z',
   },
   {
-    title: 'High-risk AI Act enforcement deadline: 109 days',
-    summary: 'Full enforcement of high-risk AI system obligations begins August 2, 2026. All high-risk AI systems must have completed conformity assessments, technical documentation, human oversight measures, and EU database registration before this date. Non-compliance fines reach €30M or 6% of global turnover.',
-    article_refs: 'Articles 9–27, 43, 51',
+    title: 'August 2, 2026: Enforcement powers go live — inventory must be complete',
+    summary: 'From August 2, 2026, supervisory authorities have full enforcement powers and are expected to review compliance with prohibited AI and GPAI obligations already in force. All organisations must have completed their AI inventory and classification by this date. High-risk system obligations (Annex III) have been extended to December 2, 2027 under the Omnibus agreement — but the regulator\'s starting pistol fires August 2 regardless.',
+    article_refs: 'Articles 5, 53–55, Annex III',
     severity: 'critical',
     published_at: '2026-04-15T00:00:00Z',
+  },
+  {
+    title: 'Omnibus agreement: High-risk AI deadlines extended',
+    summary: 'A provisional political agreement reached in May 2026 extends key EU AI Act deadlines. High-risk AI systems (Annex III standalone) now face full obligations from December 2, 2027. High-risk AI embedded in regulated products (Annex I) has until August 2, 2028. The agreement requires formal adoption by Parliament and Council. Until then, treat August 2, 2026 as operative. Critically: enforcement powers are live from August 2, 2026 regardless of the Omnibus timeline.',
+    article_refs: 'Annex I, Annex III, Articles 9–27',
+    severity: 'warning',
+    published_at: '2026-05-08T00:00:00Z',
   },
   {
     title: 'Notified body accreditation process open',
@@ -84,7 +92,7 @@ export async function POST(req: Request) {
     const sent = results.filter(r => r.status === 'fulfilled').length
     return NextResponse.json({ alert, emailsSent: sent })
   } catch (err) {
-    console.error('Alert creation error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/alerts' })
     return NextResponse.json({ error: 'Failed to create alert.' }, { status: 500 })
   }
 }

@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import Anthropic from '@anthropic-ai/sdk'
+import { logError } from '@/lib/error-logger'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -183,7 +184,7 @@ Determine the correct Article 19 retention period based on the sector and purpos
 
     return NextResponse.json(spec)
   } catch (err) {
-    console.error('Logging spec generation error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/logging/[assessmentId]', userId: user.id, userEmail: user.email, userPlan: profile?.plan, context: { assessmentId } })
     return NextResponse.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 }

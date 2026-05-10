@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import { randomBytes, createHash } from 'crypto'
+import { logError } from '@/lib/error-logger'
 
 export async function GET() {
   const supabase = await createClient()
@@ -23,7 +24,7 @@ export async function GET() {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json(data ?? [])
   } catch (err) {
-    console.error('API keys fetch error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'GET /api/keys', userId: user.id, userEmail: user.email })
     return NextResponse.json({ error: 'Failed to fetch API keys.' }, { status: 500 })
   }
 }
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ ...data, raw_key: rawKey })
   } catch (err) {
-    console.error('API key create error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/keys', userId: user.id, userEmail: user.email })
     return NextResponse.json({ error: 'Failed to create API key.' }, { status: 500 })
   }
 }

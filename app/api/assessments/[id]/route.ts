@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
+import { logError } from '@/lib/error-logger'
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -17,7 +18,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ deleted: true })
   } catch (err) {
-    console.error('Assessment delete error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'DELETE /api/assessments/[id]', userId: user.id, userEmail: user.email, context: { id } })
     return NextResponse.json({ error: 'Failed to delete assessment. Please try again.' }, { status: 500 })
   }
 }

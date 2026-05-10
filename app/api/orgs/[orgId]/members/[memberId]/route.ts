@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 
 export async function DELETE(
   _req: NextRequest,
@@ -24,7 +25,7 @@ export async function DELETE(
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('Org member remove error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'DELETE /api/orgs/[orgId]/members/[memberId]', userId: user.id, userEmail: user.email, context: { orgId, memberId } })
     return NextResponse.json({ error: 'Failed to remove member.' }, { status: 500 })
   }
 }

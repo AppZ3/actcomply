@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getResend } from '@/lib/resend'
+import { logError } from '@/lib/error-logger'
 
 export async function POST(req: NextRequest) {
   try {
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('Lead capture error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/capture-lead' })
     return NextResponse.json({ success: true }) // don't fail the user flow even if email/DB fails
   }
 }

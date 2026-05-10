@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 
 export async function DELETE() {
   const supabase = await createClient()
@@ -23,7 +24,7 @@ export async function DELETE() {
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('Account deletion error:', err)
+    await logError(err, { route: 'DELETE /api/account', userId: user.id, userEmail: user.email })
     return NextResponse.json({ error: 'Account deletion failed. Please contact support.' }, { status: 500 })
   }
 }

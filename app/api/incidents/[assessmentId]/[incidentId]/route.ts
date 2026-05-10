@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 
 export async function PATCH(
   req: NextRequest,
@@ -40,7 +41,7 @@ export async function PATCH(
     if (!data) return NextResponse.json({ error: 'Incident not found' }, { status: 404 })
     return NextResponse.json(data)
   } catch (err) {
-    console.error('Incident update error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'PATCH /api/incidents/[assessmentId]/[incidentId]', userId: user.id, userEmail: user.email, context: { assessmentId, incidentId } })
     return NextResponse.json({ error: 'Failed to update incident.' }, { status: 500 })
   }
 }

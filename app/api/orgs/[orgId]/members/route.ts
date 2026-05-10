@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { logError } from '@/lib/error-logger'
 
 export async function POST(
   req: NextRequest,
@@ -70,7 +71,7 @@ export async function POST(
     }
     return NextResponse.json(data)
   } catch (err) {
-    console.error('Org member invite error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/orgs/[orgId]/members', userId: user.id, userEmail: user.email, context: { orgId } })
     return NextResponse.json({ error: 'Failed to invite member.' }, { status: 500 })
   }
 }

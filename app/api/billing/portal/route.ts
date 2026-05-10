@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { getStripe } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 
 export async function POST() {
   const supabase = await createClient()
@@ -28,7 +29,7 @@ export async function POST() {
     return NextResponse.json({ url: session.url })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    console.error('Stripe portal error:', message)
+    await logError(err, { route: 'POST /api/billing/portal', userId: user.id, userEmail: user.email })
     // If the customer no longer exists in Stripe, clear the stale ID
     if (message.includes('No such customer')) {
       await supabase.from('profiles').update({

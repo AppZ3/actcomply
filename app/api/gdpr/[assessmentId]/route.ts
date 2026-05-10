@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import Anthropic from '@anthropic-ai/sdk'
+import { logError } from '@/lib/error-logger'
 
 const ai = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -198,7 +199,7 @@ Assess whether a DPIA and FRIA are each required. Identify 2–3 processing acti
 
     return NextResponse.json(result)
   } catch (err) {
-    console.error('GDPR assessment error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/gdpr/[assessmentId]', userId: user.id, userEmail: user.email, userPlan: profile?.plan, context: { assessmentId } })
     return NextResponse.json({ error: 'Generation failed. Please try again.' }, { status: 500 })
   }
 }

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { assessAISystem, validateAssessmentInput, type AISystemInput } from '@/lib/anthropic'
 import { createHash } from 'crypto'
+import { logError } from '@/lib/error-logger'
 
 async function resolveApiKey(req: NextRequest): Promise<{ userId: string } | null> {
   const auth = req.headers.get('authorization') ?? ''
@@ -31,8 +32,9 @@ async function resolveApiKey(req: NextRequest): Promise<{ userId: string } | nul
 }
 
 export async function POST(req: NextRequest) {
+  let caller: { userId: string } | null = null
   try {
-    const caller = await resolveApiKey(req)
+    caller = await resolveApiKey(req)
     if (!caller) {
       return NextResponse.json({ error: 'Invalid or missing API key.' }, { status: 401 })
     }
@@ -63,7 +65,7 @@ export async function POST(req: NextRequest) {
       estimated_effort: result.estimatedEffort,
     })
   } catch (err) {
-    console.error('v1/assess error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/v1/assess', userId: caller?.userId })
     return NextResponse.json({ error: 'Assessment failed.' }, { status: 500 })
   }
 }

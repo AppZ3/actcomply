@@ -6,6 +6,7 @@ export const maxDuration = 60
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 
 export async function GET(req: NextRequest) {
   const auth = req.headers.get('authorization')
@@ -73,7 +74,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ sent })
   } catch (err) {
-    console.error('Alert digest cron error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'GET /api/cron/alert-digest' })
     return NextResponse.json({ error: 'Digest failed' }, { status: 500 })
   }
 }

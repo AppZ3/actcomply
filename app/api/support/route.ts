@@ -2,6 +2,7 @@
 // Receives support form submissions and forwards to the outreach tool pipeline
 
 import { NextRequest, NextResponse } from 'next/server'
+import { logError } from '@/lib/error-logger'
 
 const OUTREACH_URL = 'https://outreach-tool-navy.vercel.app'
 
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
     if (!res.ok) return NextResponse.json({ error: 'Failed to submit request' }, { status: 500 })
     return NextResponse.json({ ok: true })
   } catch (err) {
-    console.error('Support route error:', err)
+    await logError(err, { route: 'POST /api/support' })
     return NextResponse.json({ error: 'Failed to submit request. Please email support directly.' }, { status: 500 })
   }
 }
