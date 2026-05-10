@@ -106,6 +106,19 @@ export async function POST(req: NextRequest) {
     return jsonWithCors(responsePayload)
   } catch (err) {
     await logError(err, { route: 'POST /api/v1/assess', userId: caller.userId })
+    // Surface Anthropic-side billing / rate-limit / quota errors to integrators
+    // instead of swallowing as generic 500 — they need to know whether to
+    // retry, upgrade, or contact support.
+    const msg = err instanceof Error ? err.message : String(err)
+    if (/credit balance is too low|insufficient_quota|over_capacity/i.test(msg)) {
+      return jsonWithCors(
+        { error: 'Service temporarily unavailable: upstream AI provider quota exhausted. Contact support@getactcomply.com.' },
+        { status: 503 }
+      )
+    }
+    if (/rate.?limit/i.test(msg)) {
+      return jsonWithCors({ error: 'Rate limited by upstream AI provider. Retry after a few seconds.' }, { status: 429 })
+    }
     return jsonWithCors({ error: 'Assessment failed.' }, { status: 500 })
   }
 }
