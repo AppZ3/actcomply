@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { assessAISystem, validateAssessmentInput, type AISystemInput } from '@/lib/anthropic'
 import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { getActiveOrgId } from '@/lib/active-org'
 import { logError } from '@/lib/error-logger'
 
 export async function POST(request: NextRequest) {
   try {
-    const body: AISystemInput & { prefillId?: string } = await request.json()
+    let body: AISystemInput & { prefillId?: string }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Request body is required' }, { status: 400 })
+    }
     const { prefillId, ...assessmentInput } = body
 
     if (!assessmentInput.name || !assessmentInput.description || !assessmentInput.purpose || !assessmentInput.sector) {
@@ -96,10 +102,15 @@ export async function POST(request: NextRequest) {
         if (updateError) console.error('Failed to update assessment:', updateError.message)
         savedId = updated?.id ?? prefillId
       } else {
-        // New assessment: insert
+        // New assessment: insert. Scope to active org if one is selected;
+        // otherwise the assessment lands in the user's personal workspace
+        // (org_id IS NULL). Triggers in add_org_partitioning.sql cause every
+        // child record (technical_docs, logging_specs, etc.) to inherit the
+        // assessment's org_id automatically.
+        const activeOrgId = await getActiveOrgId()
         const { data: saved, error: saveError } = await supabase
           .from('assessments')
-          .insert({ user_id: user.id, ...assessmentData })
+          .insert({ user_id: user.id, org_id: activeOrgId, ...assessmentData })
           .select('id')
           .single()
         if (saveError) console.error('Failed to save assessment:', saveError.message)

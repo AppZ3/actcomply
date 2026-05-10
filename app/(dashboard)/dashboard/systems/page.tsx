@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
+import { getActiveOrgId } from '@/lib/active-org'
 import type { RiskLevel } from '@/lib/eu-ai-act'
 
 export const metadata: Metadata = {
@@ -21,11 +22,18 @@ export default async function SystemsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: assessments } = await supabase
+  // Scope the list to the active workspace. Personal workspace = the user's
+  // own assessments without an org. Active org = whatever the user selected
+  // in the workspace switcher (RLS already restricts to orgs they can access).
+  const activeOrgId = await getActiveOrgId()
+  let query = supabase
     .from('assessments')
     .select('id, name, sector, risk_level, compliance_score, immediate_actions, created_at')
-    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+  query = activeOrgId
+    ? query.eq('org_id', activeOrgId)
+    : query.is('org_id', null).eq('user_id', user.id)
+  const { data: assessments } = await query
 
   return (
     <div className="p-8">

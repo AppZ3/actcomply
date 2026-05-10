@@ -12,9 +12,12 @@ interface Props {
   email: string
   unreadAlerts: number
   signOut: () => Promise<void>
+  // Multi-entity workspace switcher. Rendered between the brand and the nav.
+  // Slotted in as a node so sidebar.tsx stays unaware of org-fetching concerns.
+  orgSwitcher?: React.ReactNode
 }
 
-export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOut }: Props) {
+export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOut, orgSwitcher }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
 
@@ -38,6 +41,8 @@ export function Sidebar({ plan, planLabel, isActive, email, unreadAlerts, signOu
           </svg>
         </button>
       </div>
+
+      {orgSwitcher}
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         <NavLink href="/dashboard" label="Overview" icon={

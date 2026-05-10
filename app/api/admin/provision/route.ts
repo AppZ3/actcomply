@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
+import { logError } from '@/lib/error-logger'
 
 const ENTERPRISE_LIMIT = getPlanFeatures('enterprise').systemsLimit
 
@@ -38,15 +39,19 @@ export async function POST(req: NextRequest) {
       userId = invited.user.id
     }
 
-    // Upsert profile to enterprise plan
+    // Upsert profile to enterprise plan. subscription_status='active'
+    // suppresses the "Payment issue" warning in the dashboard sidebar; the
+    // rest of the codebase reads subscription_status, not is_active (which
+    // doesn't exist on the profiles table).
     const { error: profileErr } = await admin
       .from('profiles')
       .upsert(
         {
           id: userId,
+          email: email.trim().toLowerCase(),
           plan,
           systems_limit: ENTERPRISE_LIMIT,
-          is_active: true,
+          subscription_status: 'active',
           updated_at: new Date().toISOString(),
         },
         { onConflict: 'id' }
@@ -62,7 +67,7 @@ export async function POST(req: NextRequest) {
       is_new: !existing,
     })
   } catch (err) {
-    console.error('Admin provision error:', err instanceof Error ? err.stack : String(err))
+    await logError(err, { route: 'POST /api/admin/provision' })
     return NextResponse.json({ error: 'Provisioning failed.' }, { status: 500 })
   }
 }
