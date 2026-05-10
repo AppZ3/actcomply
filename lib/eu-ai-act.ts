@@ -91,7 +91,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 9',
     title: 'Risk Management System',
     description: 'Establish, implement, document and maintain a risk management system throughout the AI lifecycle. Must identify and analyse known and foreseeable risks, estimate and evaluate risks that may emerge, and adopt risk management measures.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -99,7 +99,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 10',
     title: 'Data and Data Governance',
     description: 'Training, validation and testing data must meet quality criteria. Must address relevant design choices, data collection processes, data preparation operations, and examination for biases.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -107,7 +107,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 11 + Annex IV',
     title: 'Technical Documentation',
     description: 'Prepare comprehensive technical documentation before placing on market. Must include general description, detailed description of elements and development process, monitoring/functioning/control information, and validation/testing details.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -115,7 +115,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 12',
     title: 'Record-keeping and Logging',
     description: 'Automatically log events throughout the lifecycle. Logs must enable monitoring of operation, facilitate post-market monitoring, and support investigation of incidents.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'MEDIUM',
   },
   {
@@ -123,7 +123,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 13',
     title: 'Transparency and Information',
     description: 'Ensure AI system is sufficiently transparent. Provide instructions for use including identity of provider, system capabilities and limitations, performance metrics, known risks, and human oversight measures.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'MEDIUM',
   },
   {
@@ -131,7 +131,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 14',
     title: 'Human Oversight',
     description: 'Design and develop systems to allow effective human oversight. Humans must be able to fully understand capabilities and limitations, monitor operation, interpret outputs, and override/interrupt/stop the system.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -139,7 +139,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 15',
     title: 'Accuracy, Robustness and Cybersecurity',
     description: 'Achieve appropriate levels of accuracy, robustness, and cybersecurity. Must be resilient to errors, faults, inconsistencies, and adversarial attacks.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -147,7 +147,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 43',
     title: 'Conformity Assessment',
     description: 'Conduct conformity assessment before placing on market. Most high-risk AI systems require internal conformity assessment; some require third-party assessment (biometrics, critical infrastructure).',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -155,7 +155,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 47',
     title: 'EU Declaration of Conformity',
     description: 'Draw up written EU declaration of conformity for each high-risk AI system. Must contain information in Annex V and be updated as necessary.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'LOW',
   },
   {
@@ -163,7 +163,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 48',
     title: 'CE Marking',
     description: 'Affix CE marking to high-risk AI systems or their documentation to indicate compliance with the regulation.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'LOW',
   },
   {
@@ -171,7 +171,7 @@ export const HIGH_RISK_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 49',
     title: 'Registration in EU Database',
     description: 'Register high-risk AI system in the EU database before placing on market. Deployers of certain high-risk AI systems must also register.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'LOW',
   },
   {
@@ -191,7 +191,7 @@ export const GENERAL_PROVIDER_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 17',
     title: 'Quality Management System',
     description: 'Providers of high-risk AI systems must implement a quality management system covering strategy, design, development, testing, post-market monitoring, and documentation.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
   {
@@ -223,7 +223,7 @@ export const GENERAL_PROVIDER_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 26',
     title: 'Deployer Obligations',
     description: 'Deployers must use AI systems in accordance with instructions, assign human oversight to competent persons, monitor operation, and report incidents to the provider.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'MEDIUM',
   },
   {
@@ -231,7 +231,7 @@ export const GENERAL_PROVIDER_REQUIREMENTS: ComplianceRequirement[] = [
     article: 'Article 27',
     title: 'Fundamental Rights Impact Assessment',
     description: 'Deployers of certain high-risk AI systems must conduct a fundamental rights impact assessment before deployment. Register assessment results in the EU database.',
-    deadline: 'Before deployment',
+    deadline: 'Before deployment (Annex III: 2 Dec 2027 | Annex I: 2 Aug 2028)',
     effort: 'HIGH',
   },
 ]
@@ -316,11 +316,19 @@ export const LIMITED_RISK_REQUIREMENTS: ComplianceRequirement[] = [
   },
 ]
 
-// Total compliance obligations mapped across the EU AI Act (Regulation EU 2024/1689).
-// Counts: high-risk requirements × each Annex III sector + limited-risk obligations +
-// GPAI model obligations (Articles 53-55) + general provider obligations (Articles 16-27)
-// Update this number when new requirement categories are added to this file.
+// ── OMNIBUS AGREEMENT (May 2026) ──────────────────────────────────────────────
+// A provisional political agreement was reached in May 2026 extending key deadlines.
+// Requires formal adoption by Parliament and Council before taking effect.
+// Until formally adopted, treat August 2, 2026 as the operative enforcement date.
+//
+// AUGUST 2, 2026  — Enforcement powers go live. Prohibited AI + GPAI obligations
+//                   enforced. All inventory and classification must be complete.
+// DECEMBER 2, 2027 — High-risk AI (Annex III standalone systems) full obligations
+// AUGUST 2, 2028   — High-risk AI embedded in regulated products (Annex I)
+
 export const ENFORCEMENT_DEADLINE = new Date('2026-08-02T00:00:00Z')
+export const OMNIBUS_HIGH_RISK_ANNEX_III_DEADLINE = new Date('2027-12-02T00:00:00Z')
+export const OMNIBUS_HIGH_RISK_ANNEX_I_DEADLINE = new Date('2028-08-02T00:00:00Z')
 
 export function getDaysUntilEnforcement(): number {
   const diff = ENFORCEMENT_DEADLINE.getTime() - Date.now()

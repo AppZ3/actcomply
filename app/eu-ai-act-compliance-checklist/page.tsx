@@ -63,13 +63,16 @@ export default function ChecklistPage() {
 
       <div className="max-w-4xl mx-auto px-6 py-16">
         <div className="mb-12">
-          <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm px-3 py-1.5 rounded-full mb-6">
-            Updated April 2026 · Regulation (EU) 2024/1689
+          <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm px-3 py-1.5 rounded-full mb-4">
+            Updated May 2026 · Regulation (EU) 2024/1689 + Omnibus agreement
+          </div>
+          <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full mb-6 ml-2">
+            Omnibus: High-risk deadlines extended — Aug 2, 2026 enforcement powers still live
           </div>
           <h1 className="text-4xl font-bold mb-4">EU AI Act Compliance Checklist</h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
             All <strong className="text-gray-900 dark:text-white">{total} compliance obligations</strong> under the EU AI Act (Regulation EU 2024/1689),
-            mapped by article, effort, and deadline. Enforcement begins <strong className="text-gray-900 dark:text-white">August 2, 2026</strong>.
+            mapped by article, effort, and deadline. Enforcement powers go live <strong className="text-gray-900 dark:text-white">August 2, 2026</strong>. High-risk AI (Annex III) obligations extended to <strong className="text-gray-900 dark:text-white">December 2, 2027</strong> under the Omnibus provisional agreement.
           </p>
           <div className="bg-blue-600 text-white rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>

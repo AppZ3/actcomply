@@ -100,7 +100,7 @@ export default function LandingPage() {
           {
             '@type': 'Question',
             name: 'What is the EU AI Act enforcement deadline?',
-            acceptedAnswer: { '@type': 'Answer', text: 'The EU AI Act (Regulation EU 2024/1689) begins full enforcement on August 2, 2026. High-risk AI systems must be compliant before this date.' },
+            acceptedAnswer: { '@type': 'Answer', text: 'EU AI Act enforcement powers go live August 2, 2026 — all organisations must have completed their AI inventory and risk classification by this date. Under the May 2026 Omnibus provisional agreement (pending formal adoption), full obligations for high-risk AI systems (Annex III) are extended to December 2, 2027, and for AI embedded in regulated products (Annex I) to August 2, 2028. Prohibited AI and GPAI obligations remain enforced from August 2, 2026.' },
           },
           {
             '@type': 'Question',
@@ -149,9 +149,12 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 py-28 text-center">
-        <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-2 rounded-full mb-8">
+        <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-2 rounded-full mb-4">
           <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          EU AI Act enforcement begins August 2, 2026
+          Enforcement powers live August 2, 2026 — inventory must be complete
+        </div>
+        <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full mb-8">
+          Omnibus update: High-risk obligations extended to Dec 2027 (Annex III) · Formal adoption pending
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
@@ -189,7 +192,7 @@ export default function LandingPage() {
           {[
             { value: '€35M', label: 'Maximum fine per violation' },
             { value: '7%', label: 'Of global turnover at risk' },
-            { value: days !== null ? `${days} days` : '— days', label: 'Until enforcement begins', live: true },
+            { value: days !== null ? `${days} days` : '— days', label: 'Until enforcement powers go live', live: true },
             { value: requirementsMapped !== null ? `${requirementsMapped}+` : '15+', label: 'Compliance requirements mapped', live: true },
           ].map(stat => (
             <div key={stat.label}>
