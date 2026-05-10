@@ -15,6 +15,9 @@ interface Org {
   name: string
   owner_id: string
   created_at: string
+  brand_name?: string | null
+  logo_url?: string | null
+  brand_color?: string | null
   org_members: Member[]
 }
 
@@ -34,6 +37,8 @@ export function OrgManager({ userId }: { userId: string }) {
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState<'admin' | 'member' | 'viewer'>('member')
   const [inviting, setInviting] = useState<string | null>(null)
+  const [brandingDraft, setBrandingDraft] = useState<Record<string, { brand_name: string; logo_url: string; brand_color: string }>>({})
+  const [savingBranding, setSavingBranding] = useState<string | null>(null)
 
   const load = useCallback(async () => {
     try {
@@ -90,6 +95,45 @@ export function OrgManager({ userId }: { userId: string }) {
       setError('Failed to invite member.')
     } finally {
       setInviting(null)
+    }
+  }
+
+  function setDraftField(orgId: string, field: 'brand_name' | 'logo_url' | 'brand_color', value: string) {
+    const org = orgs.find(o => o.id === orgId)
+    setBrandingDraft(prev => ({
+      ...prev,
+      [orgId]: {
+        brand_name: prev[orgId]?.brand_name ?? org?.brand_name ?? '',
+        logo_url:   prev[orgId]?.logo_url   ?? org?.logo_url   ?? '',
+        brand_color: prev[orgId]?.brand_color ?? org?.brand_color ?? '#0f172a',
+        [field]: value,
+      },
+    }))
+  }
+
+  async function saveBranding(orgId: string) {
+    const draft = brandingDraft[orgId]
+    if (!draft) return
+    setSavingBranding(orgId)
+    setError('')
+    try {
+      const res = await fetch(`/api/orgs/${orgId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand_name: draft.brand_name || null,
+          logo_url: draft.logo_url || null,
+          brand_color: draft.brand_color || null,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error ?? 'Failed to save branding.'); return }
+      setOrgs(prev => prev.map(o => o.id === orgId ? { ...o, ...data } : o))
+      setBrandingDraft(prev => { const next = { ...prev }; delete next[orgId]; return next })
+    } catch {
+      setError('Failed to save branding.')
+    } finally {
+      setSavingBranding(null)
     }
   }
 
@@ -189,6 +233,73 @@ export function OrgManager({ userId }: { userId: string }) {
                           {inviting === org.id ? 'Inviting…' : 'Invite'}
                         </button>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Branding (owner-only) */}
+                  {org.owner_id === userId && (
+                    <div className="border-t border-white/10 pt-4">
+                      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Branding</div>
+                      <p className="text-xs text-gray-500 mb-3">Applied to printed compliance reports + the dashboard workspace badge. Logo URL must be a public https URL.</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="sm:col-span-2">
+                          <label className="text-xs text-gray-400 block mb-1">Display name (override on prints)</label>
+                          <input
+                            type="text"
+                            value={brandingDraft[org.id]?.brand_name ?? org.brand_name ?? ''}
+                            onChange={e => setDraftField(org.id, 'brand_name', e.target.value)}
+                            placeholder={org.name}
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500/50"
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="text-xs text-gray-400 block mb-1">Logo URL (https)</label>
+                          <input
+                            type="url"
+                            value={brandingDraft[org.id]?.logo_url ?? org.logo_url ?? ''}
+                            onChange={e => setDraftField(org.id, 'logo_url', e.target.value)}
+                            placeholder="https://example.com/logo.png"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500/50"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-400 block mb-1">Accent colour</label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={brandingDraft[org.id]?.brand_color ?? org.brand_color ?? '#0f172a'}
+                              onChange={e => setDraftField(org.id, 'brand_color', e.target.value)}
+                              className="h-9 w-12 bg-transparent border border-white/10 rounded-lg cursor-pointer"
+                            />
+                            <input
+                              type="text"
+                              value={brandingDraft[org.id]?.brand_color ?? org.brand_color ?? '#0f172a'}
+                              onChange={e => setDraftField(org.id, 'brand_color', e.target.value)}
+                              placeholder="#0f172a"
+                              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm font-mono outline-none focus:border-blue-500/50"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      {(brandingDraft[org.id]?.logo_url ?? org.logo_url) && (
+                        <div className="mt-3 flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+                          <span className="text-xs text-gray-500">Preview:</span>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={brandingDraft[org.id]?.logo_url ?? org.logo_url ?? ''}
+                            alt="Logo preview"
+                            className="h-8 w-auto bg-white rounded"
+                            onError={e => { e.currentTarget.style.display = 'none' }}
+                          />
+                        </div>
+                      )}
+                      <button
+                        onClick={() => saveBranding(org.id)}
+                        disabled={savingBranding === org.id || !brandingDraft[org.id]}
+                        className="mt-3 text-sm bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition"
+                      >
+                        {savingBranding === org.id ? 'Saving…' : 'Save branding'}
+                      </button>
                     </div>
                   )}
 
