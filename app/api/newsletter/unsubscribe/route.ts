@@ -1,6 +1,6 @@
 // GET /api/newsletter/unsubscribe?token=<token>
 // One-click unsubscribe. Marks the subscriber as unsubscribed and shows a
-// minimal HTML confirmation page (no JavaScript needed — the unsubscribe link
+// minimal HTML confirmation page (no JavaScript needed, the unsubscribe link
 // in emails should "just work" even with images blocked).
 
 import { NextRequest } from 'next/server'
@@ -14,7 +14,7 @@ function html(body: string, status = 200) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Unsubscribe — ActComply</title>
+  <title>Unsubscribe, ActComply</title>
   <style>
     body { margin:0; font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif; background:#f8fafc; color:#0f172a; }
     .wrap { max-width:560px; margin:80px auto; padding:24px; }
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
     return html(
       `<h1>You're unsubscribed</h1>
        <p>${data.email} won't receive the ActComply newsletter anymore.</p>
-       <p>Changed your mind? Just sign up again at <a href="https://getactcomply.com">getactcomply.com</a> — no hard feelings.</p>`,
+       <p>Changed your mind? Just sign up again at <a href="https://getactcomply.com">getactcomply.com</a>, no hard feelings.</p>`,
       200
     )
   } catch (err) {

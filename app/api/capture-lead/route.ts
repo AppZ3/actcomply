@@ -33,15 +33,15 @@ export async function POST(req: NextRequest) {
 
     const urgencyMap: Record<string, string> = {
       PROHIBITED: 'Your AI system may be <strong>prohibited in the EU</strong> under Article 5. You must cease deployment immediately and review whether any modifications can bring it into compliance.',
-      HIGH_RISK: 'Your AI system is <strong>high-risk</strong> under the EU AI Act. You have until <strong>August 2, 2026</strong> to complete 12+ compliance obligations — including technical documentation, risk management, and EU database registration.',
+      HIGH_RISK: 'Your AI system is <strong>high-risk</strong> under the EU AI Act. You have until <strong>August 2, 2026</strong> to complete 12+ compliance obligations, including technical documentation, risk management, and EU database registration.',
       LIMITED_RISK: 'Your AI system has <strong>transparency obligations</strong> under Article 50. Users must be informed they are interacting with AI. These are straightforward to implement but legally required.',
-      MINIMAL_RISK: 'Good news — your AI system has <strong>minimal obligations</strong> under the EU AI Act. No mandatory requirements apply, though voluntary codes of conduct are encouraged.',
+      MINIMAL_RISK: 'Good news, your AI system has <strong>minimal obligations</strong> under the EU AI Act. No mandatory requirements apply, though voluntary codes of conduct are encouraged.',
     }
 
     await getResend().emails.send({
       from: 'ActComply <hello@getactcomply.com>',
       to: email,
-      subject: `Your EU AI Act assessment result: ${label}${systemName ? ` — ${systemName}` : ''}`,
+      subject: `Your EU AI Act assessment result: ${label}${systemName ? `, ${systemName}` : ''}`,
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
           <div style="background:#0f172a;padding:24px 32px;border-radius:12px 12px 0 0;display:flex;align-items:center;gap:12px">

@@ -136,7 +136,7 @@ export async function POST(
     .single()
 
   const modelChangeNote = modelChanged
-    ? '\n\nIMPORTANT: The operator has flagged a model change event. Re-evaluate all risks under Article 9(4) — in particular data drift, performance degradation, and any new failure modes introduced by the updated model. Update monitoring indicators and change triggers accordingly.'
+    ? '\n\nIMPORTANT: The operator has flagged a model change event. Re-evaluate all risks under Article 9(4), in particular data drift, performance degradation, and any new failure modes introduced by the updated model. Update monitoring indicators and change triggers accordingly.'
     : ''
 
   const existingContent = existing?.content as Record<string, unknown> | null
@@ -153,7 +153,7 @@ export async function POST(
   }
 
   const existingContext = existing
-    ? `\n\nPrevious risk plan summary (update it — do not simply repeat):\n- Overall level: ${(existing.content as Record<string,unknown>).overall_risk_level}\n- ${((existing.content as Record<string, unknown>).risk_items as unknown[])?.length ?? 0} risks identified\n- Review interval: ${(existing.content as Record<string,unknown>).review_interval_months} months`
+    ? `\n\nPrevious risk plan summary (update it, do not simply repeat):\n- Overall level: ${(existing.content as Record<string,unknown>).overall_risk_level}\n- ${((existing.content as Record<string, unknown>).risk_items as unknown[])?.length ?? 0} risks identified\n- Review interval: ${(existing.content as Record<string,unknown>).review_interval_months} months`
     : ''
 
   try {

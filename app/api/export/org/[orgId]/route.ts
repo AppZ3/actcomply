@@ -2,7 +2,7 @@
 // Bundle every assessment + artefact for one organisation as a single JSON
 // archive. Useful for handing a complete compliance pack to a client (or to a
 // market-surveillance authority on request). Side letter §6 commits to this
-// for white-label engagements — the per-org export is the "system of record"
+// for white-label engagements, the per-org export is the "system of record"
 // the client takes away when the engagement ends.
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -58,7 +58,7 @@ export async function GET(
         org_id: orgId,
         org_name: org.name,
         assessment_count: assessments?.length ?? 0,
-        regulation: 'Regulation (EU) 2024/1689 — EU AI Act',
+        regulation: 'Regulation (EU) 2024/1689, EU AI Act',
         note:
           'Complete compliance pack for this organisation. ' +
           'Retain for the duration required under Article 18 (10 years from market placement).',

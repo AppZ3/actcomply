@@ -1,4 +1,4 @@
-// GET /api/newsletter/list — admin-authed list of recent issues + active
+// GET /api/newsletter/list, admin-authed list of recent issues + active
 // subscriber count. Powers the composer UI in the outreach-tool, which calls
 // this via its /api/newsletter proxy with the NEWSLETTER_ADMIN_SECRET bearer.
 

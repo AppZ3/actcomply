@@ -1,4 +1,4 @@
-// PATCH /api/incidents/[assessmentId]/[incidentId] — update status, authority, notes
+// PATCH /api/incidents/[assessmentId]/[incidentId], update status, authority, notes
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

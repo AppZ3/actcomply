@@ -9,7 +9,7 @@ import { PrintTrigger } from './print-trigger'
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const { data } = await getSupabaseAdmin().from('assessments').select('name').eq('id', id).maybeSingle()
-  return { title: data?.name ? `${data.name} — Print` : 'Print' }
+  return { title: data?.name ? `${data.name}, Print` : 'Print' }
 }
 
 const RISK_LABELS: Record<RiskLevel, string> = {
@@ -57,7 +57,7 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
   const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single()
   const planFeatures = getPlanFeatures(profile?.plan)
 
-  // Org branding — when the assessment is scoped to an org, use that org's
+  // Org branding, when the assessment is scoped to an org, use that org's
   // logo + brand_name instead of the default ActComply mark. Only resolves
   // for Enterprise (whiteLabel: true); other tiers continue to render the
   // ActComply mark.
@@ -95,7 +95,7 @@ export default async function PrintPage({ params }: { params: Promise<{ id: stri
       `}</style>
       <div className="max-w-3xl mx-auto px-10 py-12 bg-white text-gray-900 min-h-screen print:p-0">
 
-        {/* Header — keep together, never break inside */}
+        {/* Header, keep together, never break inside */}
         <div
           className="border-b-2 pb-6 mb-8 break-inside-avoid"
           style={{ borderColor: branding?.brand_color ?? '#111827' }}

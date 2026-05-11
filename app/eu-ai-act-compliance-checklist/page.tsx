@@ -5,10 +5,10 @@ import { HIGH_RISK_REQUIREMENTS, LIMITED_RISK_REQUIREMENTS, GENERAL_PROVIDER_REQ
 
 export const metadata: Metadata = {
   title: 'EU AI Act Compliance Checklist 2026',
-  description: 'Complete EU AI Act compliance checklist covering all 27 obligations — high-risk AI systems, GPAI models, transparency requirements, and general provider duties. Free assessment tool included.',
+  description: 'Complete EU AI Act compliance checklist covering all 27 obligations, high-risk AI systems, GPAI models, transparency requirements, and general provider duties. Free assessment tool included.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-compliance-checklist' },
   openGraph: {
-    title: 'EU AI Act Compliance Checklist 2026 — All 27 Obligations',
+    title: 'EU AI Act Compliance Checklist 2026: All 27 Obligations',
     description: 'Complete checklist of EU AI Act compliance requirements. Free assessment tool to check your AI systems.',
     url: 'https://www.getactcomply.com/eu-ai-act-compliance-checklist',
   },
@@ -67,7 +67,7 @@ export default function ChecklistPage() {
             Updated May 2026 · Regulation (EU) 2024/1689 + Omnibus agreement
           </div>
           <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full mb-6 ml-2">
-            Omnibus: High-risk deadlines extended — Aug 2, 2026 enforcement powers still live
+            Omnibus: High-risk deadlines extended, Aug 2, 2026 enforcement powers still live
           </div>
           <h1 className="text-4xl font-bold mb-4">EU AI Act Compliance Checklist</h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
@@ -77,7 +77,7 @@ export default function ChecklistPage() {
           <div className="bg-blue-600 text-white rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <p className="font-semibold text-lg">Check your specific AI systems</p>
-              <p className="text-blue-100 text-sm">Get a personalised compliance roadmap — takes 5 minutes, free.</p>
+              <p className="text-blue-100 text-sm">Get a personalised compliance roadmap, takes 5 minutes, free.</p>
             </div>
             <Link href="/assess" className="shrink-0 bg-white text-blue-600 hover:bg-blue-50 font-semibold px-6 py-3 rounded-xl transition">
               Start free assessment →
@@ -92,7 +92,7 @@ export default function ChecklistPage() {
         />
         <RequirementSection
           title="General Provider Obligations (Articles 16–27)"
-          description="All providers and deployers of AI systems — not just high-risk — must comply with these baseline obligations."
+          description="All providers and deployers of AI systems, not just high-risk, must comply with these baseline obligations."
           items={GENERAL_PROVIDER_REQUIREMENTS}
         />
         <RequirementSection
@@ -101,7 +101,7 @@ export default function ChecklistPage() {
           items={GPAI_REQUIREMENTS}
         />
         <RequirementSection
-          title="Limited Risk — Transparency Obligations (Article 50)"
+          title="Limited Risk, Transparency Obligations (Article 50)"
           description="AI systems that interact with users (chatbots, emotion recognition, synthetic media) must meet these minimum transparency requirements."
           items={LIMITED_RISK_REQUIREMENTS}
         />

@@ -95,7 +95,7 @@ export function ShareConformityButton({ assessmentId }: Props) {
           {!loading && shareUrl && (
             <>
               <p className="text-xs text-gray-400 mb-2">
-                Anyone with this link can view the conformity pack — no login required.
+                Anyone with this link can view the conformity pack, no login required.
               </p>
               <div className="flex gap-2 mb-3">
                 <input
@@ -123,7 +123,7 @@ export function ShareConformityButton({ assessmentId }: Props) {
                   <button
                     onClick={generateLink}
                     className="text-xs text-gray-500 hover:text-gray-300 transition"
-                    title="Create a new link — this will invalidate the current one"
+                    title="Create a new link, this will invalidate the current one"
                   >
                     Regenerate
                   </button>

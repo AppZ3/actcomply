@@ -91,7 +91,7 @@ export default function LandingPage() {
         '@type': 'WebPage',
         '@id': 'https://www.getactcomply.com/#webpage',
         url: 'https://www.getactcomply.com',
-        name: 'ActComply — EU AI Act Compliance Platform',
+        name: 'ActComply: EU AI Act Compliance Platform',
         description: 'Assess your AI systems against the EU AI Act. Risk classification, compliance roadmap, and audit-ready documentation.',
         isPartOf: { '@id': 'https://www.getactcomply.com/#organization' },
       },
@@ -101,7 +101,7 @@ export default function LandingPage() {
           {
             '@type': 'Question',
             name: 'What is the EU AI Act enforcement deadline?',
-            acceptedAnswer: { '@type': 'Answer', text: 'EU AI Act enforcement powers go live August 2, 2026 — all organisations must have completed their AI inventory and risk classification by this date. Under the May 2026 Omnibus provisional agreement (pending formal adoption), full obligations for high-risk AI systems (Annex III) are extended to December 2, 2027, and for AI embedded in regulated products (Annex I) to August 2, 2028. Prohibited AI and GPAI obligations remain enforced from August 2, 2026.' },
+            acceptedAnswer: { '@type': 'Answer', text: 'EU AI Act enforcement powers go live August 2, 2026. All organisations must have completed their AI inventory and risk classification by this date. Under the May 2026 Omnibus provisional agreement (pending formal adoption), full obligations for high-risk AI systems (Annex III) are extended to December 2, 2027, and for AI embedded in regulated products (Annex I) to August 2, 2028. Prohibited AI and GPAI obligations remain enforced from August 2, 2026.' },
           },
           {
             '@type': 'Question',
@@ -152,7 +152,7 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-6 py-28 text-center">
         <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-2 rounded-full mb-4">
           <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          Enforcement powers live August 2, 2026 — inventory must be complete
+          Enforcement powers live August 2, 2026. Inventory must be complete
         </div>
         <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full mb-8">
           Omnibus update: High-risk obligations extended to Dec 2027 (Annex III) · Formal adoption pending
@@ -193,7 +193,7 @@ export default function LandingPage() {
           {[
             { value: '€35M', label: 'Maximum fine per violation' },
             { value: '7%', label: 'Of global turnover at risk' },
-            { value: days !== null ? `${days} days` : '— days', label: 'Until enforcement powers go live', live: true },
+            { value: days !== null ? `${days} days` : '-- days', label: 'Until enforcement powers go live', live: true },
             { value: requirementsMapped !== null ? `${requirementsMapped}+` : '15+', label: 'Compliance requirements mapped', live: true },
           ].map(stat => (
             <div key={stat.label}>
@@ -225,7 +225,7 @@ export default function LandingPage() {
             {
               step: '02',
               title: 'Get instant risk classification',
-              description: 'Our engine classifies each system under the EU AI Act — Prohibited, High-Risk, Limited Risk, or Minimal Risk — with exact article references.',
+              description: 'Our engine classifies each system under the EU AI Act (Prohibited, High-Risk, Limited Risk, or Minimal Risk) with exact article references.',
             },
             {
               step: '03',
@@ -321,7 +321,7 @@ export default function LandingPage() {
         <div className="bg-blue-600/10 border border-blue-500/20 rounded-3xl p-16">
           <h2 className="text-3xl font-bold mb-4">Don&apos;t wait until August</h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto mb-8">
-            High-risk AI systems require months of documentation work. Start your compliance assessment today — it takes 5 minutes.
+            High-risk AI systems require months of documentation work. Start your compliance assessment today. It takes 5 minutes.
           </p>
           <Link
             href="/assess"

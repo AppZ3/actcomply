@@ -1,5 +1,5 @@
-// GET  /api/orgs — list orgs for authenticated user
-// POST /api/orgs — create a new org (Enterprise only)
+// GET  /api/orgs, list orgs for authenticated user
+// POST /api/orgs, create a new org (Enterprise only)
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

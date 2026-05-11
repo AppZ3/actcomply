@@ -89,7 +89,7 @@ export default async function SettingsPage() {
           </div>
           <div className="flex items-center justify-between py-3 border-b border-white/5">
             <span className="text-sm text-gray-400">Systems limit</span>
-            <span className="text-sm">{PLAN_LIMITS[plan] ?? '—'}</span>
+            <span className="text-sm">{PLAN_LIMITS[plan] ?? '-'}</span>
           </div>
           <div className="flex items-center justify-between py-3">
             <span className="text-sm text-gray-400">Features</span>
@@ -106,7 +106,7 @@ export default async function SettingsPage() {
         <div className="flex items-center justify-between py-3">
           <div>
             <p className="text-sm">Magic link login</p>
-            <p className="text-xs text-gray-500 mt-0.5">Passwordless — a sign-in link is emailed each time you log in</p>
+            <p className="text-xs text-gray-500 mt-0.5">Passwordless, a sign-in link is emailed each time you log in</p>
           </div>
           <span className="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full">Active</span>
         </div>

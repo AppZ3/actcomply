@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
     const msg = error instanceof Error ? error.message : String(error)
     if (/credit balance is too low|insufficient_quota|over_capacity/i.test(msg)) {
       return NextResponse.json(
-        { error: 'Service temporarily unavailable: AI provider quota exhausted. Try again in a few minutes — this resolves automatically once topped up.' },
+        { error: 'Service temporarily unavailable: AI provider quota exhausted. Try again in a few minutes, this resolves automatically once topped up.' },
         { status: 503 }
       )
     }

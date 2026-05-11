@@ -26,7 +26,7 @@ export function OnboardingBanner({ userEmail }: { userEmail: string }) {
         <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-sm shrink-0">AI</div>
       ),
       title: `Welcome to ActComply`,
-      body: `You're signed in as ${userEmail}. ActComply helps you comply with the EU AI Act before the August 2026 enforcement deadline — avoiding fines of up to €35M.`,
+      body: `You're signed in as ${userEmail}. ActComply helps you comply with the EU AI Act before the August 2026 enforcement deadline, avoiding fines of up to €35M.`,
       cta: null,
       ctaLabel: null,
     },
@@ -38,7 +38,7 @@ export function OnboardingBanner({ userEmail }: { userEmail: string }) {
           </svg>
         </div>
       ),
-      title: 'Step 1 — Assess your AI systems',
+      title: 'Step 1, Assess your AI systems',
       body: 'Describe each AI system your business uses. Claude classifies its risk level, cites the exact EU AI Act articles, and gives you a compliance action plan in under 30 seconds.',
       cta: '/assess',
       ctaLabel: 'Run your first assessment →',
@@ -51,7 +51,7 @@ export function OnboardingBanner({ userEmail }: { userEmail: string }) {
           </svg>
         </div>
       ),
-      title: 'Step 2 — Track and document compliance',
+      title: 'Step 2, Track and document compliance',
       body: 'For each system, mark requirements as in-progress or done, generate Article 11 technical documentation, and download a full PDF compliance report for regulators.',
       cta: null,
       ctaLabel: null,

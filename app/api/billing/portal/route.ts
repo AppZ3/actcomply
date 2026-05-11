@@ -1,4 +1,4 @@
-// POST /api/billing/portal — create a Stripe customer portal session
+// POST /api/billing/portal, create a Stripe customer portal session
 
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

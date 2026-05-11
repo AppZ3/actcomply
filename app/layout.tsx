@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.getactcomply.com'),
   title: {
-    default: 'ActComply — EU AI Act Compliance Platform',
-    template: '%s — ActComply',
+    default: 'ActComply: EU AI Act Compliance Platform',
+    template: '%s | ActComply',
   },
   description: 'Assess your AI systems against the EU AI Act in minutes. Automated risk classification, compliance checklist, and audit-ready documentation. Enforcement begins August 2, 2026.',
   keywords: [
@@ -42,13 +42,13 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: 'https://www.getactcomply.com',
     siteName: 'ActComply',
-    title: 'ActComply — EU AI Act Compliance Platform',
+    title: 'ActComply: EU AI Act Compliance Platform',
     description: 'Assess your AI systems against the EU AI Act in minutes. Automated risk classification, compliance roadmap, and audit-ready documentation.',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'ActComply — EU AI Act Compliance Platform' }],
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'ActComply: EU AI Act Compliance Platform' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ActComply — EU AI Act Compliance Platform',
+    title: 'ActComply: EU AI Act Compliance Platform',
     description: 'Assess your AI systems against the EU AI Act in minutes. Enforcement begins August 2, 2026.',
     images: ['/opengraph-image'],
   },

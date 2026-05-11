@@ -1,4 +1,4 @@
-// POST /api/newsletter/subscribe — public newsletter signup endpoint.
+// POST /api/newsletter/subscribe, public newsletter signup endpoint.
 // Body: { email: string, source?: string }
 // Idempotent: re-subscribing an existing email re-activates them and refreshes
 // the unsubscribe token.
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const { email, source } = await req.json()
     const cleanEmail = typeof email === 'string' ? email.toLowerCase().trim() : ''
 
-    // Lightweight format check — full validation happens at Resend send.
+    // Lightweight format check, full validation happens at Resend send.
     if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       from: 'ActComply Newsletter <newsletter@getactcomply.com>',
       to: cleanEmail,
       replyTo: 'hello@getactcomply.com',
-      subject: "You're in — ActComply newsletter",
+      subject: "You're in, ActComply newsletter",
       html: welcomeEmailHtml(unsubUrl),
       headers: {
         'List-Unsubscribe': `<${unsubUrl}>`,
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     await logError(err, { route: 'POST /api/newsletter/subscribe' })
-    // Don't leak DB or send errors to the public form — return success either
+    // Don't leak DB or send errors to the public form, return success either
     // way so the form UX stays smooth. Errors are still logged.
     return NextResponse.json({ success: true })
   }

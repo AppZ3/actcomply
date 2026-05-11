@@ -1,5 +1,5 @@
-// GET  /api/keys — list API keys for authenticated user
-// POST /api/keys — create a new API key (Enterprise only)
+// GET  /api/keys, list API keys for authenticated user
+// POST /api/keys, create a new API key (Enterprise only)
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

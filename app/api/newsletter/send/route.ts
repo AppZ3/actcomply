@@ -1,10 +1,10 @@
-// POST /api/newsletter/send — send a newsletter issue to all active subscribers.
+// POST /api/newsletter/send, send a newsletter issue to all active subscribers.
 // Auth: Authorization: Bearer <NEWSLETTER_ADMIN_SECRET>
 //
 // Body:
 //   {
 //     "slug": "issue-001-eu-ai-act-for-builders",   // unique short id
-//     "subject": "Article 50 is going to bite — here's what to do",
+//     "subject": "Article 50 is going to bite, here's what to do",
 //     "body": "Plain-text body, paragraphs separated by blank lines."
 //   }
 //

@@ -63,7 +63,7 @@ function LoginForm() {
     <>
       <div className="mb-8">
         <h1 className="text-2xl font-bold mb-2">Sign in to ActComply</h1>
-        <p className="text-gray-400 text-sm">We&apos;ll send you a magic link — no password needed.</p>
+        <p className="text-gray-400 text-sm">We&apos;ll send you a magic link, no password needed.</p>
       </div>
 
       {error && (

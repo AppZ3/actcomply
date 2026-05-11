@@ -1,4 +1,4 @@
-// POST /api/billing/checkout — unified Stripe checkout for all entry points
+// POST /api/billing/checkout, unified Stripe checkout for all entry points
 // Works for logged-in users (dashboard upgrade) and anonymous users (landing page)
 
 import { NextResponse } from 'next/server'

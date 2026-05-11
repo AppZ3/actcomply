@@ -1,4 +1,4 @@
-// GET /api/v1/orgs/[orgId]/export — single-archive JSON of every assessment
+// GET /api/v1/orgs/[orgId]/export, single-archive JSON of every assessment
 // + child artefact for one organisation. The "system of record export" Tariq
 // Law-style consultancies hand to the client at engagement end (per side
 // letter §6 commitment).
@@ -59,7 +59,7 @@ export async function GET(
         org_id: org.id,
         org_name: org.name,
         assessment_count: assessments?.length ?? 0,
-        regulation: 'Regulation (EU) 2024/1689 — EU AI Act',
+        regulation: 'Regulation (EU) 2024/1689, EU AI Act',
         note:
           'Complete compliance pack for this organisation. Retain for the ' +
           'duration required under Article 18 (10 years from market placement).',

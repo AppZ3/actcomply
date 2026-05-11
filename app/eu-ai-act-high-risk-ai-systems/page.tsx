@@ -4,11 +4,11 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { HIGH_RISK_CATEGORIES } from '@/lib/eu-ai-act'
 
 export const metadata: Metadata = {
-  title: 'EU AI Act High-Risk AI Systems — Full List 2026',
+  title: 'EU AI Act High-Risk AI Systems: Full List 2026',
   description: 'Complete list of high-risk AI systems under the EU AI Act Annex III. Find out if your AI system is classified as high-risk and what obligations apply.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-high-risk-ai-systems' },
   openGraph: {
-    title: 'EU AI Act High-Risk AI Systems — Full List 2026',
+    title: 'EU AI Act High-Risk AI Systems: Full List 2026',
     description: 'Is your AI system high-risk under the EU AI Act? Full Annex III category list with compliance requirements.',
     url: 'https://www.getactcomply.com/eu-ai-act-high-risk-ai-systems',
   },
@@ -51,7 +51,7 @@ export default function HighRiskPage() {
           <h1 className="text-4xl font-bold mb-4">EU AI Act High-Risk AI Systems</h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
             The EU AI Act classifies AI systems into four risk tiers. <strong className="text-gray-900 dark:text-white">High-risk systems</strong> face
-            the most stringent obligations — including mandatory risk management, technical documentation, human oversight, and EU database registration —
+            the most stringent obligations, including mandatory risk management, technical documentation, human oversight, and EU database registration -
             all required before deployment.
           </p>
           <div className="grid sm:grid-cols-3 gap-4 mb-10">
@@ -69,7 +69,7 @@ export default function HighRiskPage() {
         </div>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-2">Annex III — High-Risk Categories</h2>
+          <h2 className="text-2xl font-bold mb-2">Annex III, High-Risk Categories</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
             An AI system is high-risk if it falls within one of the eight Annex III sectors <em>and</em> poses a significant risk to the health, safety, or fundamental rights of persons.
           </p>
@@ -102,7 +102,7 @@ export default function HighRiskPage() {
           <div className="grid sm:grid-cols-2 gap-4">
             {[
               { title: 'Risk Management System', article: 'Article 9', text: 'Document and maintain a risk management process throughout the full AI lifecycle.' },
-              { title: 'Technical Documentation', article: 'Article 11', text: 'Prepare comprehensive technical docs before placing on market — covers architecture, data, and testing.' },
+              { title: 'Technical Documentation', article: 'Article 11', text: 'Prepare comprehensive technical docs before placing on market, covers architecture, data, and testing.' },
               { title: 'Human Oversight', article: 'Article 14', text: 'Humans must be able to monitor, interpret, and override the system at all times.' },
               { title: 'EU Database Registration', article: 'Article 49', text: 'Register the system in the EU AI database before deployment.' },
             ].map(item => (

@@ -30,13 +30,13 @@ const EU_DATABASE_STEPS = [
   {
     number: 4,
     title: 'Submit the registration',
-    detail: 'Complete the online form in the EU AI database. For high-risk systems in Annex III, registration must be completed before placing the system on the EU market or putting it into service. Keep your EU ID number — regulators will reference it.',
+    detail: 'Complete the online form in the EU AI database. For high-risk systems in Annex III, registration must be completed before placing the system on the EU market or putting it into service. Keep your EU ID number, regulators will reference it.',
     article: 'Article 49',
   },
   {
     number: 5,
     title: 'Maintain and update the registration',
-    detail: 'You must update the registration when there are significant changes to the system — including new versions, changes to intended purpose, or changes to your conformity assessment status. Outdated registrations can attract regulatory attention.',
+    detail: 'You must update the registration when there are significant changes to the system, including new versions, changes to intended purpose, or changes to your conformity assessment status. Outdated registrations can attract regulatory attention.',
     article: 'Article 51(3)',
   },
 ]
@@ -64,7 +64,7 @@ const TEMPLATES = [
   {
     id: 'data-governance',
     title: 'Data Governance Policy (Article 10)',
-    description: 'Documents your practices for training, validation, and testing data — including bias examination and data quality measures.',
+    description: 'Documents your practices for training, validation, and testing data, including bias examination and data quality measures.',
     sections: ['Data collection and sourcing', 'Data quality criteria', 'Bias examination procedures', 'Data governance processes', 'Personal data handling'],
   },
   {

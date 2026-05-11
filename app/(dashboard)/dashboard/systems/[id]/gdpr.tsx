@@ -48,11 +48,11 @@ function GeneratingProgress() {
           )
         })}
       </div>
-      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual — still working, don't close this tab.</p>}
+      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual, still working, don't close this tab.</p>}
       {allDone && (
         <p className="text-xs text-blue-400/80 pt-1 flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin inline-block" />
-          All sections written — saving to your account…
+          All sections written, saving to your account…
         </p>
       )}
     </div>
@@ -115,7 +115,7 @@ const LEVEL_STYLES: Record<string, string> = {
 }
 
 function LevelBadge({ level }: { level: string }) {
-  const word = level.toLowerCase().split(/[\s—\-]/)[0]
+  const word = level.toLowerCase().split(/[\s-\-]/)[0]
   return (
     <span className={`text-xs font-medium px-2 py-0.5 rounded border capitalize ${LEVEL_STYLES[word] ?? LEVEL_STYLES.low}`}>
       {word}
@@ -148,7 +148,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
       const res = await fetch(`/api/gdpr/${assessmentId}`, { method: 'POST', signal: controller.signal })
       const data = await res.json()
       if (!res.ok || data.error) {
-        setGenError(data.message ?? data.error ?? 'Generation failed — please try again.')
+        setGenError(data.message ?? data.error ?? 'Generation failed, please try again.')
       } else {
         setAssessment(data)
         setActiveTab('dpia')
@@ -157,8 +157,8 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
       }
     } catch (e) {
       setGenError(e instanceof Error && e.name === 'AbortError'
-        ? 'Timed out — please try again.'
-        : 'Something went wrong — please try again.')
+        ? 'Timed out, please try again.'
+        : 'Something went wrong, please try again.')
     } finally {
       clearTimeout(timeout)
       setGenerating(false)
@@ -172,7 +172,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
           <div>
             <h2 className="font-semibold mb-1">GDPR DPIA + Fundamental Rights Impact Assessment</h2>
             <p className="text-sm text-gray-400">
-              Integrated GDPR Article 35 DPIA, EU AI Act Article 27 FRIA, and Article 86 explainability statement — in a single document.
+              Integrated GDPR Article 35 DPIA, EU AI Act Article 27 FRIA, and Article 86 explainability statement, in a single document.
             </p>
           </div>
           <a
@@ -202,7 +202,7 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
           <div>
             <h2 className="font-semibold mb-1">GDPR DPIA + Fundamental Rights Impact Assessment</h2>
             <p className="text-sm text-gray-400 max-w-lg">
-              Generate an integrated GDPR Article 35 DPIA and EU AI Act Article 27 FRIA — including a risk register, fundamental rights analysis, and an Article 86 explainability statement for affected persons.
+              Generate an integrated GDPR Article 35 DPIA and EU AI Act Article 27 FRIA, including a risk register, fundamental rights analysis, and an Article 86 explainability statement for affected persons.
             </p>
           </div>
           <button
@@ -435,12 +435,12 @@ export function GdprAssessment({ assessmentId, isPaid }: Props) {
       {activeTab === 'explainability' && (
         <div className="px-6 py-5 space-y-5">
           <div>
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Article 86 — Right to Explanation</p>
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Article 86, Right to Explanation</p>
             <p className="text-sm text-gray-300 leading-relaxed">{assessment.explainability_statement}</p>
           </div>
           {hasSpecialCategory && (
             <div className="border border-red-500/20 bg-red-500/5 rounded-lg p-4">
-              <p className="text-xs font-semibold text-red-400 mb-2">Article 9/10 — Special-Category Data</p>
+              <p className="text-xs font-semibold text-red-400 mb-2">Article 9/10, Special-Category Data</p>
               {assessment.processing_activities
                 .filter(a => a.special_category)
                 .map(a => (

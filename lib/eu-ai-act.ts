@@ -321,10 +321,10 @@ export const LIMITED_RISK_REQUIREMENTS: ComplianceRequirement[] = [
 // Requires formal adoption by Parliament and Council before taking effect.
 // Until formally adopted, treat August 2, 2026 as the operative enforcement date.
 //
-// AUGUST 2, 2026  — Enforcement powers go live. Prohibited AI + GPAI obligations
+// AUGUST 2, 2026 , Enforcement powers go live. Prohibited AI + GPAI obligations
 //                   enforced. All inventory and classification must be complete.
-// DECEMBER 2, 2027 — High-risk AI (Annex III standalone systems) full obligations
-// AUGUST 2, 2028   — High-risk AI embedded in regulated products (Annex I)
+// DECEMBER 2, 2027, High-risk AI (Annex III standalone systems) full obligations
+// AUGUST 2, 2028  , High-risk AI embedded in regulated products (Annex I)
 
 export const ENFORCEMENT_DEADLINE = new Date('2026-08-02T00:00:00Z')
 export const OMNIBUS_HIGH_RISK_ANNEX_III_DEADLINE = new Date('2027-12-02T00:00:00Z')
@@ -336,7 +336,7 @@ export function getDaysUntilEnforcement(): number {
 }
 
 // Total compliance obligations currently defined in this file.
-// Derived from all requirement arrays — add items to any array and this updates automatically.
+// Derived from all requirement arrays, add items to any array and this updates automatically.
 export const REQUIREMENTS_MAPPED =
   HIGH_RISK_REQUIREMENTS.length +
   LIMITED_RISK_REQUIREMENTS.length +

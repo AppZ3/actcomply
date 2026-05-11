@@ -7,7 +7,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import { logError } from '@/lib/error-logger'
 
-// Seed alerts if none exist — real EU AI Act milestones
+// Seed alerts if none exist, real EU AI Act milestones
 const SEED_ALERTS = [
   {
     title: 'Prohibited AI systems ban now in force',
@@ -31,8 +31,8 @@ const SEED_ALERTS = [
     published_at: '2026-01-15T00:00:00Z',
   },
   {
-    title: 'August 2, 2026: Enforcement powers go live — inventory must be complete',
-    summary: 'From August 2, 2026, supervisory authorities have full enforcement powers and are expected to review compliance with prohibited AI and GPAI obligations already in force. All organisations must have completed their AI inventory and classification by this date. High-risk system obligations (Annex III) have been extended to December 2, 2027 under the Omnibus agreement — but the regulator\'s starting pistol fires August 2 regardless.',
+    title: 'August 2, 2026: Enforcement powers go live, inventory must be complete',
+    summary: 'From August 2, 2026, supervisory authorities have full enforcement powers and are expected to review compliance with prohibited AI and GPAI obligations already in force. All organisations must have completed their AI inventory and classification by this date. High-risk system obligations (Annex III) have been extended to December 2, 2027 under the Omnibus agreement, but the regulator\'s starting pistol fires August 2 regardless.',
     article_refs: 'Articles 5, 53–55, Annex III',
     severity: 'critical',
     published_at: '2026-04-15T00:00:00Z',
@@ -53,7 +53,7 @@ const SEED_ALERTS = [
   },
 ]
 
-// POST /api/alerts — create a new alert and email all active paid users (internal use)
+// POST /api/alerts, create a new alert and email all active paid users (internal use)
 export async function POST(req: Request) {
   const authHeader = req.headers.get('authorization')
   if (authHeader !== `Bearer ${process.env.ALERTS_ADMIN_SECRET}`) {

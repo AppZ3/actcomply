@@ -68,13 +68,13 @@ function GeneratingProgress() {
       </div>
       {elapsed > 60 && !allWritten && (
         <p className="text-xs text-yellow-500/80 pt-1">
-          Taking longer than usual — still working, don't close this tab.
+          Taking longer than usual, still working, don't close this tab.
         </p>
       )}
       {allWritten && (
         <p className="text-xs text-blue-400/80 pt-1 flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin inline-block" />
-          All sections written — saving to your account…
+          All sections written, saving to your account…
         </p>
       )}
     </div>
@@ -129,7 +129,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
       const res = await fetch(`/api/docs/${assessmentId}`, { method: 'POST', signal: controller.signal })
       const data = await res.json()
       if (!res.ok || data.error) {
-        setGenError(data.message ?? data.error ?? 'Generation failed — please try again.')
+        setGenError(data.message ?? data.error ?? 'Generation failed, please try again.')
       } else {
         setDoc(data)
         setExpanded('s1')
@@ -138,8 +138,8 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
       }
     } catch (e) {
       setGenError(e instanceof Error && e.name === 'AbortError'
-        ? 'Timed out — please try again.'
-        : 'Something went wrong — please try again.')
+        ? 'Timed out, please try again.'
+        : 'Something went wrong, please try again.')
     } finally {
       clearTimeout(timeout)
       setGenerating(false)
@@ -181,11 +181,11 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
           <div>
             <h2 className="font-semibold mb-1">Article 11 Technical Documentation</h2>
             <p className="text-sm text-gray-400 max-w-lg">
-              Generate complete Annex IV technical documentation for this AI system — 10 sections covering development methodology, risk management, human oversight, and post-market monitoring. Audit-ready and regulator-facing.
+              Generate complete Annex IV technical documentation for this AI system, 10 sections covering development methodology, risk management, human oversight, and post-market monitoring. Audit-ready and regulator-facing.
             </p>
           </div>
           {generating && (
-            <p className="text-xs text-gray-500 w-full mb-2">This takes ~2 minutes — please keep this tab open.</p>
+            <p className="text-xs text-gray-500 w-full mb-2">This takes ~2 minutes, please keep this tab open.</p>
           )}
           <button
             onClick={generate}
@@ -289,7 +289,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
                 onClick={() => { setViewingVersion(v); setHistoryOpen(false) }}
                 className="text-xs border border-white/10 hover:border-white/30 px-3 py-1.5 rounded-lg transition text-gray-400 hover:text-white"
               >
-                v{v.version ?? (doc.previous_versions!.length - i)} — {new Date(v.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                v{v.version ?? (doc.previous_versions!.length - i)}, {new Date(v.generated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
               </button>
             ))}
           </div>

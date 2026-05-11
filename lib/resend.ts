@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 
-// Lazy singleton — avoids "Missing API key" crash during Next.js build
+// Lazy singleton, avoids "Missing API key" crash during Next.js build
 // when RESEND_API_KEY is not available in the build environment.
 let _resend: Resend | null = null
 export function getResend(): Resend {
@@ -22,11 +22,11 @@ export async function sendWelcomeEmail({ to }: { to: string }) {
           <h2 style="margin:0 0 12px;font-size:22px">Welcome aboard</h2>
           <p style="color:#475569;line-height:1.6;margin:0 0 16px">
             You're now signed in to ActComply. The EU AI Act enforcement deadline is
-            <strong>2 August 2026</strong> — use the dashboard to assess your AI systems,
+            <strong>2 August 2026</strong>. Use the dashboard to assess your AI systems,
             track compliance requirements, and generate audit-ready documentation.
           </p>
           <p style="color:#475569;line-height:1.6;margin:0 0 28px">
-            Start by running your first assessment — it takes under 30 seconds.
+            Start by running your first assessment. It takes under 30 seconds.
           </p>
           <a href="https://getactcomply.com/assess" style="background:#2563eb;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
             Run your first assessment →
@@ -71,7 +71,7 @@ export async function sendAlertDigestEmail({
   await getResend().emails.send({
     from: 'ActComply Alerts <alerts@getactcomply.com>',
     to,
-    subject: `${subjectPrefix} unread EU AI Act alerts — ActComply weekly digest`,
+    subject: `${subjectPrefix} unread EU AI Act alerts | ActComply weekly digest`,
     html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
         <div style="background:#0f172a;padding:24px 32px;border-radius:12px 12px 0 0">
@@ -125,7 +125,7 @@ export async function sendInviteEmail({
             <strong>${orgName}</strong> on ActComply as a <strong>${roleLabel}</strong>.
           </p>
           <p style="color:#475569;line-height:1.6;margin:0 0 24px">
-            ActComply is the EU AI Act compliance platform — sign in with this email
+            ActComply is the EU AI Act compliance platform. Sign in with this email
             address (no password needed) to accept the invite and access ${orgName}'s
             AI inventory, risk classifications, and compliance docs.
           </p>
@@ -133,11 +133,11 @@ export async function sendInviteEmail({
             Accept invite →
           </a>
           <p style="margin-top:32px;font-size:13px;color:#64748b;line-height:1.6">
-            The invite is bound to <strong>${to}</strong> — sign in with that exact
+            The invite is bound to <strong>${to}</strong>. Sign in with that exact
             address and you'll be added to ${orgName} automatically.
           </p>
           <p style="margin-top:24px;font-size:12px;color:#94a3b8">
-            Didn't expect this email? You can safely ignore it — no account is
+            Didn't expect this email? You can safely ignore it. No account is
             created until you sign in.
           </p>
         </div>

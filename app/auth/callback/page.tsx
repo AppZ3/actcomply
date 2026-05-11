@@ -42,13 +42,13 @@ function CallbackInner() {
       router.replace('/login?error=auth_failed')
     }
 
-    // Listen for auth state — catches auto-detected implicit sessions
+    // Listen for auth state, catches auto-detected implicit sessions
     // (createBrowserClient processes #access_token hash before useEffect runs)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) succeed()
     })
 
-    // PKCE flow — ?code= in query string
+    // PKCE flow, ?code= in query string
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (error) fail()
@@ -56,7 +56,7 @@ function CallbackInner() {
       return () => subscription.unsubscribe()
     }
 
-    // Implicit flow fallback — manually parse hash if client hasn't auto-processed it
+    // Implicit flow fallback, manually parse hash if client hasn't auto-processed it
     const hash = typeof window !== 'undefined' ? window.location.hash : ''
     if (hash.includes('access_token=')) {
       const params = new URLSearchParams(hash.slice(1))

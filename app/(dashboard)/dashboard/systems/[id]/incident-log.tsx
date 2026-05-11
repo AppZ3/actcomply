@@ -116,7 +116,7 @@ export function IncidentLog({ assessmentId, isPaid }: Props) {
     return (
       <div className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-center justify-between gap-4">
         <div>
-          <p className="font-semibold text-sm mb-0.5">Article 72/73 — Incident Log</p>
+          <p className="font-semibold text-sm mb-0.5">Article 72/73, Incident Log</p>
           <p className="text-xs text-gray-500">Log and track serious incidents with auto-calculated Article 73 reporting deadlines.</p>
         </div>
         <a href="/dashboard/billing" className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
@@ -138,7 +138,7 @@ export function IncidentLog({ assessmentId, isPaid }: Props) {
       >
         <div>
           <div className="flex items-center gap-2 mb-0.5">
-            <h2 className="font-semibold">Article 72/73 — Incident Log</h2>
+            <h2 className="font-semibold">Article 72/73, Incident Log</h2>
             {overdueCount > 0 && (
               <span className="text-xs font-mono bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-full">
                 {overdueCount} overdue

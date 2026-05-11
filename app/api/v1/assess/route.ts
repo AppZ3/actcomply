@@ -1,4 +1,4 @@
-// POST /api/v1/assess — Enterprise public API
+// POST /api/v1/assess, Enterprise public API
 // Auth: Authorization: Bearer ac_<key>
 //
 // Optional body field `org_id` scopes the new assessment to a specific
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
       estimated_effort: result.estimatedEffort,
     }
 
-    // Fire any subscribed webhooks. Best-effort — failure does not affect
+    // Fire any subscribed webhooks. Best-effort, failure does not affect
     // the API response. await ensures we surface delivery errors to the
     // caller's request lifetime budget rather than orphaning them.
     if (saved?.id) {
@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     await logError(err, { route: 'POST /api/v1/assess', userId: caller.userId })
     // Surface Anthropic-side billing / rate-limit / quota errors to integrators
-    // instead of swallowing as generic 500 — they need to know whether to
+    // instead of swallowing as generic 500, they need to know whether to
     // retry, upgrade, or contact support.
     const msg = err instanceof Error ? err.message : String(err)
     if (/credit balance is too low|insufficient_quota|over_capacity/i.test(msg)) {

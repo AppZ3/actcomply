@@ -20,7 +20,7 @@ export async function getActiveOrgId(): Promise<string | null> {
 
 export type OrgSummary = { id: string; name: string }
 
-// Returns every org the user can switch into — both owned and member-of.
+// Returns every org the user can switch into, both owned and member-of.
 // Deduplicated, newest first. Service-role client because RLS would force a
 // per-table join we don't need here.
 export async function getUserOrgs(userId: string): Promise<OrgSummary[]> {

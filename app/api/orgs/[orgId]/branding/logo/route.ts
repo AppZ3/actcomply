@@ -1,8 +1,8 @@
-// POST   /api/orgs/[orgId]/branding/logo  — multipart upload, owner-gated, sets organizations.logo_url
-// DELETE /api/orgs/[orgId]/branding/logo  — owner-only, clears logo_url and removes the stored file
+// POST   /api/orgs/[orgId]/branding/logo , multipart upload, owner-gated, sets organizations.logo_url
+// DELETE /api/orgs/[orgId]/branding/logo , owner-only, clears logo_url and removes the stored file
 //
 // Bucket: `org-branding` (public read, 2MB limit, png|jpg|webp|svg).
-// Bucket created via `supabase-migrations/add_storage_org_branding.sql` — re-run if missing.
+// Bucket created via `supabase-migrations/add_storage_org_branding.sql`, re-run if missing.
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
@@ -89,7 +89,7 @@ export async function POST(
         cacheControl: '60', // short cache so users see updates within a minute
       })
     if (uploadErr) {
-      // Bucket-missing is the most common first-time failure — surface it
+      // Bucket-missing is the most common first-time failure, surface it
       // helpfully so the operator knows to apply the migration.
       const msg = uploadErr.message || ''
       if (/bucket.*not found|no such bucket/i.test(msg)) {

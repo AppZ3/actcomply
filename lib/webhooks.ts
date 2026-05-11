@@ -93,7 +93,7 @@ export async function deliverWebhook(opts: {
         'X-ActComply-Signature': signature,
       },
       body,
-      signal: AbortSignal.timeout(15_000), // 15s ceiling — fail fast
+      signal: AbortSignal.timeout(15_000), // 15s ceiling, fail fast
     })
     response_status = res.status
     // Capture only the first 4 KB of the response body for audit.

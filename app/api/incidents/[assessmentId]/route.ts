@@ -1,5 +1,5 @@
-// GET  /api/incidents/[assessmentId] — list all incidents for an assessment
-// POST /api/incidents/[assessmentId] — log a new incident
+// GET  /api/incidents/[assessmentId], list all incidents for an assessment
+// POST /api/incidents/[assessmentId], log a new incident
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

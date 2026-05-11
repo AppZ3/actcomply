@@ -36,9 +36,9 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">2. Data We Collect</h2>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li><strong className="text-gray-900 dark:text-white">Account data:</strong> Email address, name (when provided)</li>
-              <li><strong className="text-gray-900 dark:text-white">Payment data:</strong> Billing details processed by Stripe — we do not store card numbers</li>
+              <li><strong className="text-gray-900 dark:text-white">Payment data:</strong> Billing details processed by Stripe, we do not store card numbers</li>
               <li><strong className="text-gray-900 dark:text-white">Assessment data:</strong> Descriptions of AI systems you submit for compliance analysis</li>
-              <li><strong className="text-gray-900 dark:text-white">Usage data:</strong> Pages visited, features used, timestamps — collected via cookies</li>
+              <li><strong className="text-gray-900 dark:text-white">Usage data:</strong> Pages visited, features used, timestamps, collected via cookies</li>
               <li><strong className="text-gray-900 dark:text-white">Communications:</strong> Support emails and messages you send us</li>
             </ul>
           </section>
@@ -70,11 +70,11 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">5. Third-Party Services</h2>
             <p>We share data with the following trusted processors:</p>
             <ul className="list-disc list-inside space-y-2 mt-2 ml-4">
-              <li><strong className="text-gray-900 dark:text-white">Supabase</strong> — database and authentication (EU data residency available)</li>
-              <li><strong className="text-gray-900 dark:text-white">Stripe</strong> — payment processing (PCI DSS compliant)</li>
-              <li><strong className="text-gray-900 dark:text-white">Resend</strong> — transactional email delivery</li>
-              <li><strong className="text-gray-900 dark:text-white">Anthropic</strong> — AI processing of your assessment submissions (no data used for training)</li>
-              <li><strong className="text-gray-900 dark:text-white">Vercel</strong> — platform hosting</li>
+              <li><strong className="text-gray-900 dark:text-white">Supabase</strong>: database and authentication (EU data residency available)</li>
+              <li><strong className="text-gray-900 dark:text-white">Stripe</strong>: payment processing (PCI DSS compliant)</li>
+              <li><strong className="text-gray-900 dark:text-white">Resend</strong>: transactional email delivery</li>
+              <li><strong className="text-gray-900 dark:text-white">Anthropic</strong>: AI processing of your assessment submissions (no data used for training)</li>
+              <li><strong className="text-gray-900 dark:text-white">Vercel</strong>: platform hosting</li>
             </ul>
             <p className="mt-3">All processors are bound by data processing agreements and comply with GDPR requirements.</p>
           </section>
@@ -88,12 +88,12 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">7. Your Rights</h2>
             <p>Under GDPR and UK GDPR, you have the right to:</p>
             <ul className="list-disc list-inside space-y-2 mt-2 ml-4">
-              <li><strong className="text-gray-900 dark:text-white">Access</strong> — request a copy of your personal data</li>
-              <li><strong className="text-gray-900 dark:text-white">Rectification</strong> — correct inaccurate data</li>
-              <li><strong className="text-gray-900 dark:text-white">Erasure</strong> — request deletion of your data</li>
-              <li><strong className="text-gray-900 dark:text-white">Portability</strong> — receive your data in a machine-readable format</li>
-              <li><strong className="text-gray-900 dark:text-white">Objection</strong> — object to processing based on legitimate interests</li>
-              <li><strong className="text-gray-900 dark:text-white">Restriction</strong> — request we limit processing in certain circumstances</li>
+              <li><strong className="text-gray-900 dark:text-white">Access</strong>: request a copy of your personal data</li>
+              <li><strong className="text-gray-900 dark:text-white">Rectification</strong>: correct inaccurate data</li>
+              <li><strong className="text-gray-900 dark:text-white">Erasure</strong>: request deletion of your data</li>
+              <li><strong className="text-gray-900 dark:text-white">Portability</strong>: receive your data in a machine-readable format</li>
+              <li><strong className="text-gray-900 dark:text-white">Objection</strong>: object to processing based on legitimate interests</li>
+              <li><strong className="text-gray-900 dark:text-white">Restriction</strong>: request we limit processing in certain circumstances</li>
             </ul>
             <p className="mt-3">To exercise any right, email <a href="mailto:privacy@getactcomply.com" className="text-blue-400 hover:underline">privacy@getactcomply.com</a>. We will respond within 30 days. You also have the right to lodge a complaint with your local data protection authority.</p>
           </section>
@@ -102,7 +102,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">8. Cookies</h2>
             <p>We use the following cookies:</p>
             <ul className="list-disc list-inside space-y-2 mt-2 ml-4">
-              <li><strong className="text-gray-900 dark:text-white">Essential:</strong> Authentication session cookies — required for the Service to function</li>
+              <li><strong className="text-gray-900 dark:text-white">Essential:</strong> Authentication session cookies, required for the Service to function</li>
               <li><strong className="text-gray-900 dark:text-white">Functional:</strong> Preferences and settings (consent to this category via our cookie banner)</li>
             </ul>
             <p className="mt-3">You can withdraw consent for non-essential cookies at any time by clearing your browser cookies.</p>

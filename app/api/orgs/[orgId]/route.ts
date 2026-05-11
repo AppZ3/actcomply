@@ -1,4 +1,4 @@
-// PATCH /api/orgs/[orgId] — update org metadata (name, branding).
+// PATCH /api/orgs/[orgId], update org metadata (name, branding).
 // Only the owner can patch these fields.
 
 import { NextRequest, NextResponse } from 'next/server'

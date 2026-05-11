@@ -48,11 +48,11 @@ function GeneratingProgress() {
           )
         })}
       </div>
-      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual — still working, don't close this tab.</p>}
+      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual, still working, don't close this tab.</p>}
       {allDone && (
         <p className="text-xs text-blue-400/80 pt-1 flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin inline-block" />
-          All sections written — saving to your account…
+          All sections written, saving to your account…
         </p>
       )}
     </div>
@@ -121,7 +121,7 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
       const res = await fetch(`/api/logging/${assessmentId}`, { method: 'POST', signal: controller.signal })
       const data = await res.json()
       if (!res.ok || data.error) {
-        setGenError(data.message ?? data.error ?? 'Generation failed — please try again.')
+        setGenError(data.message ?? data.error ?? 'Generation failed, please try again.')
       } else {
         setSpec(data)
         setActiveTab('events')
@@ -129,8 +129,8 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
       }
     } catch (e) {
       setGenError(e instanceof Error && e.name === 'AbortError'
-        ? 'Timed out — please try again.'
-        : 'Something went wrong — please try again.')
+        ? 'Timed out, please try again.'
+        : 'Something went wrong, please try again.')
     } finally {
       clearTimeout(timeout)
       setGenerating(false)
@@ -174,7 +174,7 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
           <div>
             <h2 className="font-semibold mb-1">Article 12 Logging & Article 19 Retention</h2>
             <p className="text-sm text-gray-400 max-w-lg">
-              Generate a precise logging specification for this system — the exact events to log, fields to capture per event, and a retention schedule proving your Article 19 obligations are met.
+              Generate a precise logging specification for this system, the exact events to log, fields to capture per event, and a retention schedule proving your Article 19 obligations are met.
             </p>
           </div>
           <button
@@ -200,7 +200,7 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
     )
   }
 
-  // Defensive defaults — Claude tool-use occasionally omits required array fields
+  // Defensive defaults, Claude tool-use occasionally omits required array fields
   // even when the schema lists them. Keep the renderer tolerant so a partial AI
   // output never blanks the whole page.
   const events = spec.events ?? []
@@ -362,7 +362,7 @@ export function LoggingSpec({ assessmentId, isPaid }: Props) {
           <div className="px-6 py-8 text-sm text-gray-400 space-y-3">
             <p>
               No per-record-type retention schedule was generated. The Article 19 minimum determined for this system is
-              <span className="text-orange-400 font-semibold"> {retentionLabel}</span>, applied uniformly to all logged events.
+              <span className="text-orange-400 font-semibold"> {retentionLabel}</span>: applied uniformly to all logged events.
             </p>
             <p className="text-xs text-gray-500">
               Click <span className="text-gray-300 font-medium">Regenerate</span> to attempt a fresh schedule with per-record-type detail.

@@ -12,7 +12,7 @@ interface Props {
 const PERSONAL_VALUE = '__personal__'
 
 export function OrgSwitcher({ orgs, activeOrgId, setActiveOrg }: Props) {
-  // Controlled — uncontrolled selects keep stale visual state after Server
+  // Controlled, uncontrolled selects keep stale visual state after Server
   // Action revalidations. Sync to the server-rendered activeOrgId on every
   // prop change.
   const [value, setValue] = useState<string>(activeOrgId ?? PERSONAL_VALUE)

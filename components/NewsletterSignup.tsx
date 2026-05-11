@@ -44,7 +44,7 @@ export function NewsletterSignup({
             : 'text-sm text-emerald-300'
         }
       >
-        <strong>You're in.</strong> Check your inbox — a welcome note is on its way. Reply any time, your replies go straight to me.
+        <strong>You're in.</strong> Check your inbox, a welcome note is on its way. Reply any time, your replies go straight to me.
       </div>
     )
   }

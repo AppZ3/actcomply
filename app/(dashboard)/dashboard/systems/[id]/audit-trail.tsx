@@ -33,7 +33,7 @@ export function AuditTrail({ assessmentId, enabled = true }: { assessmentId: str
       <div className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-center justify-between gap-4">
         <div>
           <p className="font-semibold text-sm mb-0.5">Audit Trail</p>
-          <p className="text-xs text-gray-500">Full change log for regulators — every compliance update timestamped and recorded.</p>
+          <p className="text-xs text-gray-500">Full change log for regulators, every compliance update timestamped and recorded.</p>
         </div>
         <a href="/dashboard/billing" className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition">
           Business plan →

@@ -74,7 +74,7 @@ Content-Type: application/json
   "risk_level": "HIGH_RISK",
   "compliance_score": 42,
   "risk_rationale": "Why this system is classified as such...",
-  "regulatory_basis": "Annex III(1) biometrics — high-risk under Article 6(2) AI Act",
+  "regulatory_basis": "Annex III(1) biometrics, high-risk under Article 6(2) AI Act",
   "requirements": [...],
   "immediate_actions": [...],
   "estimated_effort": "120–180 hours"
@@ -84,17 +84,17 @@ Content-Type: application/json
           <div>
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Required fields</div>
             <ul className="space-y-1 text-gray-400">
-              <li><span className="font-mono text-gray-200">name</span> — system name</li>
-              <li><span className="font-mono text-gray-200">description</span> — what the system does</li>
-              <li><span className="font-mono text-gray-200">purpose</span> — business purpose and use case</li>
-              <li><span className="font-mono text-gray-200">sector</span> — industry sector</li>
+              <li><span className="font-mono text-gray-200">name</span>: system name</li>
+              <li><span className="font-mono text-gray-200">description</span>: what the system does</li>
+              <li><span className="font-mono text-gray-200">purpose</span>: business purpose and use case</li>
+              <li><span className="font-mono text-gray-200">sector</span>: industry sector</li>
             </ul>
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-2">Optional fields (improve classification accuracy)</div>
             <ul className="space-y-1 text-gray-400">
-              <li><span className="font-mono text-gray-200">usesPersonalData</span> — boolean</li>
-              <li><span className="font-mono text-gray-200">makesAutonomousDecisions</span> — boolean</li>
-              <li><span className="font-mono text-gray-200">affectsIndividuals</span> — boolean</li>
-              <li><span className="font-mono text-gray-200">currentSafeguards</span> — string describing human oversight, testing, etc.</li>
+              <li><span className="font-mono text-gray-200">usesPersonalData</span>: boolean</li>
+              <li><span className="font-mono text-gray-200">makesAutonomousDecisions</span>: boolean</li>
+              <li><span className="font-mono text-gray-200">affectsIndividuals</span>: boolean</li>
+              <li><span className="font-mono text-gray-200">currentSafeguards</span>: string describing human oversight, testing, etc.</li>
             </ul>
           </div>
 
@@ -167,7 +167,7 @@ Content-Type: application/json
   "org_id": "1ec71...optional"
 }`}</pre>
                 <p className="text-gray-400">
-                  Creates a subscription. The response includes a one-time <span className="font-mono">secret</span> — store it now, it&apos;s not retrievable later.
+                  Creates a subscription. The response includes a one-time <span className="font-mono">secret</span>: store it now, it&apos;s not retrievable later.
                   Omit <span className="font-mono">org_id</span> to receive events from every org you can access.
                 </p>
               </div>
@@ -186,17 +186,17 @@ Content-Type: application/json
               <div>
                 <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Supported events</div>
                 <ul className="text-gray-400 space-y-1 list-disc pl-5">
-                  <li><span className="font-mono text-blue-300">assessment.created</span> — a new risk assessment was saved (via dashboard or API)</li>
-                  <li><span className="font-mono text-blue-300">document.generated</span> — a tech doc / DPIA-FRIA / risk plan / logging spec finished generating</li>
-                  <li><span className="font-mono text-blue-300">alert.published</span> — a new regulatory alert was published platform-wide</li>
-                  <li><span className="font-mono text-blue-300">incident.created</span> — a new Article 72/73 incident was logged</li>
+                  <li><span className="font-mono text-blue-300">assessment.created</span>: a new risk assessment was saved (via dashboard or API)</li>
+                  <li><span className="font-mono text-blue-300">document.generated</span>: a tech doc / DPIA-FRIA / risk plan / logging spec finished generating</li>
+                  <li><span className="font-mono text-blue-300">alert.published</span>: a new regulatory alert was published platform-wide</li>
+                  <li><span className="font-mono text-blue-300">incident.created</span>: a new Article 72/73 incident was logged</li>
                 </ul>
               </div>
               <div>
                 <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Delivery + retries</div>
                 <p className="text-gray-400">
                   Each event POSTs the JSON payload to your <span className="font-mono">url</span> with a 15-second timeout.
-                  Non-2xx responses are recorded with their status code and the first 4KB of response body — retries are
+                  Non-2xx responses are recorded with their status code and the first 4KB of response body, retries are
                   not automatic in this beta; check the deliveries endpoint and replay manually if you need it.
                 </p>
               </div>

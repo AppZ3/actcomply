@@ -94,7 +94,7 @@ const TEMPLATES: Record<string, {
       },
       {
         heading: '4. Data Governance Processes',
-        guidance: 'Describe the processes for managing data throughout its lifecycle — including labelling, annotation quality, version control, and data access controls.',
+        guidance: 'Describe the processes for managing data throughout its lifecycle, including labelling, annotation quality, version control, and data access controls.',
         example: 'Data versioning: all datasets are versioned in [tool, e.g. DVC]. Annotation quality: minimum inter-annotator agreement of 0.85 Cohen\'s kappa. Data access: controlled via role-based access, audit logged. Retention: raw data retained for 7 years post-deployment. Deletion requests processed within 30 days.',
       },
       {
@@ -112,7 +112,7 @@ const TEMPLATES: Record<string, {
       {
         heading: '1. Oversight Roles and Responsibilities',
         guidance: 'Define who is responsible for overseeing the AI system in operation. Include role titles, their qualifications, and their oversight responsibilities.',
-        example: 'AI System Owner: [Role/Name] — accountable for overall system governance and compliance.\nOperational Supervisors: [Role] — responsible for day-to-day monitoring of system outputs.\nAI Safety Officer: [Role] — responsible for incident escalation and regulatory reporting.\nAll oversight personnel complete mandatory AI literacy training ([course name], [hours]) before assuming oversight duties.',
+        example: 'AI System Owner: [Role/Name], accountable for overall system governance and compliance.\nOperational Supervisors: [Role], responsible for day-to-day monitoring of system outputs.\nAI Safety Officer: [Role], responsible for incident escalation and regulatory reporting.\nAll oversight personnel complete mandatory AI literacy training ([course name], [hours]) before assuming oversight duties.',
       },
       {
         heading: '2. Monitoring Procedures',
@@ -139,7 +139,7 @@ const TEMPLATES: Record<string, {
   'risk-management-system': {
     title: 'Risk Management System',
     article: 'Article 9',
-    description: 'Duplicate route fallback — see risk-management.',
+    description: 'Duplicate route fallback, see risk-management.',
     sections: [],
   },
 }

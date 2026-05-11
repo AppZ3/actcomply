@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 
 export const metadata: Metadata = {
-  title: "Builder's Notes on the EU AI Act — ActComply Newsletter",
+  title: "Builder's Notes on the EU AI Act",
   description:
     'Plain-English notes on the EU AI Act, written by a builder shipping a compliance product. One email when there is something worth saying.',
   alternates: { canonical: 'https://www.getactcomply.com/newsletter' },

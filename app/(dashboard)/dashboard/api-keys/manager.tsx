@@ -84,7 +84,7 @@ export function ApiKeyManager() {
 
         {createdKey && (
           <div className="mb-4 bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-            <p className="text-sm text-green-400 font-semibold mb-1">Key created — copy it now, it won&apos;t be shown again</p>
+            <p className="text-sm text-green-400 font-semibold mb-1">Key created, copy it now, it won&apos;t be shown again</p>
             <div className="flex items-center gap-2 mt-2">
               <code className="flex-1 text-xs font-mono bg-black/30 rounded px-3 py-2 text-gray-200 break-all">
                 {createdKey.raw_key}

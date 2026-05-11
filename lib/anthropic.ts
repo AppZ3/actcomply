@@ -84,7 +84,7 @@ Description: ${prepareInput(system.description)}
 Purpose: ${prepareInput(system.purpose)}
 Sector: ${prepareInput(system.sector)}
 
-Rules — respond INVALID if any of the following are true:
+Rules, respond INVALID if any of the following are true:
 - The text is gibberish, random characters, or clearly meaningless
 - It is obviously a test (e.g. "asdf", "test123", "aaa bbb")
 - It does not describe anything that could plausibly be an AI or software system
@@ -93,7 +93,7 @@ Rules — respond INVALID if any of the following are true:
 
 Respond with exactly one word: VALID or INVALID
 If INVALID, add a colon and a short user-facing reason (under 15 words), e.g.:
-INVALID: Please describe a real AI system — this doesn't look like a valid submission.`,
+INVALID: Please describe a real AI system, this doesn't look like a valid submission.`,
       },
     ],
   }))
@@ -135,8 +135,8 @@ export async function assessAISystem(
 
 CURRENT REGULATORY TIMELINE (as of May 2026):
 - August 2, 2026: Enforcement powers go live. Prohibited AI (Article 5) and GPAI obligations (Articles 53-55) are enforced. All organisations must complete AI inventory and classification by this date.
-- December 2, 2027: Full obligations for high-risk AI systems (Annex III standalone systems) — per the Omnibus provisional agreement reached May 2026, pending formal adoption.
-- August 2, 2028: Full obligations for high-risk AI embedded in regulated products (Annex I) — per Omnibus.
+- December 2, 2027: Full obligations for high-risk AI systems (Annex III standalone systems), per the Omnibus provisional agreement reached May 2026, pending formal adoption.
+- August 2, 2028: Full obligations for high-risk AI embedded in regulated products (Annex I), per Omnibus.
 - Until the Omnibus is formally adopted by Parliament and Council, treat August 2, 2026 as the operative date for all obligations.
 
 PROHIBITED INDICATORS TO CHECK:
@@ -156,7 +156,7 @@ Provide your assessment in the following JSON format exactly:
   "estimatedEffort": "Realistic estimate e.g. '2-4 weeks with 1 compliance officer' or '3-6 months requiring legal counsel'"
 }
 
-Be precise, reference actual article numbers, and be conservative — if unsure, classify higher risk. Return only valid JSON, no markdown.`,
+Be precise, reference actual article numbers, and be conservative, if unsure, classify higher risk. Return only valid JSON, no markdown.`,
         cache_control: { type: 'ephemeral' },
       },
     ],

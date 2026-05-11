@@ -1,13 +1,13 @@
-// GET /api/v1/assessments — list assessments visible to the calling key.
+// GET /api/v1/assessments, list assessments visible to the calling key.
 // Auth: Authorization: Bearer ac_<key>
 //
 // Query params:
-//   org_id  — filter to a specific organisation (caller must have access).
+//   org_id , filter to a specific organisation (caller must have access).
 //             Pass `personal` for the personal-workspace branch (org_id IS NULL).
 //             Omit to return everything the key owner can see across all
 //             personal + accessible orgs.
-//   limit   — default 50, max 200
-//   offset  — for pagination
+//   limit  , default 50, max 200
+//   offset , for pagination
 
 import { NextRequest } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'

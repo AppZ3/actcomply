@@ -3,12 +3,12 @@ import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const metadata: Metadata = {
-  title: 'EU AI Act Risk Classification — 4 Tiers Explained',
+  title: 'EU AI Act Risk Classification: 4 Tiers Explained',
   description: 'Understand the EU AI Act four-tier risk classification system: Prohibited, High-Risk, Limited Risk, and Minimal Risk. Find out which tier your AI system falls under.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-risk-classification' },
   openGraph: {
-    title: 'EU AI Act Risk Classification — 4 Tiers Explained',
-    description: 'Prohibited, High-Risk, Limited Risk, Minimal Risk — understand the EU AI Act risk tiers and what obligations apply to each.',
+    title: 'EU AI Act Risk Classification: 4 Tiers Explained',
+    description: 'Prohibited, High-Risk, Limited Risk, Minimal Risk. Understand the EU AI Act risk tiers and what obligations apply to each.',
     url: 'https://www.getactcomply.com/eu-ai-act-risk-classification',
   },
 }
@@ -18,7 +18,7 @@ const tiers = [
     level: 'Prohibited',
     color: 'red',
     articles: 'Article 5',
-    tagline: 'Banned outright — cannot be deployed in the EU',
+    tagline: 'Banned outright, cannot be deployed in the EU',
     description: 'These AI practices are considered an unacceptable risk to fundamental rights and are prohibited entirely under the EU AI Act.',
     examples: [
       'Social scoring by governments',
@@ -35,7 +35,7 @@ const tiers = [
     level: 'High Risk',
     color: 'orange',
     articles: 'Articles 9–15, 43–49, Annex III',
-    tagline: 'Heavily regulated — 12+ obligations before deployment',
+    tagline: 'Heavily regulated, 12+ obligations before deployment',
     description: 'AI systems in eight regulated sectors (biometrics, education, employment, credit scoring, law enforcement, migration, justice, critical infrastructure) face the most stringent requirements.',
     examples: [
       'CV screening and hiring tools',
@@ -78,7 +78,7 @@ const tiers = [
     level: 'Minimal Risk',
     color: 'green',
     articles: 'No mandatory requirements',
-    tagline: 'No mandatory obligations — voluntary codes encouraged',
+    tagline: 'No mandatory obligations, voluntary codes encouraged',
     description: 'The vast majority of AI systems fall here. Spam filters, recommendation engines, AI in video games, and most B2B productivity tools are minimal risk. No mandatory compliance requirements, but voluntary codes of conduct are encouraged.',
     examples: [
       'AI-powered spam filters',
@@ -125,7 +125,7 @@ export default function RiskClassificationPage() {
           <h1 className="text-4xl font-bold mb-4">EU AI Act Risk Classification</h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
             The EU AI Act uses a <strong className="text-gray-900 dark:text-white">four-tier risk pyramid</strong> to determine which obligations apply to your AI system.
-            Classification depends on your system&apos;s purpose, sector, and potential impact on people — not its technical architecture.
+            Classification depends on your system&apos;s purpose, sector, and potential impact on people, not its technical architecture.
           </p>
         </div>
 

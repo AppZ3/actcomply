@@ -6,7 +6,7 @@ const STEPS = [
   {
     num: 1,
     title: 'Determine if you are a non-EU provider',
-    detail: 'Article 22 applies if your organisation is established outside the EU but places AI systems on the EU market or puts them into service in the EU (Article 2(1)(c)). If you are EU-established, you do not need an authorised representative — but you must still meet all provider obligations directly.',
+    detail: 'Article 22 applies if your organisation is established outside the EU but places AI systems on the EU market or puts them into service in the EU (Article 2(1)(c)). If you are EU-established, you do not need an authorised representative, but you must still meet all provider obligations directly.',
     article: 'Article 22(1)',
   },
   {
@@ -53,7 +53,7 @@ export function Article22Guidance({ riskLevel }: Props) {
       >
         <div>
           <div className="flex items-center gap-2 mb-0.5">
-            <h2 className="font-semibold">Article 22 — EU Authorised Representative</h2>
+            <h2 className="font-semibold">Article 22, EU Authorised Representative</h2>
             <span className="text-xs font-mono bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-2 py-0.5 rounded-full">
               Non-EU providers only
             </span>

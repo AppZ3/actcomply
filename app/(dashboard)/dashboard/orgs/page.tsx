@@ -25,7 +25,7 @@ export default async function OrgsPage() {
           <h2 className="text-lg font-semibold mb-2">Enterprise Feature</h2>
           <p className="text-gray-400 text-sm mb-6">
             Multi-entity management lets you organise AI systems and compliance records across different
-            legal entities, subsidiaries, or business units — all under one account.
+            legal entities, subsidiaries, or business units, all under one account.
           </p>
           <Link
             href="/#pricing"
@@ -52,7 +52,7 @@ export default async function OrgsPage() {
       <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-8 flex items-center justify-between gap-3 flex-wrap">
         <div className="text-sm text-gray-300">
           Currently viewing <span className="font-semibold text-white">{activeLabel}</span>.
-          {' '}This page is for <em>managing</em> entities — to switch which entity&apos;s data you see across the dashboard, use the <span className="font-medium text-white">Workspace</span> dropdown in the sidebar.
+          {' '}This page is for <em>managing</em> entities. To switch which entity&apos;s data you see across the dashboard, use the <span className="font-medium text-white">Workspace</span> dropdown in the sidebar.
         </div>
       </div>
 

@@ -3,12 +3,12 @@ import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 export const metadata: Metadata = {
-  title: 'EU AI Act Omnibus Update — What Changed and What Didn\'t',
+  title: 'EU AI Act Omnibus Update: What Changed and What Didn\'t',
   description: 'A provisional agreement reached in May 2026 extends high-risk AI Act deadlines. Annex III obligations move to December 2027. August 2, 2026 enforcement powers unchanged. Here\'s what your organisation needs to do now.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-omnibus-update' },
   openGraph: {
     title: 'EU AI Act Omnibus: What Changed and What Didn\'t',
-    description: 'High-risk AI deadlines extended to December 2027 — but August 2, 2026 enforcement powers are unchanged. What this means for your compliance programme.',
+    description: 'High-risk AI deadlines extended to December 2027, but August 2, 2026 enforcement powers are unchanged. What this means for your compliance programme.',
     url: 'https://www.getactcomply.com/eu-ai-act-omnibus-update',
   },
 }
@@ -17,15 +17,15 @@ const timeline = [
   {
     date: 'February 2, 2025',
     status: 'in force',
-    label: 'Prohibited AI — already enforced',
-    description: 'Article 5 prohibitions are live. Social scoring, real-time biometric surveillance in public spaces, manipulation of vulnerable groups — all banned. No change under Omnibus.',
+    label: 'Prohibited AI: already enforced',
+    description: 'Article 5 prohibitions are live. Social scoring, real-time biometric surveillance in public spaces, manipulation of vulnerable groups: all banned. No change under Omnibus.',
     refs: 'Article 5',
     color: 'red',
   },
   {
     date: 'August 2, 2025',
     status: 'in force',
-    label: 'GPAI obligations — already enforced',
+    label: 'GPAI obligations: already enforced',
     description: 'General Purpose AI model providers must comply with Articles 53–55: technical documentation, copyright summaries, transparency, and adversarial testing for systemic risk models. No change under Omnibus.',
     refs: 'Articles 53–55',
     color: 'red',
@@ -33,7 +33,7 @@ const timeline = [
   {
     date: 'August 2, 2026',
     status: 'upcoming',
-    label: 'Enforcement powers go live — inventory deadline',
+    label: 'Enforcement powers go live: inventory deadline',
     description: 'Supervisory authorities gain full enforcement powers from this date. All organisations must have completed their AI inventory and risk classification. Prohibited AI and GPAI compliance will be actively reviewed. This date is unchanged by the Omnibus.',
     refs: 'Annex III, Articles 5, 53–55',
     color: 'amber',
@@ -42,7 +42,7 @@ const timeline = [
   {
     date: 'December 2, 2027',
     status: 'extended',
-    label: 'High-risk AI (Annex III) — full obligations',
+    label: 'High-risk AI (Annex III): full obligations',
     description: 'Standalone high-risk AI systems (hiring, credit scoring, education, law enforcement, biometrics, migration) must meet full Article 9–27 obligations: risk management, technical documentation, human oversight, conformity assessment, EU database registration. Extended from August 2, 2026 under Omnibus provisional agreement.',
     refs: 'Annex III, Articles 9–27, 43, 49',
     color: 'blue',
@@ -51,7 +51,7 @@ const timeline = [
     date: 'August 2, 2028',
     status: 'extended',
     label: 'High-risk AI embedded in products (Annex I)',
-    description: 'AI systems integrated into regulated products — medical devices, machinery, toys, aviation, automotive — face full obligations from this date. Extended under Omnibus provisional agreement.',
+    description: 'AI systems integrated into regulated products (medical devices, machinery, toys, aviation, automotive) face full obligations from this date. Extended under Omnibus provisional agreement.',
     refs: 'Annex I, Articles 9–27',
     color: 'blue',
   },
@@ -72,7 +72,7 @@ const whatStillMatters = [
   },
   {
     title: 'Document your assumptions',
-    description: 'The Omnibus is a provisional agreement — it requires formal adoption by Parliament and Council. Until that happens, treat August 2, 2026 as operative for all obligations. Any compliance programme built on the Omnibus timeline should document that assumption explicitly so it\'s auditable if the architecture changes.',
+    description: 'The Omnibus is a provisional agreement. It requires formal adoption by Parliament and Council. Until that happens, treat August 2, 2026 as operative for all obligations. Any compliance programme built on the Omnibus timeline should document that assumption explicitly so it\'s auditable if the architecture changes.',
   },
 ]
 
@@ -112,7 +112,7 @@ export default function OmnibusUpdatePage() {
         <div className="mb-12">
           <div className="flex flex-wrap gap-2 mb-6">
             <span className="inline-flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full font-medium">
-              Provisional agreement — formal adoption pending
+              Provisional agreement: formal adoption pending
             </span>
             <span className="inline-flex items-center gap-1.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 text-xs px-3 py-1.5 rounded-full">
               Updated May 8, 2026
@@ -136,7 +136,7 @@ export default function OmnibusUpdatePage() {
           <p className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-2">The one thing to understand</p>
           <p className="text-gray-900 dark:text-white font-medium text-lg leading-relaxed">
             Supervisory authorities have full enforcement powers from August 2, 2026 regardless of the Omnibus timeline.
-            The extension gives you more time to meet high-risk obligations — it does not give you more time to know what you have.
+            The extension gives you more time to meet high-risk obligations. It does not give you more time to know what you have.
           </p>
         </div>
 
@@ -152,7 +152,7 @@ export default function OmnibusUpdatePage() {
                   <div className="flex flex-wrap items-center gap-3 mb-2">
                     <span className="text-sm font-mono text-gray-500 dark:text-gray-400">{item.date}</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${statusColor[item.status as keyof typeof statusColor]}`}>
-                      {item.status === 'in force' ? 'In force' : item.status === 'upcoming' ? 'Unchanged' : 'Extended — Omnibus'}
+                      {item.status === 'in force' ? 'In force' : item.status === 'upcoming' ? 'Unchanged' : 'Extended, Omnibus'}
                     </span>
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{item.label}</h3>
@@ -197,7 +197,7 @@ export default function OmnibusUpdatePage() {
         <section className="bg-blue-600 rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-3">Know where your AI systems stand</h2>
           <p className="text-blue-100 mb-6 max-w-xl mx-auto">
-            Assess any AI system against the EU AI Act in under 5 minutes. Free risk classification, compliance roadmap, and article-referenced requirements — updated for the Omnibus timeline.
+            Assess any AI system against the EU AI Act in under 5 minutes. Free risk classification, compliance roadmap, and article-referenced requirements, updated for the Omnibus timeline.
           </p>
           <Link
             href="/assess"

@@ -1,4 +1,4 @@
-// GET /api/export/[assessmentId] — download all compliance records as JSON
+// GET /api/export/[assessmentId], download all compliance records as JSON
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
@@ -44,7 +44,7 @@ export async function GET(
         exported_at: new Date().toISOString(),
         assessment_id: assessmentId,
         system_name: assessment.name,
-        regulation: 'Regulation (EU) 2024/1689 — EU AI Act',
+        regulation: 'Regulation (EU) 2024/1689, EU AI Act',
         note: 'This export contains all compliance records for this AI system. Retain for the duration required under Article 18 (10 years from market placement).',
       },
       system: assessment,

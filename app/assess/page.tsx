@@ -126,7 +126,7 @@ function UpgradePlans() {
       <div className="text-center mb-8">
         <h2 className="text-xl font-bold mb-2">Get your full compliance package</h2>
         <p className="text-gray-400 text-sm mb-6">
-          Auto-generated documentation, regulatory monitoring, and audit-ready reports — all included.
+          Auto-generated documentation, regulatory monitoring, and audit-ready reports, all included.
         </p>
         {/* Annual toggle */}
         <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
@@ -217,7 +217,7 @@ function EmailCapture({ riskLevel, systemName, sector }: { riskLevel: string; sy
       <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-6 text-center">
         <div className="text-2xl mb-2">📬</div>
         <p className="font-semibold text-green-400 mb-1">Report sent!</p>
-        <p className="text-sm text-gray-400">Check your inbox — we&apos;ve emailed your full assessment result.</p>
+        <p className="text-sm text-gray-400">Check your inbox, we&apos;ve emailed your full assessment result.</p>
       </div>
     )
   }
@@ -554,7 +554,7 @@ export default function AssessPage() {
               rows={3}
               value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              placeholder="Describe what the AI system does technically — what inputs it takes, what outputs it produces, what model or approach it uses."
+              placeholder="Describe what the AI system does technically, what inputs it takes, what outputs it produces, what model or approach it uses."
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition resize-none"
             />
           </div>

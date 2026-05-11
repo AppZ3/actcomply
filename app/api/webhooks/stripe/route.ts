@@ -72,14 +72,14 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (!existingProfile) {
-          // New user — Supabase sends the invite email with a magic link
+          // New user, Supabase sends the invite email with a magic link
           const { error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
             redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?redirect=/dashboard`,
           })
           if (inviteError) console.error('Invite error:', inviteError.message)
           await new Promise(resolve => setTimeout(resolve, 2000))
         } else {
-          // Existing user (e.g. re-purchase / upgrade) — generate a fresh magic link
+          // Existing user (e.g. re-purchase / upgrade), generate a fresh magic link
           // and send it ourselves via Resend so they can access their dashboard.
           const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
             type: 'magiclink',
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
               await getResend().emails.send({
                 from: 'ActComply <hello@getactcomply.com>',
                 to: email,
-                subject: 'Your ActComply subscription is active — sign in here',
+                subject: 'Your ActComply subscription is active. Sign in here',
                 html: `
                   <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
                     <div style="background:#0f172a;padding:24px 32px;border-radius:12px 12px 0 0">

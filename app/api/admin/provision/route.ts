@@ -1,4 +1,4 @@
-// POST /api/admin/provision — create or upgrade a user to Enterprise sandbox
+// POST /api/admin/provision, create or upgrade a user to Enterprise sandbox
 // Protected by ADMIN_SECRET bearer token (same pattern as CRON_SECRET)
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     if (existing) {
       userId = existing.id
     } else {
-      // Invite new user — sends magic link to their email
+      // Invite new user, sends magic link to their email
       const { data: invited, error: inviteErr } = await admin.auth.admin.inviteUserByEmail(email.trim().toLowerCase(), {
         data: { invited_for: 'sandbox', note: note ?? 'Partner sandbox account' },
       })

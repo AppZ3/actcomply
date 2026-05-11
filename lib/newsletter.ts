@@ -1,4 +1,4 @@
-// Newsletter helpers — token generation, plain-text-to-HTML rendering, send templates.
+// Newsletter helpers, token generation, plain-text-to-HTML rendering, send templates.
 // Uses the same Resend client / Supabase admin as the rest of the platform.
 
 import { randomBytes } from 'node:crypto'
@@ -9,7 +9,7 @@ export function newUnsubscribeToken(): string {
 
 // Convert plain-text body (paragraphs separated by blank lines) into simple
 // safe-ish HTML. We're sending to opt-in subscribers, content is authored by us,
-// so we don't escape — but we do trim and wrap each paragraph.
+// so we don't escape, but we do trim and wrap each paragraph.
 export function bodyToHtml(body: string): string {
   return body
     .split(/\n\s*\n/)
@@ -67,13 +67,13 @@ export function welcomeEmailHtml(unsubscribeUrl: string): string {
     <div style="background:#fff;border:1px solid #e2e8f0;border-top:none;padding:32px;border-radius:0 0 12px 12px">
       <h2 style="margin:0 0 16px;font-size:22px">You're in.</h2>
       <p style="color:#475569;line-height:1.7;margin:0 0 16px;font-size:15px">
-        I'll send you one issue when it's worth your time — usually weekly. The angle is straight-talking notes on the EU AI Act for people who actually ship AI products, not lawyers.
+        I'll send you one issue when it's worth your time, usually weekly. The angle is straight-talking notes on the EU AI Act for people who actually ship AI products, not lawyers.
       </p>
       <p style="color:#475569;line-height:1.7;margin:0 0 16px;font-size:15px">
-        I'm Zac, building <a href="https://getactcomply.com" style="color:#2563eb">ActComply</a> — compliance tooling for AI builders. The newsletter is the public-facing version of what I'm learning while I build.
+        I'm Zac, building <a href="https://getactcomply.com" style="color:#2563eb">ActComply</a>, compliance tooling for AI builders. The newsletter is the public-facing version of what I'm learning while I build.
       </p>
       <p style="color:#475569;line-height:1.7;margin:0 0 16px;font-size:15px">
-        First issue lands soon. Hit reply any time — your replies go to my inbox.
+        First issue lands soon. Hit reply any time. Your replies go to my inbox.
       </p>
       <div style="margin-top:32px;padding-top:20px;border-top:1px solid #e2e8f0">
         <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6">

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     .maybeSingle()
   if (!tokenRow) return { title: 'Conformity Pack' }
   const { data: a } = await admin.from('assessments').select('name').eq('id', tokenRow.assessment_id).maybeSingle()
-  return { title: a?.name ? `${a.name} — Conformity Pack` : 'Conformity Pack' }
+  return { title: a?.name ? `${a.name}, Conformity Pack` : 'Conformity Pack' }
 }
 
 const RISK_LABELS: Record<RiskLevel, string> = {
@@ -156,7 +156,7 @@ export default async function PublicConformityPage({ params }: { params: Promise
 
       <div className="no-print bg-blue-50 border-b border-blue-200 px-6 py-2.5 flex items-center justify-between gap-4 print:hidden">
         <p className="text-xs text-blue-700">
-          <span className="font-semibold">Shared conformity pack</span> — {assessment.name} · Read-only view
+          <span className="font-semibold">Shared conformity pack</span>: {assessment.name} · Read-only view
         </p>
         <PrintButton />
       </div>
@@ -169,10 +169,10 @@ export default async function PublicConformityPage({ params }: { params: Promise
             ActComply · getactcomply.com
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-1">
-            EU AI Act — Conformity Assessment Evidence Pack
+            EU AI Act, Conformity Assessment Evidence Pack
           </h1>
           <p className="text-gray-500 text-sm mb-6">
-            Prepared in accordance with Regulation (EU) 2024/1689 — EU AI Act
+            Prepared in accordance with Regulation (EU) 2024/1689, EU AI Act
           </p>
           <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
             <div><span className="text-gray-400 text-xs uppercase tracking-wide block mb-0.5">AI System</span><span className="font-semibold">{assessment.name}</span></div>
@@ -337,7 +337,7 @@ export default async function PublicConformityPage({ params }: { params: Promise
             )}
             {gdprSpec.explainability_statement && (
               <div>
-                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Article 86 — Explainability Statement</h3>
+                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Article 86, Explainability Statement</h3>
                 <p className="text-xs text-gray-600 leading-relaxed">{gdprSpec.explainability_statement}</p>
               </div>
             )}
@@ -352,7 +352,7 @@ export default async function PublicConformityPage({ params }: { params: Promise
         {/* 7. Risk Management */}
         {riskPlan ? (
           <section className="mb-10 page-break">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">7. Article 9 — Risk Management Plan</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">7. Article 9, Risk Management Plan</h2>
             {riskPlan.overall_rationale && <p className="text-xs text-gray-700 leading-relaxed mb-4">{riskPlan.overall_rationale}</p>}
             {riskPlan.risk_items && riskPlan.risk_items.length > 0 && (
               <div className="mb-5">
@@ -384,7 +384,7 @@ export default async function PublicConformityPage({ params }: { params: Promise
           </section>
         ) : (
           <section className="mb-10 break-inside-avoid">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">7. Article 9 — Risk Management Plan</h2>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">7. Article 9, Risk Management Plan</h2>
             <div className="border border-dashed border-gray-300 rounded p-4 text-gray-400 text-xs">Risk management plan not yet generated.</div>
           </section>
         )}

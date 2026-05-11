@@ -18,7 +18,7 @@ const STEPS = [
   {
     num: 3,
     title: 'Access the EU AI Act database',
-    detail: 'The EU AI Office maintains the central registration database. Registration must be completed before the system is placed on the market. The database is publicly searchable — your registration number should appear on your technical documentation and EU Declaration of Conformity.',
+    detail: 'The EU AI Office maintains the central registration database. Registration must be completed before the system is placed on the market. The database is publicly searchable, your registration number should appear on your technical documentation and EU Declaration of Conformity.',
     article: 'Article 71',
   },
   {
@@ -30,7 +30,7 @@ const STEPS = [
   {
     num: 5,
     title: 'Maintain your registration',
-    detail: 'Registration must be updated within 15 days whenever information changes materially — including new deployment contexts, version changes that affect risk classification, or changes to your authorised representative. Failure to maintain accurate registration is an independent compliance obligation.',
+    detail: 'Registration must be updated within 15 days whenever information changes materially, including new deployment contexts, version changes that affect risk classification, or changes to your authorised representative. Failure to maintain accurate registration is an independent compliance obligation.',
     article: 'Article 49(5)',
   },
 ]
@@ -53,7 +53,7 @@ export function EUDatabaseGuidance({ riskLevel }: Props) {
       >
         <div>
           <div className="flex items-center gap-2 mb-0.5">
-            <h2 className="font-semibold">Article 49 — EU Database Registration</h2>
+            <h2 className="font-semibold">Article 49, EU Database Registration</h2>
             <span className="text-xs font-mono bg-purple-500/20 text-purple-400 border border-purple-500/30 px-2 py-0.5 rounded-full">
               Required before market placement
             </span>

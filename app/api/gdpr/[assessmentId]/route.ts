@@ -136,12 +136,12 @@ export async function POST(
 
 Key legal context:
 - GDPR Article 35: DPIA required for systematic and extensive profiling, large-scale special-category data processing, or systematic monitoring of public areas
-- EU AI Act Article 27: FRIA required for deployers of high-risk AI in areas covered by Annex III points 1, 2, 3, 5, 6, 7, 8 — assessing impact on fundamental rights
+- EU AI Act Article 27: FRIA required for deployers of high-risk AI in areas covered by Annex III points 1, 2, 3, 5, 6, 7, 8, assessing impact on fundamental rights
 - GDPR Article 9/10: Special-category data (health, biometric, racial/ethnic origin, etc.) requires explicit legal basis
 - EU AI Act Article 86: Affected persons have a right to explanation for AI-assisted decisions
-- GDPR Article 22: Restrictions on solely automated decision-making — human oversight required
+- GDPR Article 22: Restrictions on solely automated decision-making, human oversight required
 
-Generate a precise, integrated assessment. Be specific to the system's actual processing activities and sector. Identify real risks — do not produce a generic checklist. For fundamental rights, assess specifically which rights are impacted and at what level (none/low/medium/high). The explainability statement should describe what explanation can realistically be given to affected persons about this specific system's decisions.`,
+Generate a precise, integrated assessment. Be specific to the system's actual processing activities and sector. Identify real risks, do not produce a generic checklist. For fundamental rights, assess specifically which rights are impacted and at what level (none/low/medium/high). The explainability statement should describe what explanation can realistically be given to affected persons about this specific system's decisions.`,
       messages: [{
         role: 'user',
         content: `Generate an integrated GDPR DPIA + EU AI Act FRIA for this AI system:
@@ -157,18 +157,18 @@ Generate a precise, integrated assessment. Be specific to the system's actual pr
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}
 
-Produce ALL of the following — every field is required and every list must be populated. None of these are optional:
+Produce ALL of the following, every field is required and every list must be populated. None of these are optional:
 
 1. dpia_required + dpia_rationale (1–2 sentences each)
 2. fria_required + fria_rationale (1–2 sentences each)
-3. processing_activities — 2–3 items with legal_basis (e.g. "Article 6(1)(b) GDPR — contract necessity"), special-category condition where applicable, necessity_assessment, proportionality
-4. risks — 3–4 specific risks (not generic). Each with likelihood, severity, mitigation, residual_risk
-5. fundamental_rights_impacts — 3–4 affected rights from {non-discrimination, privacy, fair trial, effective remedy, dignity, freedom of expression}, each with affected_groups, impact_level (none/low/medium/high), mitigation
-6. explainability_statement — 3–5 sentences, Article 86 compliant, specific to this system
-7. safeguards — 4–6 concrete safeguards. Examples for HR-AI: "quarterly bias audit on protected attributes", "human oversight: recruiter reviews top-30 cutoff before shortlist export", "dataset minimisation: store only fields required for scoring", "encryption at rest using AES-256", "right-to-explanation portal for candidates", "incident escalation path to DPO". Concrete actions, not platitudes.
-8. consultation_required (boolean) + consultation_rationale (1–2 sentences) — under GDPR Article 36, prior consultation with the supervisory authority is required when residual high risk remains after safeguards. State true only if at least one risk has residual_risk = "high" or higher, otherwise false. Always provide consultation_rationale explaining the determination.
+3. processing_activities, 2–3 items with legal_basis (e.g. "Article 6(1)(b) GDPR, contract necessity"), special-category condition where applicable, necessity_assessment, proportionality
+4. risks, 3–4 specific risks (not generic). Each with likelihood, severity, mitigation, residual_risk
+5. fundamental_rights_impacts, 3–4 affected rights from {non-discrimination, privacy, fair trial, effective remedy, dignity, freedom of expression}, each with affected_groups, impact_level (none/low/medium/high), mitigation
+6. explainability_statement, 3–5 sentences, Article 86 compliant, specific to this system
+7. safeguards, 4–6 concrete safeguards. Examples for HR-AI: "quarterly bias audit on protected attributes", "human oversight: recruiter reviews top-30 cutoff before shortlist export", "dataset minimisation: store only fields required for scoring", "encryption at rest using AES-256", "right-to-explanation portal for candidates", "incident escalation path to DPO". Concrete actions, not platitudes.
+8. consultation_required (boolean) + consultation_rationale (1–2 sentences), under GDPR Article 36, prior consultation with the supervisory authority is required when residual high risk remains after safeguards. State true only if at least one risk has residual_risk = "high" or higher, otherwise false. Always provide consultation_rationale explaining the determination.
 
-Keep each free-text field to 2–3 sentences maximum. Do not omit any field — empty arrays or missing fields will fail validation.`,
+Keep each free-text field to 2–3 sentences maximum. Do not omit any field, empty arrays or missing fields will fail validation.`,
       }],
     })
 
@@ -198,7 +198,7 @@ Keep each free-text field to 2–3 sentences maximum. Do not omit any field — 
           role: 'user',
           content: `Your previous tool call for the DPIA + FRIA on this AI system OMITTED these required fields: ${missingBeforeBackfill.join(', ')}.
 
-Re-emit the full tool call with EVERY field populated, including the previously-omitted ones. The fields you already produced are correct — keep them. The omitted fields must be substantive and specific to this system.
+Re-emit the full tool call with EVERY field populated, including the previously-omitted ones. The fields you already produced are correct, keep them. The omitted fields must be substantive and specific to this system.
 
 System: ${assessment.name} (${assessment.sector}, risk level ${assessment.risk_level}).
 
@@ -216,7 +216,7 @@ ${partial}`,
       }
     }
 
-    // Final defensive backfill in case the retry also missed something —
+    // Final defensive backfill in case the retry also missed something -
     // never ship a half-populated artefact to the renderer.
     if (typeof result.dpia_required !== 'boolean') result.dpia_required = false
     if (typeof result.fria_required !== 'boolean') result.fria_required = false

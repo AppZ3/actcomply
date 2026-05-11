@@ -117,7 +117,7 @@ export async function POST(
       tools: [DOC_TOOL],
       tool_choice: { type: 'tool', name: 'generate_documentation' },
       system: `You are an EU AI Act compliance expert generating Article 11 + Annex IV technical documentation.
-Write 10 sections. Each section content: 2-3 substantive paragraphs, specific to the system, audit-ready, citing real EU AI Act article numbers. No placeholder text. Be precise and thorough — this documentation may be reviewed by regulators or legal counsel.
+Write 10 sections. Each section content: 2-3 substantive paragraphs, specific to the system, audit-ready, citing real EU AI Act article numbers. No placeholder text. Be precise and thorough, this documentation may be reviewed by regulators or legal counsel.
 Sections required: General Description, Intended Purpose and Deployment Context, Development and Training Methodology, Training Data and Data Governance, Performance Metrics and Validation Testing, Risk Management System, Human Oversight Measures, Transparency and Instructions for Use, Cybersecurity and Robustness, Post-Market Monitoring Plan.`,
       messages: [{
         role: 'user',
@@ -141,7 +141,7 @@ Sections required: General Description, Intended Purpose and Deployment Context,
     if (!toolBlock) throw new Error('No tool response from Claude')
     const doc = toolBlock.input as Record<string, unknown>
 
-    // Defensive backfill in case Claude omits a required field — keeps the
+    // Defensive backfill in case Claude omits a required field, keeps the
     // renderer safe even if the model returns a partial structure.
     if (typeof doc.title !== 'string') doc.title = 'EU AI Act Article 11 + Annex IV Technical Documentation'
     if (typeof doc.regulatory_basis !== 'string') doc.regulatory_basis = ''

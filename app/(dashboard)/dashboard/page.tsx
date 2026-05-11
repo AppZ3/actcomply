@@ -85,7 +85,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard label="Systems Assessed" value={total.toString()} />
         <StatCard label="High / Prohibited Risk" value={highRisk.toString()} highlight={highRisk > 0} />
-        <StatCard label="Avg Compliance Score" value={total > 0 ? `${avgScore}%` : '—'} />
+        <StatCard label="Avg Compliance Score" value={total > 0 ? `${avgScore}%` : '-'} />
         <StatCard label="Days to Deadline" value={daysLeft.toString()} highlight />
       </div>
 

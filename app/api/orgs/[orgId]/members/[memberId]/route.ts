@@ -1,4 +1,4 @@
-// DELETE /api/orgs/[orgId]/members/[memberId] — remove a member
+// DELETE /api/orgs/[orgId]/members/[memberId], remove a member
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

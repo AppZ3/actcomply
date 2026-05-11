@@ -14,7 +14,7 @@ export default function SuccessPage() {
         </div>
         <h1 className="text-3xl font-bold mb-4">You&apos;re subscribed!</h1>
         <p className="text-gray-300 mb-3">
-          Welcome to ActComply. We&apos;ve sent a <span className="text-white font-medium">magic link to your email</span> — click it to access your compliance dashboard.
+          Welcome to ActComply. We&apos;ve sent a <span className="text-white font-medium">magic link to your email</span>: click it to access your compliance dashboard.
         </p>
         <p className="text-gray-500 text-sm mb-8">
           Don&apos;t see it? Check your spam folder. It comes from ActComply.

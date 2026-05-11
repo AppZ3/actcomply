@@ -83,7 +83,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         }
       />
 
-      {/* Main — offset for desktop sidebar, top bar on mobile */}
+      {/* Main, offset for desktop sidebar, top bar on mobile */}
       <main className="flex-1 md:ml-60 min-h-screen pt-14 md:pt-0">
         {children}
       </main>

@@ -1,4 +1,4 @@
-// GET /api/cron/alert-digest — weekly digest of unread regulatory alerts
+// GET /api/cron/alert-digest, weekly digest of unread regulatory alerts
 // Called by Vercel Cron. Protected by CRON_SECRET.
 
 export const maxDuration = 60
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
         await sendAlertDigestEmail({ to: profile.email, alerts: unread })
         sent++
       } catch {
-        // Individual send failure — continue with others
+        // Individual send failure, continue with others
       }
     }
 

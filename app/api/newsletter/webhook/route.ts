@@ -1,4 +1,4 @@
-// POST /api/newsletter/webhook — Resend webhook for newsletter delivery events.
+// POST /api/newsletter/webhook, Resend webhook for newsletter delivery events.
 // Subscribe to: email.delivered, email.opened, email.clicked, email.bounced, email.complained
 //
 // Distinct from /api/resend-events (which lives in the outreach tool repo).
@@ -7,7 +7,7 @@
 //
 // Signature verification: Resend delivers via Svix. The signing secret lives in
 // NEWSLETTER_WEBHOOK_SECRET (whsec_... format). Without a valid signature we
-// reject — anyone who guessed the URL could otherwise forge delivery/bounce
+// reject, anyone who guessed the URL could otherwise forge delivery/bounce
 // events and corrupt newsletter_sends.
 
 import { NextRequest, NextResponse } from 'next/server'

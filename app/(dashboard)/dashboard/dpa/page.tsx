@@ -16,7 +16,7 @@ export default async function DpaPage() {
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold mb-1">Data Processing Agreement</h1>
-          <p className="text-gray-400 text-sm">Article 28 GDPR — ActComply as your data processor</p>
+          <p className="text-gray-400 text-sm">Article 28 GDPR, ActComply as your data processor</p>
         </div>
         <DpaPrintButton />
       </div>

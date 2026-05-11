@@ -73,7 +73,7 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
       setSaved(reqId)
       setTimeout(() => setSaved(s => s === reqId ? null : s), 1500)
     } catch {
-      setSaveError('Failed to save — please try again.')
+      setSaveError('Failed to save, please try again.')
       setProgress(prev => ({ ...prev, [reqId]: { ...prev[reqId], status: current } }))
     } finally {
       setSaving(null)
@@ -94,7 +94,7 @@ export function ComplianceChecklist({ assessmentId, requirements, initialProgres
         }),
       })
     } catch {
-      setSaveError('Failed to save notes — please try again.')
+      setSaveError('Failed to save notes, please try again.')
     }
   }
 

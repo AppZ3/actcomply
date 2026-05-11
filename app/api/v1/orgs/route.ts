@@ -1,4 +1,4 @@
-// GET /api/v1/orgs — list organisations the calling key has access to
+// GET /api/v1/orgs, list organisations the calling key has access to
 // (owner or active member). Use the `id` field in returned rows as the
 // `org_id` parameter for other v1 endpoints.
 

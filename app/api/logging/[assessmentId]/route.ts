@@ -126,7 +126,7 @@ Article 19 sets minimum retention periods:
 - Law enforcement, migration control, justice: 3 years minimum
 - Provider technical documentation: 10 years after placing on market
 
-Generate a precise, implementable logging specification tailored to the specific AI system. Each event should name the exact data fields to capture. Be specific to the system's sector and use case — not generic.`,
+Generate a precise, implementable logging specification tailored to the specific AI system. Each event should name the exact data fields to capture. Be specific to the system's sector and use case, not generic.`,
       messages: [{
         role: 'user',
         content: `Generate an Article 12 logging specification and Article 19 retention schedule for this AI system:
@@ -142,9 +142,9 @@ Generate a precise, implementable logging specification tailored to the specific
 - Risk level: ${assessment.risk_level}
 - Regulatory basis: ${assessment.regulatory_basis}
 
-Determine the correct Article 19 retention period based on the sector and purpose. Generate 4–6 specific logging events relevant to this system's actual operation. For each event, specify the exact fields the system must record. Keep descriptions concise — 1–2 sentences each.
+Determine the correct Article 19 retention period based on the sector and purpose. Generate 4–6 specific logging events relevant to this system's actual operation. For each event, specify the exact fields the system must record. Keep descriptions concise, 1–2 sentences each.
 
-Also produce a "retention_schedule" array with one row per record type (typically 4–6 rows: e.g. raw event logs, decision/output logs, model version metadata, training-data lineage, override/appeal records, incident logs). Each row must state the retention_period as a human-readable string ("6 months", "3 years"), the governing article, and the disposal_method (secure deletion, cryptographic erasure, anonymisation, etc.). This array is required — do not omit it.`,
+Also produce a "retention_schedule" array with one row per record type (typically 4–6 rows: e.g. raw event logs, decision/output logs, model version metadata, training-data lineage, override/appeal records, incident logs). Each row must state the retention_period as a human-readable string ("6 months", "3 years"), the governing article, and the disposal_method (secure deletion, cryptographic erasure, anonymisation, etc.). This array is required, do not omit it.`,
       }],
     })
 
@@ -152,7 +152,7 @@ Also produce a "retention_schedule" array with one row per record type (typicall
     if (!toolBlock) throw new Error('No tool response from Claude')
     const spec = toolBlock.input as Record<string, unknown>
 
-    // Backfill arrays/scalars the model occasionally omits even when required —
+    // Backfill arrays/scalars the model occasionally omits even when required -
     // keeps the renderer safe and never blanks the page on partial output.
     if (!Array.isArray(spec.events)) spec.events = []
     if (!Array.isArray(spec.retention_schedule)) spec.retention_schedule = []

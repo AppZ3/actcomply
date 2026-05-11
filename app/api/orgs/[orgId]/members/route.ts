@@ -1,4 +1,4 @@
-// POST /api/orgs/[orgId]/members — invite a member to an org
+// POST /api/orgs/[orgId]/members, invite a member to an org
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
@@ -71,7 +71,7 @@ export async function POST(
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Notify the invitee. Best-effort — failure to send email must not roll back
+    // Notify the invitee. Best-effort, failure to send email must not roll back
     // the invite (it was the user's intent to invite, and the row is the source
     // of truth that the auth.user trigger uses to bind on signup).
     try {

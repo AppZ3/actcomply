@@ -1,4 +1,4 @@
-// POST /api/alerts/[id]/read — mark an alert as read for the current user
+// POST /api/alerts/[id]/read, mark an alert as read for the current user
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

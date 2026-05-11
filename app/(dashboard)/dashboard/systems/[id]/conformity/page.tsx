@@ -6,7 +6,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const { data } = await getSupabaseAdmin().from('assessments').select('name').eq('id', id).maybeSingle()
-  return { title: data?.name ? `${data.name} — Conformity Pack` : 'Conformity Pack' }
+  return { title: data?.name ? `${data.name}, Conformity Pack` : 'Conformity Pack' }
 }
 import { getPlanFeatures } from '@/lib/stripe'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
@@ -51,7 +51,7 @@ function formatAuditDetail(detail: unknown): string {
   const d = detail as Record<string, unknown>
   if (typeof d.requirement_id === 'string' && typeof d.status === 'string') {
     const status = String(d.status).replaceAll('_', ' ')
-    const note = typeof d.notes === 'string' && d.notes ? ` — ${d.notes}` : ''
+    const note = typeof d.notes === 'string' && d.notes ? `, ${d.notes}` : ''
     return `${d.requirement_id} → ${status}${note}`
   }
   return Object.entries(d)
@@ -184,10 +184,10 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
             </div>
           )}
           <h1 className="text-2xl font-bold text-gray-900 mb-1">
-            EU AI Act — Conformity Assessment Evidence Pack
+            EU AI Act, Conformity Assessment Evidence Pack
           </h1>
           <p className="text-gray-500 text-sm mb-6">
-            Prepared in accordance with Regulation (EU) 2024/1689 — EU AI Act
+            Prepared in accordance with Regulation (EU) 2024/1689, EU AI Act
           </p>
 
           <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
@@ -217,7 +217,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
             </div>
             <div>
               <span className="text-gray-400 text-xs uppercase tracking-wide block mb-0.5">Operator</span>
-              <span>{profile?.email ?? '—'}</span>
+              <span>{profile?.email ?? '-'}</span>
             </div>
             {doc?.version != null && (
               <div>
@@ -478,7 +478,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
             )}
             {gdprSpec.explainability_statement && (
               <div>
-                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Article 86 — Explainability Statement</h3>
+                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Article 86, Explainability Statement</h3>
                 <p className="text-xs text-gray-600 leading-relaxed">{gdprSpec.explainability_statement}</p>
               </div>
             )}
@@ -498,7 +498,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
         {riskPlan ? (
           <section className="mb-10 page-break">
             <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">
-              7. Article 9 — Risk Management Plan
+              7. Article 9, Risk Management Plan
             </h2>
             {riskPlan.generated_at && (
               <p className="text-xs text-gray-400 mb-3">
@@ -566,7 +566,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
         ) : (
           <section className="mb-10 break-inside-avoid">
             <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-              7. Article 9 — Risk Management Plan
+              7. Article 9, Risk Management Plan
             </h2>
             <div className="border border-dashed border-gray-300 rounded p-4 text-gray-400 text-xs">
               Risk management plan not yet generated. Generate it from the system dashboard to include it in this pack.
@@ -642,7 +642,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
               10. Audit Trail
             </h2>
             <p className="text-xs text-gray-400 mb-4">
-              Change log for this system — {auditRows.length} {auditRows.length === 1 ? 'entry' : 'entries'}
+              Change log for this system, {auditRows.length} {auditRows.length === 1 ? 'entry' : 'entries'}
             </p>
             <table className="w-full text-xs border-collapse">
               <thead>

@@ -48,11 +48,11 @@ function GeneratingProgress() {
           )
         })}
       </div>
-      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual — still working, don't close this tab.</p>}
+      {elapsed > 90 && !allDone && <p className="text-xs text-yellow-500/80 pt-1">Taking longer than usual, still working, don't close this tab.</p>}
       {allDone && (
         <p className="text-xs text-blue-400/80 pt-1 flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin inline-block" />
-          All sections written — saving to your account…
+          All sections written, saving to your account…
         </p>
       )}
     </div>
@@ -180,7 +180,7 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
   if (!isPaid) {
     return (
       <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-        <h2 className="font-semibold mb-1">Article 9 — Risk Management Plan</h2>
+        <h2 className="font-semibold mb-1">Article 9, Risk Management Plan</h2>
         <p className="text-sm text-gray-400 mb-4">Generate a full lifecycle risk register, change triggers, and testing requirements.</p>
         <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 text-sm text-blue-300">
           Upgrade to Business to generate Article 9 risk management plans.
@@ -193,7 +193,7 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
     return (
       <div className="bg-white/5 border border-white/10 rounded-xl p-6">
         <div className="flex items-start justify-between gap-4 mb-1">
-          <h2 className="font-semibold">Article 9 — Risk Management Plan</h2>
+          <h2 className="font-semibold">Article 9, Risk Management Plan</h2>
           <button
             onClick={() => generate(false)}
             disabled={generating}
@@ -227,7 +227,7 @@ export function RiskManagementPlan({ assessmentId, isPaid }: { assessmentId: str
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <h2 className="font-semibold mb-2">Article 9 — Risk Management Plan</h2>
+          <h2 className="font-semibold mb-2">Article 9, Risk Management Plan</h2>
           <div className="flex flex-wrap items-center gap-2">
             <span className={`text-xs font-bold px-3 py-1 rounded-full border ${overallStyle}`}>
               {plan.overall_risk_level?.toUpperCase()} OVERALL RISK

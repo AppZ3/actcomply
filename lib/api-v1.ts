@@ -27,7 +27,7 @@ export async function resolveApiKey(req: NextRequest): Promise<ApiCaller | null>
 
   if (!data) return null
 
-  // Best-effort touch — do not block on failure.
+  // Best-effort touch, do not block on failure.
   admin.from('api_keys').update({ last_used_at: new Date().toISOString() }).eq('id', data.id)
     .then(() => {}, () => {})
 
@@ -47,7 +47,7 @@ export async function callerHasOrgAccess(caller: ApiCaller, orgId: string | null
   return Boolean(ownedRes.data || memberRes.data)
 }
 
-// CORS — bearer-auth-protected API, so a permissive Allow-Origin is safe.
+// CORS, bearer-auth-protected API, so a permissive Allow-Origin is safe.
 // In-browser fetch from any origin works as long as the caller has a key.
 export const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',

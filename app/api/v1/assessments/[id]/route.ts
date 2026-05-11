@@ -1,4 +1,4 @@
-// GET /api/v1/assessments/[id] — read a single assessment + every artefact
+// GET /api/v1/assessments/[id], read a single assessment + every artefact
 // (technical doc, risk plan, logging spec, GDPR DPIA/FRIA, requirement
 // progress, incidents) attached to it. Mirrors the per-assessment dashboard
 // view as a single bundle for integrators.

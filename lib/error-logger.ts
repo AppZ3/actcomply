@@ -14,7 +14,7 @@ export async function logError(err: unknown, meta: ErrorContext): Promise<void> 
   const message = err instanceof Error ? err.message : String(err)
   const stack = err instanceof Error ? (err.stack ?? null) : null
 
-  // Save to DB (fire and forget — don't let logging failure break anything)
+  // Save to DB (fire and forget, don't let logging failure break anything)
   getSupabaseAdmin().from('error_logs').insert({
     route: meta.route,
     user_id: meta.userId ?? null,
@@ -30,7 +30,7 @@ export async function logError(err: unknown, meta: ErrorContext): Promise<void> 
     await getResend().emails.send({
       from: 'ActComply Errors <hello@getactcomply.com>',
       to: 'zaclowe@outlook.com.au',
-      subject: `[Error] ${meta.route} — ${message.slice(0, 80)}`,
+      subject: `[Error] ${meta.route}, ${message.slice(0, 80)}`,
       html: `
         <div style="font-family:monospace;max-width:700px;margin:0 auto;color:#111">
           <div style="background:#0f172a;padding:16px 24px;border-radius:8px 8px 0 0">
@@ -86,10 +86,10 @@ export async function logError(err: unknown, meta: ErrorContext): Promise<void> 
       `,
     })
   } catch {
-    // If email fails, silently ignore — error is already in DB
+    // If email fails, silently ignore, error is already in DB
   }
 
-  // Fire Claude analysis in background — don't await, never blocks the caller
+  // Fire Claude analysis in background, don't await, never blocks the caller
   analyzeAndEmail(message, stack, meta).then(() => {}, () => {})
 }
 
@@ -108,7 +108,7 @@ ${meta.context ? `Context: ${JSON.stringify(meta.context, null, 2)}` : ''}
 ${meta.userId ? `User ID: ${meta.userId}` : ''}
 ${meta.userPlan ? `Plan: ${meta.userPlan}` : ''}`
 
-    // Pass 1 — Haiku drafts the fix
+    // Pass 1, Haiku drafts the fix
     const draftResponse = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 600,
@@ -127,7 +127,7 @@ Diagnose the root cause and provide a concrete fix. Structure your response as:
 
     const draft = draftResponse.content[0].type === 'text' ? draftResponse.content[0].text : ''
 
-    // Pass 2 — Sonnet stress-tests the draft fix
+    // Pass 2, Sonnet stress-tests the draft fix
     const verifyResponse = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 700,
@@ -173,7 +173,7 @@ Respond in this exact structure:
     await getResend().emails.send({
       from: 'ActComply Errors <hello@getactcomply.com>',
       to: 'zaclowe@outlook.com.au',
-      subject: `[${verdict}] Fix for ${meta.route} — ${message.slice(0, 60)}`,
+      subject: `[${verdict}] Fix for ${meta.route}, ${message.slice(0, 60)}`,
       html: `
         <div style="font-family:sans-serif;max-width:700px;margin:0 auto;color:#111">
           <div style="background:#0f172a;padding:16px 24px;border-radius:8px 8px 0 0;display:flex;align-items:center;gap:12px">
@@ -195,6 +195,6 @@ Respond in this exact structure:
       `,
     })
   } catch {
-    // Analysis is best-effort — silently ignore failures
+    // Analysis is best-effort, silently ignore failures
   }
 }

@@ -31,7 +31,7 @@ export default function SupportPage() {
     if (res.ok) {
       setDone(true)
     } else {
-      setError('Something went wrong — please try again or email support@getactcomply.com directly.')
+      setError('Something went wrong, please try again or email support@getactcomply.com directly.')
     }
     setLoading(false)
   }
@@ -79,7 +79,7 @@ export default function SupportPage() {
             <div className="mb-8">
               <h1 className="text-2xl font-bold mb-2">Contact support</h1>
               <p className="text-gray-400 text-sm">
-                Questions, bugs, or ideas — we read everything and reply fast.
+                Questions, bugs, or ideas, we read everything and reply fast.
               </p>
             </div>
 

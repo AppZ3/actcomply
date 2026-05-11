@@ -1,6 +1,6 @@
-// /api/v1/webhooks — manage outbound webhook subscriptions.
-// GET   list  — every endpoint owned by this api key (personal + accessible orgs)
-// POST  create — { url, enabled_events: [...], description?, org_id? }
+// /api/v1/webhooks, manage outbound webhook subscriptions.
+// GET   list , every endpoint owned by this api key (personal + accessible orgs)
+// POST  create, { url, enabled_events: [...], description?, org_id? }
 
 import { NextRequest } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
 
     if (error) throw error
 
-    // Return secret ONCE on creation — the receiver needs it to verify
+    // Return secret ONCE on creation, the receiver needs it to verify
     // signatures. After this it's never returned via API.
     return jsonWithCors({
       ...data,

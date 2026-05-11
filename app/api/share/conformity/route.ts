@@ -1,6 +1,6 @@
-// GET  /api/share/conformity?assessmentId=xxx — fetch existing share token (null if none)
-// POST /api/share/conformity — create/replace share token for an assessment
-// DELETE /api/share/conformity — revoke share token
+// GET  /api/share/conformity?assessmentId=xxx, fetch existing share token (null if none)
+// POST /api/share/conformity, create/replace share token for an assessment
+// DELETE /api/share/conformity, revoke share token
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'

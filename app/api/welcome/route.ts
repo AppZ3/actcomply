@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 
-// Called client-side after magic link auth — sends welcome email to brand new users only
+// Called client-side after magic link auth, sends welcome email to brand new users only
 export async function POST() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

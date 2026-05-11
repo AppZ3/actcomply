@@ -47,7 +47,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">4. Subscriptions and Payment</h2>
             <p>Subscriptions are billed in advance on a monthly or annual basis. All prices are in EUR. Payments are processed securely by Stripe. Subscriptions renew automatically unless cancelled before the renewal date.</p>
-            <p className="mt-3">You may cancel at any time from your account settings. Cancellation takes effect at the end of the current billing period — no refunds are issued for partial periods.</p>
+            <p className="mt-3">You may cancel at any time from your account settings. Cancellation takes effect at the end of the current billing period, no refunds are issued for partial periods.</p>
           </section>
 
           <section>

@@ -26,10 +26,10 @@ export default function PartnerAgreementTemplatePage() {
             <p>This Partner Referral Agreement (&quot;Agreement&quot;) is entered into between:</p>
             <div className="mt-3 ml-4 space-y-3">
               <div>
-                <span className="font-semibold text-white print:text-gray-900">ActComply</span> — EU AI Act compliance platform, operated by its registered entity, accessible at getactcomply.com (&quot;ActComply&quot; or &quot;Company&quot;); and
+                <span className="font-semibold text-white print:text-gray-900">ActComply</span>: EU AI Act compliance platform, operated by its registered entity, accessible at getactcomply.com (&quot;ActComply&quot; or &quot;Company&quot;); and
               </div>
               <div>
-                <span className="font-semibold text-white print:text-gray-900">[Partner Name]</span> — [Partner description] (&quot;Partner&quot; or &quot;Referrer&quot;).
+                <span className="font-semibold text-white print:text-gray-900">[Partner Name]</span>: [Partner description] (&quot;Partner&quot; or &quot;Referrer&quot;).
               </div>
             </div>
             <p className="mt-3">Each a &quot;Party&quot;; together the &quot;Parties&quot;.</p>

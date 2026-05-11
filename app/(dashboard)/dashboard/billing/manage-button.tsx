@@ -17,11 +17,11 @@ export function ManageBillingButton() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError(data.error ?? `Error ${res.status} — please contact support`)
+        setError(data.error ?? `Error ${res.status}, please contact support`)
         setLoading(false)
       }
     } catch {
-      setError('Network error — please try again')
+      setError('Network error, please try again')
       setLoading(false)
     }
   }
