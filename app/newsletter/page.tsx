@@ -37,21 +37,23 @@ export default function NewsletterPage() {
         </div>
 
         <div className="space-y-5 text-[17px] leading-relaxed text-slate-300 mb-10">
+          <p>Hey, I'm Zac.</p>
           <p>
-            I'm Zac. I'm not a lawyer. I'm a software builder who's spent the last
-            year figuring out the EU AI Act because my product depends on it.
+            I build software, not legal opinions. I've spent the last year
+            figuring out the EU AI Act. The product I ship,{' '}
+            <Link href="/" className="text-blue-400 hover:text-blue-300 underline underline-offset-4">ActComply</Link>,
+            depends on it.
           </p>
           <p>
-            This newsletter is the public-facing version of what I'm learning while
-            building <Link href="/" className="text-blue-400 hover:text-blue-300 underline underline-offset-4">ActComply</Link>{' '}
-            — a compliance tool for AI startups. I write about Act articles in plain
-            English, share what's actually surfacing in customer conversations, and
-            occasionally publish the messy interim of building in a regulated space.
+            This newsletter is the public version of what I'm learning. Specific
+            Articles, in plain English. What's actually surfacing in customer
+            conversations. Occasionally, the messy interim of building in a
+            regulated space.
           </p>
           <p>
-            One email when there's something worth saying — usually weekly. No
-            recycled blog posts. No "thought leadership." If it doesn't change how
-            you ship, it doesn't go in.
+            One email when there's something worth saying. Usually weekly,
+            sometimes not. No recycled blog posts. No "thought leadership." If
+            it doesn't change how you ship, it doesn't go in.
           </p>
         </div>
 
