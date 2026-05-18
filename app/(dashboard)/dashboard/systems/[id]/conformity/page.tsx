@@ -9,8 +9,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: data?.name ? `${data.name}, Conformity Pack` : 'Conformity Pack' }
 }
 import { getPlanFeatures } from '@/lib/stripe'
+import { getActiveOrgId } from '@/lib/active-org'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
-import { PrintTrigger } from '../print/print-trigger'
+import { PrintTrigger } from './print-trigger'
 
 const RISK_LABELS: Record<RiskLevel, string> = {
   PROHIBITED:   'PROHIBITED',
@@ -74,6 +75,9 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
     .single()
 
   if (!assessment) notFound()
+
+  const activeOrgId = await getActiveOrgId()
+  if ((assessment.org_id ?? null) !== activeOrgId) redirect('/dashboard/systems')
 
   const admin = getSupabaseAdmin()
 

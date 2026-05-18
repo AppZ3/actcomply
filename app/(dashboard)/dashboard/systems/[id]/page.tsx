@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import type { RiskLevel, ComplianceRequirement } from '@/lib/eu-ai-act'
 import { getPlanFeatures } from '@/lib/stripe'
+import { getActiveOrgId } from '@/lib/active-org'
 import Link from 'next/link'
 import { ComplianceChecklist } from './checklist'
 import { TechnicalDocumentation } from './docs'
@@ -44,6 +45,11 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ i
     .single()
 
   if (!assessment) notFound()
+
+  // If the assessment doesn't belong to the active workspace, bounce to the
+  // systems list so the user lands in the workspace they just switched into.
+  const activeOrgId = await getActiveOrgId()
+  if ((assessment.org_id ?? null) !== activeOrgId) redirect('/dashboard/systems')
 
   // Fetch existing progress
   const { data: progressRows } = await supabase
