@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { HIGH_RISK_REQUIREMENTS, LIMITED_RISK_REQUIREMENTS, GENERAL_PROVIDER_REQUIREMENTS, GPAI_REQUIREMENTS } from '@/lib/eu-ai-act'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Compliance Checklist 2026',
@@ -106,7 +107,11 @@ export default function ChecklistPage() {
           items={LIMITED_RISK_REQUIREMENTS}
         />
 
-        <div className="mt-12 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-6 text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-12 mb-12">
+          <RelatedGuides currentSlug="eu-ai-act-compliance-checklist" />
+        </div>
+
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-6 text-sm text-gray-600 dark:text-gray-400">
           <strong className="text-gray-900 dark:text-white">Disclaimer:</strong> This checklist is for informational purposes and does not constitute legal advice. Consult a qualified legal professional for advice specific to your organisation and AI systems.
         </div>
       </div>

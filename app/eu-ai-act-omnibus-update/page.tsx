@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Omnibus Update: What Changed and What Didn\'t',
@@ -207,6 +208,8 @@ export default function OmnibusUpdatePage() {
           </Link>
           <p className="text-blue-200 text-xs mt-3">No credit card required</p>
         </section>
+
+        <RelatedGuides currentSlug="eu-ai-act-omnibus-update" />
 
       </main>
 

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Article 26 Deployer Obligations — What Attaches August 2 2026',
@@ -386,6 +387,9 @@ export default function DeployerObligationsPage() {
           </Link>
           <p className="text-blue-200 text-xs mt-3">No credit card required</p>
         </section>
+
+        {/* Related guides */}
+        <RelatedGuides currentSlug="eu-ai-act-deployer-obligations" />
 
         {/* Newsletter signup */}
         <NewsletterSignup

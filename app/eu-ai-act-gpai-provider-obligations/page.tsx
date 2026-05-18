@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act GPAI Provider Obligations — Article 53, 55, and the Code of Practice',
@@ -349,6 +350,9 @@ export default function GpaiProviderObligationsPage() {
           </Link>
           <p className="text-blue-200 text-xs mt-3">No credit card required</p>
         </section>
+
+        {/* Related guides */}
+        <RelatedGuides currentSlug="eu-ai-act-gpai-provider-obligations" />
 
         {/* Newsletter signup */}
         <NewsletterSignup

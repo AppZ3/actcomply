@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { HIGH_RISK_CATEGORIES } from '@/lib/eu-ai-act'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act High-Risk AI Systems: Full List 2026',
@@ -129,7 +130,11 @@ export default function HighRiskPage() {
           </Link>
         </div>
 
-        <div className="mt-8 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-5 text-sm text-gray-600 dark:text-gray-400">
+        <div className="mt-12 mb-8">
+          <RelatedGuides currentSlug="eu-ai-act-high-risk-ai-systems" />
+        </div>
+
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-5 text-sm text-gray-600 dark:text-gray-400">
           <strong className="text-gray-900 dark:text-white">Disclaimer:</strong> This page is for informational purposes only and does not constitute legal advice. Consult a qualified legal professional for advice specific to your situation.
         </div>
       </div>

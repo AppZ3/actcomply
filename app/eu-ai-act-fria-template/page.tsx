@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { DownloadPdfButton } from './DownloadPdfButton'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import './print.css'
 
 export const metadata: Metadata = {
@@ -175,6 +176,9 @@ export default function FriaTemplatePage() {
             Assess your AI systems free &rarr;
           </Link>
         </section>
+
+        {/* Related guides */}
+        <RelatedGuides currentSlug="eu-ai-act-fria-template" />
 
         {/* Download repeater near bottom */}
         <div className="flex items-center justify-between gap-3 print:hidden border-t border-gray-200 dark:border-white/10 pt-6">

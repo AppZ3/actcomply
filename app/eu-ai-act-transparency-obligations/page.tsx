@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Article 50 Transparency Obligations — Providers, Deployers, August 2 2026',
@@ -300,6 +301,9 @@ export default function TransparencyObligationsPage() {
           </Link>
           <p className="text-blue-200 text-xs mt-3">No credit card required</p>
         </section>
+
+        {/* Related guides */}
+        <RelatedGuides currentSlug="eu-ai-act-transparency-obligations" />
 
         {/* Newsletter signup */}
         <NewsletterSignup

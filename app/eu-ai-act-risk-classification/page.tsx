@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Risk Classification: 4 Tiers Explained',
@@ -183,6 +184,10 @@ export default function RiskClassificationPage() {
           <Link href="/assess" className="inline-block bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8 py-3 rounded-xl transition">
             Start free assessment →
           </Link>
+        </div>
+
+        <div className="mt-12 mb-8">
+          <RelatedGuides currentSlug="eu-ai-act-risk-classification" />
         </div>
 
         <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-5 text-sm text-gray-600 dark:text-gray-400">

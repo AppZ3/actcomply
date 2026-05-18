@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { PLANS } from '@/lib/stripe'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import { createClient } from '@/lib/supabase'
 
 async function startCheckout(plan: string, annual: boolean) {
@@ -330,6 +331,11 @@ export default function LandingPage() {
             Start free assessment →
           </Link>
         </div>
+      </section>
+
+      {/* EU AI Act guides */}
+      <section className="px-6 py-12 max-w-6xl mx-auto">
+        <RelatedGuides />
       </section>
 
       {/* Newsletter */}
