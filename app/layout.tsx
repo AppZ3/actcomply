@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.getactcomply.com'),
+  alternates: { canonical: 'https://www.getactcomply.com' },
   title: {
     default: 'ActComply: EU AI Act Compliance Platform',
     template: '%s | ActComply',
