@@ -6,6 +6,7 @@ import { NextRequest } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { logError } from '@/lib/error-logger'
 import { newWebhookSecret } from '@/lib/webhooks'
+import { assertSafeWebhookUrl } from '@/lib/ssrf-guard'
 import {
   resolveApiKey, callerHasOrgAccess,
   preflight, jsonWithCors, unauthorized, forbidden,
@@ -68,8 +69,14 @@ export async function POST(req: NextRequest) {
       org_id?: string | null
     }
 
-    if (!body.url || !/^https?:\/\//.test(body.url)) {
-      return jsonWithCors({ error: 'url must be a valid http(s) URL.' }, { status: 400 })
+    if (!body.url || typeof body.url !== 'string') {
+      return jsonWithCors({ error: 'url is required.' }, { status: 400 })
+    }
+    try {
+      await assertSafeWebhookUrl(body.url)
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : 'Invalid URL'
+      return jsonWithCors({ error: `Invalid url: ${reason}` }, { status: 400 })
     }
     if (!Array.isArray(body.enabled_events) || body.enabled_events.length === 0) {
       return jsonWithCors({ error: 'enabled_events must be a non-empty array.' }, { status: 400 })
