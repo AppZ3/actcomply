@@ -7,6 +7,15 @@ import { NextRequest } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { logError } from '@/lib/error-logger'
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 function html(body: string, status = 200) {
   return new Response(
     `<!DOCTYPE html>
@@ -67,7 +76,7 @@ export async function GET(req: NextRequest) {
 
     return html(
       `<h1>You're unsubscribed</h1>
-       <p>${data.email} won't receive the ActComply newsletter anymore.</p>
+       <p>${escapeHtml(String(data.email ?? ''))} won't receive the ActComply newsletter anymore.</p>
        <p>Changed your mind? Just sign up again at <a href="https://getactcomply.com">getactcomply.com</a>, no hard feelings.</p>`,
       200
     )

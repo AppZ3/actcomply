@@ -16,8 +16,13 @@ export async function POST(req: NextRequest) {
     const { email, source } = await req.json()
     const cleanEmail = typeof email === 'string' ? email.toLowerCase().trim() : ''
 
-    // Lightweight format check, full validation happens at Resend send.
-    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    // Strict character set: blocks HTML-significant chars that would otherwise
+    // be stored and later reflected by /api/newsletter/unsubscribe.
+    if (
+      !cleanEmail ||
+      cleanEmail.length > 254 ||
+      !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(cleanEmail)
+    ) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
 
