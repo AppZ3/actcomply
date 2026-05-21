@@ -19,13 +19,24 @@ const Spinner = () => (
   </div>
 )
 
+// Reject anything that isn't a same-origin absolute path. router.replace with
+// a protocol-relative value navigates cross-origin via the History API, so
+// an attacker-supplied ?redirect=//evil.com would otherwise leave the app.
+function safeNext(raw: string | null): string {
+  const next = raw || '/dashboard'
+  if (!next.startsWith('/') || next.startsWith('//') || next.startsWith('/\\')) {
+    return '/dashboard'
+  }
+  return next
+}
+
 function CallbackInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const code = searchParams.get('code')
-    const next = searchParams.get('redirect') || '/dashboard'
+    const next = safeNext(searchParams.get('redirect'))
     const supabase = createClient()
     let done = false
 
