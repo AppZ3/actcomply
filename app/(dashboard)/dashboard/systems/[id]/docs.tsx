@@ -249,7 +249,7 @@ export function TechnicalDocumentation({ assessmentId, systemName, isPaid }: Pro
           )}
           {!viewingVersion && (
             <a
-              href={`/dashboard/systems/${assessmentId}/conformity`}
+              href={`/dashboard/systems/${assessmentId}/conformity?print=1`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-white bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 font-medium"

@@ -61,8 +61,16 @@ function formatAuditDetail(detail: unknown): string {
     .join(' · ')
 }
 
-export default async function ConformityPackPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ConformityPackPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ print?: string }>
+}) {
   const { id } = await params
+  const sp = await searchParams
+  const autoPrint = sp.print === '1'
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -159,7 +167,7 @@ export default async function ConformityPackPage({ params }: { params: Promise<{
 
   return (
     <>
-      <PrintTrigger />
+      {autoPrint ? <PrintTrigger /> : null}
       <style>{`
         @page { margin: 20mm 18mm; size: A4; }
         @media print {
