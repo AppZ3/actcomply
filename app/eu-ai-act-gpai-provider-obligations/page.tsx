@@ -5,7 +5,7 @@ import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
-  title: 'EU AI Act GPAI Provider Obligations — Article 53, 55, and the Code of Practice',
+  title: 'EU AI Act GPAI Provider Obligations, Article 53, 55, and the Code of Practice',
   description: 'GPAI provider obligations under EU AI Act Articles 53 and 55 entered force 2 August 2025; enforcement starts 2 August 2026. Practical breakdown of technical documentation, downstream information, copyright policy, training data summary, systemic risk obligations, and the GPAI Code of Practice.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-gpai-provider-obligations' },
   openGraph: {

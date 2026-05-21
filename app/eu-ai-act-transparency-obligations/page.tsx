@@ -5,7 +5,7 @@ import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
-  title: 'EU AI Act Article 50 Transparency Obligations — Providers, Deployers, August 2 2026',
+  title: 'EU AI Act Article 50 Transparency Obligations, Providers, Deployers, August 2 2026',
   description: 'Article 50 of the EU AI Act splits transparency obligations between providers and deployers across four surface types: AI interaction notices, synthetic content marking, emotion recognition disclosure, and deep fakes. Practical breakdown plus Code of Practice status.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-transparency-obligations' },
   openGraph: {
