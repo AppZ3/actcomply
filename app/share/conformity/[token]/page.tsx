@@ -12,9 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     .select('assessment_id')
     .eq('token', token)
     .maybeSingle()
-  if (!tokenRow) return { title: 'Conformity Pack' }
+  const baseMetadata: Metadata = {
+    robots: { index: false, follow: false },
+  }
+  if (!tokenRow) return { ...baseMetadata, title: 'Conformity Pack' }
   const { data: a } = await admin.from('assessments').select('name').eq('id', tokenRow.assessment_id).maybeSingle()
-  return { title: a?.name ? `${a.name}, Conformity Pack` : 'Conformity Pack' }
+  return {
+    ...baseMetadata,
+    title: a?.name ? `${a.name}, Conformity Pack` : 'Conformity Pack',
+  }
 }
 
 const RISK_LABELS: Record<RiskLevel, string> = {

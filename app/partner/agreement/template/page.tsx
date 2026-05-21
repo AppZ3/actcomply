@@ -1,4 +1,9 @@
+import type { Metadata } from 'next'
 import { PrintButton } from '../print-button'
+
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://www.getactcomply.com/partner/agreement/template' },
+}
 
 export default function PartnerAgreementTemplatePage() {
   return (
