@@ -39,6 +39,6 @@ export async function POST() {
       }).eq('id', user.id)
       return NextResponse.json({ error: 'Billing account not found. Please subscribe to a plan to set up billing.' }, { status: 404 })
     }
-    return NextResponse.json({ error: message }, { status: 500 })
+    return NextResponse.json({ error: 'Could not open billing portal. Please contact support.' }, { status: 500 })
   }
 }

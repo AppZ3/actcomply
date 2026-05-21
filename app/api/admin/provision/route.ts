@@ -34,7 +34,11 @@ export async function POST(req: NextRequest) {
         data: { invited_for: 'sandbox', note: note ?? 'Partner sandbox account' },
       })
       if (inviteErr || !invited?.user) {
-        return NextResponse.json({ error: inviteErr?.message ?? 'Failed to invite user' }, { status: 500 })
+        await logError(inviteErr ?? new Error('invite returned no user'), {
+          route: 'POST /api/admin/provision [invite]',
+          context: { email: email.trim().toLowerCase() },
+        })
+        return NextResponse.json({ error: 'Failed to invite user' }, { status: 500 })
       }
       userId = invited.user.id
     }
@@ -57,7 +61,10 @@ export async function POST(req: NextRequest) {
         { onConflict: 'id' }
       )
 
-    if (profileErr) return NextResponse.json({ error: profileErr.message }, { status: 500 })
+    if (profileErr) {
+      await logError(profileErr, { route: 'POST /api/admin/provision [profile upsert]', userId })
+      return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 })
+    }
 
     return NextResponse.json({
       ok: true,

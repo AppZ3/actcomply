@@ -1,7 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getStripe, PLANS } from '@/lib/stripe'
+import { bearerOk } from '@/lib/auth-bearer'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // Bearer-gated detail. Unauthenticated callers get a one-bit status so
+  // uptime probes still work, but the full env-var inventory + raw error
+  // strings are only returned to a caller holding CRON_SECRET.
+  const detailed = bearerOk(req.headers.get('authorization'), process.env.CRON_SECRET)
+
   const results: Record<string, { ok: boolean; detail: string }> = {}
 
   // 1. Environment variables
@@ -79,9 +85,17 @@ export async function GET() {
   }
 
   const allOk = Object.values(results).every(r => r.ok)
+  const status = allOk ? 200 : 500
+
+  if (!detailed) {
+    return NextResponse.json(
+      { status: allOk ? 'healthy' : 'degraded' },
+      { status }
+    )
+  }
 
   return NextResponse.json(
     { status: allOk ? 'healthy' : 'degraded', checks: results },
-    { status: allOk ? 200 : 500 }
+    { status }
   )
 }
