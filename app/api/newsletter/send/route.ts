@@ -16,13 +16,12 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getResend } from '@/lib/resend'
 import { logError } from '@/lib/error-logger'
 import { bodyToHtml, newsletterShellHtml } from '@/lib/newsletter'
+import { bearerOk } from '@/lib/auth-bearer'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.getactcomply.com'
 
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization')
-  const secret = process.env.NEWSLETTER_ADMIN_SECRET
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!bearerOk(req.headers.get('authorization'), process.env.NEWSLETTER_ADMIN_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

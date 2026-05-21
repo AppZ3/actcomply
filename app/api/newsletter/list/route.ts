@@ -5,11 +5,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { logError } from '@/lib/error-logger'
+import { bearerOk } from '@/lib/auth-bearer'
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get('authorization')
-  const secret = process.env.NEWSLETTER_ADMIN_SECRET
-  if (!secret || auth !== `Bearer ${secret}`) {
+  if (!bearerOk(req.headers.get('authorization'), process.env.NEWSLETTER_ADMIN_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

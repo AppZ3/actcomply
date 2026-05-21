@@ -5,12 +5,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import { logError } from '@/lib/error-logger'
+import { bearerOk } from '@/lib/auth-bearer'
 
 const ENTERPRISE_LIMIT = getPlanFeatures('enterprise').systemsLimit
 
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization') ?? ''
-  if (!process.env.ADMIN_SECRET || auth !== `Bearer ${process.env.ADMIN_SECRET}`) {
+  if (!bearerOk(req.headers.get('authorization'), process.env.ADMIN_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

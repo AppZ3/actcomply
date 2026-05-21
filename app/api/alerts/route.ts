@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase-server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getPlanFeatures } from '@/lib/stripe'
 import { logError } from '@/lib/error-logger'
+import { bearerOk } from '@/lib/auth-bearer'
 
 // Seed alerts if none exist, real EU AI Act milestones
 const SEED_ALERTS = [
@@ -55,8 +56,7 @@ const SEED_ALERTS = [
 
 // POST /api/alerts, create a new alert and email all active paid users (internal use)
 export async function POST(req: Request) {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.ALERTS_ADMIN_SECRET}`) {
+  if (!bearerOk(req.headers.get('authorization'), process.env.ALERTS_ADMIN_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
