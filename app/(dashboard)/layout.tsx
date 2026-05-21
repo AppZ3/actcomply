@@ -51,11 +51,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   async function setActiveOrg(formData: FormData) {
     'use server'
+    const supabase = await createClient()
+    const { data: { user: actor } } = await supabase.auth.getUser()
+    if (!actor) redirect('/login')
     const orgId = (formData.get('orgId') as string | null) ?? ''
     const store = await cookies()
     if (!orgId || orgId === '__personal__') {
       store.delete(ACTIVE_ORG_COOKIE)
     } else {
+      // Verify the caller is actually a member of orgId before writing.
+      // RLS catches the read paths today, but a future helper that trusts
+      // the cookie for authorisation would otherwise silently span orgs.
+      const allowed = await getUserOrgs(actor.id)
+      if (!allowed.some(o => o.id === orgId)) {
+        return
+      }
       store.set(ACTIVE_ORG_COOKIE, orgId, {
         httpOnly: true,
         sameSite: 'lax',
