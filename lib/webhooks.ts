@@ -11,6 +11,7 @@
 
 import { createHmac, randomBytes } from 'crypto'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
+import { assertSafeWebhookUrl } from '@/lib/ssrf-guard'
 
 export type WebhookEventType =
   | 'assessment.created'
@@ -83,6 +84,10 @@ export async function deliverWebhook(opts: {
   let delivered_at: string | null = null
 
   try {
+    // Re-validate at delivery time. A row created before this guard shipped,
+    // or one whose DNS now resolves to a private range, fails here without
+    // ever opening a socket to the target.
+    await assertSafeWebhookUrl(opts.url)
     const res = await fetch(opts.url, {
       method: 'POST',
       headers: {
