@@ -6,6 +6,13 @@
 //
 // org_id IS NULL ↔ personal workspace (the user's own assessments before
 // multi-entity, plus any new assessments created without an active org).
+//
+// SECURITY: getActiveOrgId() returns the raw cookie value. Callers MUST NOT
+// trust it as proof that the user belongs to the org. Use it as a UI filter
+// only and always re-check authorisation server-side (RLS, has_org_access,
+// or an explicit membership lookup). setActiveOrg in the dashboard layout
+// validates membership before writing, but a stale cookie from a since-
+// revoked membership could still be present in the request.
 
 import { cookies } from 'next/headers'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
