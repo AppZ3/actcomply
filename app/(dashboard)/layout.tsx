@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
@@ -6,6 +7,13 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { ACTIVE_ORG_COOKIE, getActiveOrgId, getUserOrgs } from '@/lib/active-org'
 import { Sidebar } from './sidebar'
 import { OrgSwitcher } from './org-switcher'
+
+// Authenticated workspace. None of these routes are intended for SEO; this
+// also overrides the homepage-canonical inheritance introduced by 38d9667
+// across every /dashboard/* page.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+}
 
 const PLAN_LABELS: Record<string, string> = {
   free: 'Free',
