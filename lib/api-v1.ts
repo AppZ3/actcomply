@@ -9,6 +9,16 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 
 export type ApiCaller = { userId: string; keyId: string }
 
+// Defense-in-depth: anywhere a UUID-typed string is about to be interpolated
+// into a PostgREST filter expression (.or(), .in(), .eq() values inside a
+// composed string), validate the shape first. Reject non-UUIDs before any
+// DB call to make filter-injection impossible even if a future caller
+// loosens upstream checks.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+export function isUuid(value: unknown): value is string {
+  return typeof value === 'string' && UUID_RE.test(value)
+}
+
 // Resolve a Bearer ac_… token to its owning user. Bumps last_used_at as
 // a side effect so customers see when their key was last touched.
 export async function resolveApiKey(req: NextRequest): Promise<ApiCaller | null> {
