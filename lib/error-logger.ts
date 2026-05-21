@@ -10,9 +10,22 @@ interface ErrorContext {
   context?: Record<string, unknown>
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function stripControl(s: string): string {
+  return s.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, '')
+}
+
 export async function logError(err: unknown, meta: ErrorContext): Promise<void> {
-  const message = err instanceof Error ? err.message : String(err)
-  const stack = err instanceof Error ? (err.stack ?? null) : null
+  const message = stripControl(err instanceof Error ? err.message : String(err))
+  const stack = err instanceof Error ? (err.stack ? stripControl(err.stack) : null) : null
 
   // Save to DB (fire and forget, don't let logging failure break anything)
   getSupabaseAdmin().from('error_logs').insert({
@@ -41,7 +54,7 @@ export async function logError(err: unknown, meta: ErrorContext): Promise<void> 
             <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px">
               <tr style="background:#f8fafc">
                 <td style="padding:8px 12px;font-weight:600;color:#475569;width:120px">Route</td>
-                <td style="padding:8px 12px;color:#ef4444;font-weight:600">${meta.route}</td>
+                <td style="padding:8px 12px;color:#ef4444;font-weight:600">${escapeHtml(meta.route)}</td>
               </tr>
               <tr>
                 <td style="padding:8px 12px;font-weight:600;color:#475569">Time</td>
@@ -50,35 +63,35 @@ export async function logError(err: unknown, meta: ErrorContext): Promise<void> 
               ${meta.userId ? `
               <tr style="background:#f8fafc">
                 <td style="padding:8px 12px;font-weight:600;color:#475569">User ID</td>
-                <td style="padding:8px 12px">${meta.userId}</td>
+                <td style="padding:8px 12px">${escapeHtml(String(meta.userId))}</td>
               </tr>` : ''}
               ${meta.userEmail ? `
               <tr>
                 <td style="padding:8px 12px;font-weight:600;color:#475569">Email</td>
-                <td style="padding:8px 12px">${meta.userEmail}</td>
+                <td style="padding:8px 12px">${escapeHtml(String(meta.userEmail))}</td>
               </tr>` : ''}
               ${meta.userPlan ? `
               <tr style="background:#f8fafc">
                 <td style="padding:8px 12px;font-weight:600;color:#475569">Plan</td>
-                <td style="padding:8px 12px">${meta.userPlan}</td>
+                <td style="padding:8px 12px">${escapeHtml(String(meta.userPlan))}</td>
               </tr>` : ''}
             </table>
 
             <div style="margin-bottom:16px">
               <div style="font-size:11px;font-weight:600;color:#ef4444;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Error</div>
-              <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:12px 16px;font-size:13px;color:#991b1b">${message}</div>
+              <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:12px 16px;font-size:13px;color:#991b1b">${escapeHtml(message)}</div>
             </div>
 
             ${stack ? `
             <div style="margin-bottom:16px">
               <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Stack Trace</div>
-              <pre style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:11px;color:#334155;overflow-x:auto;white-space:pre-wrap;margin:0">${stack}</pre>
+              <pre style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:11px;color:#334155;overflow-x:auto;white-space:pre-wrap;margin:0">${escapeHtml(stack)}</pre>
             </div>` : ''}
 
             ${meta.context ? `
             <div>
               <div style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Context</div>
-              <pre style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:11px;color:#334155;overflow-x:auto;white-space:pre-wrap;margin:0">${JSON.stringify(meta.context, null, 2)}</pre>
+              <pre style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:6px;padding:12px 16px;font-size:11px;color:#334155;overflow-x:auto;white-space:pre-wrap;margin:0">${escapeHtml(JSON.stringify(meta.context, null, 2))}</pre>
             </div>` : ''}
 
           </div>
@@ -182,13 +195,13 @@ Respond in this exact structure:
           </div>
           <div style="border:1px solid #e2e8f0;border-top:none;padding:24px;border-radius:0 0 8px 8px">
 
-            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:#991b1b;font-family:monospace">${message}</div>
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:10px 14px;margin-bottom:20px;font-size:13px;color:#991b1b;font-family:monospace">${escapeHtml(message)}</div>
 
             <h3 style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px">Draft fix (Haiku)</h3>
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:#334155;margin-bottom:20px">${draft}</div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:#334155;margin-bottom:20px">${escapeHtml(draft)}</div>
 
             <h3 style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px">Verification review (Sonnet)</h3>
-            <div style="background:${verdictBg};border:1px solid ${verdictBorder};border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:#1e293b">${verification}</div>
+            <div style="background:${verdictBg};border:1px solid ${verdictBorder};border-radius:6px;padding:14px 16px;font-size:13px;line-height:1.7;white-space:pre-wrap;color:#1e293b">${escapeHtml(verification)}</div>
 
           </div>
         </div>
