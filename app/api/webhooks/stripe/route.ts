@@ -33,6 +33,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 400 })
   }
 
+  // Idempotency: a legitimate Stripe retry (or a replayed signed body within
+  // the 5-min tolerance) inserts the same event_id again, hits the PK
+  // conflict, and we 200 without running the handler — no duplicate magic
+  // links, no duplicate invites.
+  const { error: dedupErr } = await supabaseAdmin
+    .from('stripe_webhook_events')
+    .insert({ event_id: event.id, event_type: event.type })
+  if (dedupErr) {
+    if (dedupErr.code === '23505') {
+      return NextResponse.json({ received: true, duplicate: true })
+    }
+    await logError(dedupErr, { route: 'POST /api/webhooks/stripe', context: { event_id: event.id } })
+    return NextResponse.json({ error: 'Idempotency check failed' }, { status: 500 })
+  }
+
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -68,8 +83,8 @@ export async function POST(request: NextRequest) {
         const { data: existingProfile } = await supabaseAdmin
           .from('profiles')
           .select('id')
-          .ilike('email', email)
-          .single()
+          .eq('email', email)
+          .maybeSingle()
 
         if (!existingProfile) {
           // New user, Supabase sends the invite email with a magic link
@@ -123,7 +138,7 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        await supabaseAdmin.from('profiles').update(profileUpdate).ilike('email', email)
+        await supabaseAdmin.from('profiles').update(profileUpdate).eq('email', email)
         break
       }
 
