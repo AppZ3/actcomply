@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const unsubUrl = `${APP_URL}/api/newsletter/unsubscribe?token=${token}`
 
     await getResend().emails.send({
-      from: 'ActComply Newsletter <newsletter@getactcomply.com>',
+      from: 'Zac Lowe <zac@getactcomply.com>',
       to: cleanEmail,
       replyTo: 'hello@getactcomply.com',
       subject: "You're in, ActComply newsletter",

@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
 
       try {
         const result = await resend.emails.send({
-          from: 'ActComply Newsletter <newsletter@getactcomply.com>',
+          from: 'Zac Lowe <zac@getactcomply.com>',
           to: s.email,
           replyTo: 'hello@getactcomply.com',
           subject,
