@@ -6,11 +6,11 @@ import { RelatedGuides } from '@/components/RelatedGuides'
 import './print.css'
 
 export const metadata: Metadata = {
-  title: 'Article 27 FRIA Template (EU AI Act) — Free Working Version',
+  title: 'Article 27 FRIA Template (EU AI Act), Free Working Version',
   description: 'Free one-page working template for the Article 27 Fundamental Rights Impact Assessment under the EU AI Act. Covers the six required inputs verbatim. Use until the official AI Office questionnaire is published.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-fria-template' },
   openGraph: {
-    title: 'Article 27 FRIA Template — Free Working Version',
+    title: 'Article 27 FRIA Template, Free Working Version',
     description: 'One-page Article 27 FRIA template for EU AI Act deployers. Free to use and adapt.',
     url: 'https://www.getactcomply.com/eu-ai-act-fria-template',
   },

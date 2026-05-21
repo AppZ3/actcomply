@@ -5,7 +5,7 @@ import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
-  title: 'Article 25(1)(b) Substantial Modification — When a Deployer Becomes a Provider',
+  title: 'Article 25(1)(b) Substantial Modification, When a Deployer Becomes a Provider',
   description: 'Article 25(1) of the EU AI Act has three triggers that turn a deployer, distributor, importer, or third party into a provider with full Article 16 obligations. Substantial modification is the most contested. Practical guide to where the line sits.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-substantial-modification' },
   openGraph: {

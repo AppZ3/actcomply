@@ -5,7 +5,7 @@ import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 
 export const metadata: Metadata = {
-  title: 'EU AI Act Article 26 Deployer Obligations — What Attaches August 2 2026',
+  title: 'EU AI Act Article 26 Deployer Obligations, What Attaches August 2 2026',
   description: 'Article 26 of the EU AI Act applies to every deployer of a high-risk AI system from 2 August 2026. Practical breakdown of all 12 deployer obligations, what each requires, and how national workforce rules layer on top.',
   alternates: { canonical: 'https://www.getactcomply.com/eu-ai-act-deployer-obligations' },
   openGraph: {

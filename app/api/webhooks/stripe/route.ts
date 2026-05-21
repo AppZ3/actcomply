@@ -76,7 +76,10 @@ export async function POST(request: NextRequest) {
 
         // Fallback: email lookup (new customer from landing page)
         if (!email) {
-          console.error('No email or user_id in checkout session')
+          await logError(new Error('No email or user_id in checkout session'), {
+            route: 'POST /api/webhooks/stripe [checkout.session.completed]',
+            context: { event_id: event.id, session_id: session.id },
+          })
           break
         }
 
@@ -91,7 +94,12 @@ export async function POST(request: NextRequest) {
           const { error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
             redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?redirect=/dashboard`,
           })
-          if (inviteError) console.error('Invite error:', inviteError.message)
+          if (inviteError) {
+            await logError(inviteError, {
+              route: 'POST /api/webhooks/stripe [checkout.session.completed invite]',
+              context: { email, event_id: event.id },
+            })
+          }
           await new Promise(resolve => setTimeout(resolve, 2000))
         } else {
           // Existing user (e.g. re-purchase / upgrade), generate a fresh magic link
@@ -104,7 +112,10 @@ export async function POST(request: NextRequest) {
             },
           })
           if (linkError) {
-            console.error('Generate magic link error:', linkError.message)
+            await logError(linkError, {
+              route: 'POST /api/webhooks/stripe [checkout.session.completed magiclink]',
+              context: { email, event_id: event.id },
+            })
           } else {
             const magicLink = linkData?.properties?.action_link
             if (magicLink) {
@@ -175,8 +186,7 @@ export async function POST(request: NextRequest) {
       }
     }
   } catch (err) {
-    console.error('Webhook handler error:', err)
-    await logError(err, { route: `POST /api/webhooks/stripe [${event.type}]`, context: { event_type: event.type } })
+    await logError(err, { route: `POST /api/webhooks/stripe [${event.type}]`, context: { event_type: event.type, event_id: event.id } })
     return NextResponse.json({ error: 'Handler failed' }, { status: 500 })
   }
 
