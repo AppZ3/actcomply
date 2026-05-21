@@ -13,7 +13,7 @@ import { NextRequest } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { logError } from '@/lib/error-logger'
 import {
-  resolveApiKey, callerHasOrgAccess,
+  resolveApiKey, callerHasOrgAccess, isUuid,
   preflight, jsonWithCors, unauthorized, forbidden,
 } from '@/lib/api-v1'
 
@@ -41,6 +41,9 @@ export async function GET(req: NextRequest) {
     if (orgParam === 'personal') {
       query = query.is('org_id', null).eq('user_id', caller.userId)
     } else if (orgParam) {
+      if (!isUuid(orgParam)) {
+        return jsonWithCors({ error: 'org_id must be a UUID or "personal".' }, { status: 400 })
+      }
       if (!(await callerHasOrgAccess(caller, orgParam))) {
         return forbidden(`You do not have access to org_id ${orgParam}.`)
       }
@@ -57,8 +60,12 @@ export async function GET(req: NextRequest) {
         ...(ownedRes.data ?? []).map(o => o.id as string),
         ...(memberRes.data ?? []).map(r => r.org_id as string),
       ]
-      // Dedupe.
-      const uniqueOrgIds = Array.from(new Set(orgIds))
+      // Dedupe and defense-in-depth UUID validation before interpolation
+      // into the PostgREST .or() string.
+      const uniqueOrgIds = Array.from(new Set(orgIds)).filter(isUuid)
+      if (!isUuid(caller.userId)) {
+        return jsonWithCors({ error: 'Invalid caller identity.' }, { status: 500 })
+      }
       // Build an `or` filter spanning personal + all org ids.
       const personalClause = `and(org_id.is.null,user_id.eq.${caller.userId})`
       const orgClause = uniqueOrgIds.length > 0 ? `org_id.in.(${uniqueOrgIds.join(',')})` : null

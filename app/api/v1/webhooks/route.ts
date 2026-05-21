@@ -8,7 +8,7 @@ import { logError } from '@/lib/error-logger'
 import { newWebhookSecret } from '@/lib/webhooks'
 import { assertSafeWebhookUrl } from '@/lib/ssrf-guard'
 import {
-  resolveApiKey, callerHasOrgAccess,
+  resolveApiKey, callerHasOrgAccess, isUuid,
   preflight, jsonWithCors, unauthorized, forbidden,
 } from '@/lib/api-v1'
 
@@ -30,7 +30,10 @@ export async function GET(req: NextRequest) {
     const orgIds = Array.from(new Set([
       ...(ownedRes.data ?? []).map(o => o.id as string),
       ...(memberRes.data ?? []).map(r => r.org_id as string),
-    ]))
+    ])).filter(isUuid)
+    if (!isUuid(caller.userId)) {
+      return jsonWithCors({ error: 'Invalid caller identity.' }, { status: 500 })
+    }
 
     let q = admin
       .from('webhook_endpoints')
@@ -90,8 +93,13 @@ export async function POST(req: NextRequest) {
     }
 
     const orgId = body.org_id ?? null
-    if (orgId && !(await callerHasOrgAccess(caller, orgId))) {
-      return forbidden(`You do not have access to org_id ${orgId}.`)
+    if (orgId !== null && orgId !== undefined) {
+      if (!isUuid(orgId)) {
+        return jsonWithCors({ error: 'org_id must be a UUID.' }, { status: 400 })
+      }
+      if (!(await callerHasOrgAccess(caller, orgId))) {
+        return forbidden(`You do not have access to org_id ${orgId}.`)
+      }
     }
 
     const secret = newWebhookSecret()

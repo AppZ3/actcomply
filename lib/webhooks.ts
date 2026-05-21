@@ -12,6 +12,7 @@
 import { createHmac, randomBytes } from 'crypto'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { assertSafeWebhookUrl } from '@/lib/ssrf-guard'
+import { isUuid } from '@/lib/api-v1'
 
 export type WebhookEventType =
   | 'assessment.created'
@@ -48,6 +49,8 @@ export async function findSubscribedEndpoints(
     .select('id, url, secret, enabled_events')
     .eq('status', 'enabled')
 
+  if (orgId !== null && !isUuid(orgId)) return []
+  if (!isUuid(ownerUserId)) return []
   q = orgId
     ? q.or(`org_id.eq.${orgId},and(org_id.is.null,user_id.eq.${ownerUserId})`)
     : q.is('org_id', null).eq('user_id', ownerUserId)
