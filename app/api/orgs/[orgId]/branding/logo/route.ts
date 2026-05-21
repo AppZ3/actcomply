@@ -1,7 +1,11 @@
 // POST   /api/orgs/[orgId]/branding/logo , multipart upload, owner-gated, sets organizations.logo_url
 // DELETE /api/orgs/[orgId]/branding/logo , owner-only, clears logo_url and removes the stored file
 //
-// Bucket: `org-branding` (public read, 2MB limit, png|jpg|webp|svg).
+// Bucket: `org-branding` (public read, 2MB limit, png|jpg|webp).
+// SVG is intentionally rejected: the bucket is public, SVG can carry <script>
+// and event handlers, and serving an actcomply.com-controlled SVG directly
+// would execute as JS in the Supabase Storage origin (and in actcomply.com
+// if any future surface embeds the logo via <object>/<iframe>).
 // Bucket created via `supabase-migrations/add_storage_org_branding.sql`, re-run if missing.
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -16,8 +20,9 @@ const MIME_TO_EXT: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/jpg': 'jpg',
   'image/webp': 'webp',
-  'image/svg+xml': 'svg',
 }
+// Includes 'svg' so any pre-ban logo gets cleaned up on next upload/delete.
+const CLEANUP_EXTS = ['png', 'jpg', 'webp', 'svg']
 
 async function assertOwner(orgId: string, userId: string) {
   const admin = getSupabaseAdmin()
@@ -35,7 +40,7 @@ async function assertOwner(orgId: string, userId: string) {
 // `<orgId>/logo.<ext>` so we attempt removal of every supported extension.
 async function removeExistingLogos(orgId: string) {
   const admin = getSupabaseAdmin()
-  const paths = Object.values(MIME_TO_EXT).map(ext => `${orgId}/logo.${ext}`)
+  const paths = CLEANUP_EXTS.map(ext => `${orgId}/logo.${ext}`)
   await admin.storage.from(BUCKET).remove(paths)
 }
 
@@ -61,7 +66,7 @@ export async function POST(
     const ext = MIME_TO_EXT[file.type]
     if (!ext) {
       return NextResponse.json(
-        { error: `Unsupported file type "${file.type || 'unknown'}". Use PNG, JPG, WebP, or SVG.` },
+        { error: `Unsupported file type "${file.type || 'unknown'}". Use PNG, JPG, or WebP.` },
         { status: 415 }
       )
     }
