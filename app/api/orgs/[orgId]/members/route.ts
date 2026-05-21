@@ -17,7 +17,13 @@ export async function POST(
 
   try {
     const { email, role = 'member' } = await req.json()
-    if (!email?.trim()) return NextResponse.json({ error: 'email is required' }, { status: 400 })
+    const cleanEmail = typeof email === 'string' ? email.trim().toLowerCase() : ''
+    if (!cleanEmail) return NextResponse.json({ error: 'email is required' }, { status: 400 })
+    // Reject PostgREST LIKE pattern characters so they never reach an .ilike()
+    // call that could resolve to a different user than the inviter intended.
+    if (/[%_\\]/.test(cleanEmail)) {
+      return NextResponse.json({ error: 'email contains disallowed characters' }, { status: 400 })
+    }
     if (!['admin', 'member', 'viewer'].includes(role)) {
       return NextResponse.json({ error: 'role must be admin, member, or viewer' }, { status: 400 })
     }
@@ -49,15 +55,15 @@ export async function POST(
     const { data: inviteeProfile } = await admin
       .from('profiles')
       .select('id')
-      .ilike('email', email.trim())
-      .single()
+      .eq('email', cleanEmail)
+      .maybeSingle()
     const inviteeUserId = inviteeProfile?.id ?? null
 
     const { data, error } = await admin
       .from('org_members')
       .insert({
         org_id: orgId,
-        email: email.trim().toLowerCase(),
+        email: cleanEmail,
         role,
         user_id: inviteeUserId,
         status: inviteeUserId ? 'active' : 'pending',
@@ -76,7 +82,7 @@ export async function POST(
     // of truth that the auth.user trigger uses to bind on signup).
     try {
       await sendInviteEmail({
-        to: email.trim().toLowerCase(),
+        to: cleanEmail,
         orgName: org.name,
         inviterEmail: user.email ?? 'Someone',
         role,
@@ -85,7 +91,7 @@ export async function POST(
       await logError(emailErr, {
         route: 'POST /api/orgs/[orgId]/members [email]',
         userId: user.id,
-        context: { orgId, invitee: email.trim().toLowerCase() },
+        context: { orgId, invitee: cleanEmail },
       })
     }
 
