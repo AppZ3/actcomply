@@ -20,7 +20,7 @@ interface WizardState {
 }
 
 const SECTORS = ['Healthcare', 'Finance', 'HR & Recruitment', 'Critical Infrastructure', 'Education', 'Other'] as const
-const PEOPLE_OPTIONS = ['<1,000', '1,000–100,000', '>100,000'] as const
+const PEOPLE_OPTIONS = ['<1,000', '1,000-100,000', '>100,000'] as const
 const PEOPLE_VALUES = ['<1000', '1000-100000', '>100000'] as const
 
 export default function ScreenerWizard() {
@@ -60,7 +60,7 @@ export default function ScreenerWizard() {
       if (!res.ok) throw new Error(data.error || 'Something went wrong')
       setState(s => ({ ...s, result: data, loading: false, submitted: true }))
     } catch (e) {
-      setState(s => ({ ...s, loading: false, error: (e as Error).message }))
+      setState(s => ({ ...s, loading: false, error: e instanceof Error ? e.message : String(e) }))
     }
   }
 
@@ -117,7 +117,7 @@ export default function ScreenerWizard() {
             href={`/signup?email=${encodeURIComponent(state.answers.email ?? '')}&sector=${encodeURIComponent(state.answers.sector ?? '')}&risk=${state.result.tier}`}
             className="block w-full bg-slate-900 text-white text-center py-3 rounded-xl font-semibold hover:bg-slate-800 transition-colors mb-3"
           >
-            Get your full compliance roadmap — free trial, no card required
+            Get your full compliance roadmap. Free trial, no card required.
           </a>
 
           <button
@@ -196,7 +196,7 @@ export default function ScreenerWizard() {
         {state.step === 3 && (
           <div>
             <h2 className="text-xl font-bold text-slate-900 mb-2">How many people does it affect per month?</h2>
-            <p className="text-sm text-slate-500 mb-6">Approximate is fine — we use this to assess proportionality obligations.</p>
+            <p className="text-sm text-slate-500 mb-6">Approximate is fine. We use this to assess proportionality obligations.</p>
             <div className="space-y-3">
               {PEOPLE_OPTIONS.map((label, i) => (
                 <button
@@ -220,7 +220,7 @@ export default function ScreenerWizard() {
               {[
                 { label: 'EU-based', value: 'EU-based' },
                 { label: 'Not EU-based, but we serve EU customers', value: 'Non-EU serves EU' },
-                { label: 'Both — EU company serving EU customers', value: 'Both' },
+                { label: 'Both (EU company serving EU customers)', value: 'Both' },
               ].map(opt => (
                 <button
                   key={opt.value}
@@ -284,7 +284,7 @@ export default function ScreenerWizard() {
         {state.step === 7 && (
           <div>
             <h2 className="text-xl font-bold text-slate-900 mb-2">Get your full risk report</h2>
-            <p className="text-sm text-slate-500 mb-6">Optional — your results are shown regardless. Enter your email to receive a written summary and compliance checklist.</p>
+            <p className="text-sm text-slate-500 mb-6">Optional. Your results are shown regardless. Enter your email to receive a written summary and compliance checklist.</p>
 
             {/* Honeypot — hidden from humans, not display:none (bots fill display:none too) */}
             <input
@@ -297,13 +297,16 @@ export default function ScreenerWizard() {
             />
 
             <div className="space-y-4">
-              <input
-                type="email"
-                placeholder="you@company.com (optional)"
-                value={state.answers.email ?? ''}
-                onChange={e => set('email', e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
-              />
+              <label className="block">
+                <span className="sr-only">Email address (optional)</span>
+                <input
+                  type="email"
+                  placeholder="you@company.com (optional)"
+                  value={state.answers.email ?? ''}
+                  onChange={e => set('email', e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                />
+              </label>
               {state.answers.email && (
                 <label className="flex items-start gap-3 text-sm text-slate-600 cursor-pointer">
                   <input

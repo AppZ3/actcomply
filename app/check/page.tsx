@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import ScreenerWizard from './ScreenerWizard'
 
 export const metadata: Metadata = {
-  title: 'Free EU AI Act Risk Assessment — 5 Minutes, No Signup',
+  title: 'Free EU AI Act Risk Assessment: 5 Minutes, No Signup',
   description: 'Find out if your AI system is high-risk under the EU AI Act. Free classifier, instant result, no account required.',
   openGraph: {
     title: 'Free EU AI Act Risk Assessment',

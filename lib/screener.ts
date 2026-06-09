@@ -21,23 +21,23 @@ export interface ScreenerResult {
 const ANNEX_III_SECTORS = new Set<Sector>(['Healthcare', 'Finance', 'HR & Recruitment', 'Critical Infrastructure', 'Education'])
 
 const SECTOR_ANNEX: Record<string, string> = {
-  Healthcare: 'Annex III §5(a) — AI systems used in medical devices',
-  Finance: 'Annex III §5(b) — AI in creditworthiness and insurance risk',
-  'HR & Recruitment': 'Annex III §4 — AI in employment and worker management',
-  'Critical Infrastructure': 'Annex III §2 — Safety components in critical infrastructure',
-  Education: 'Annex III §3 — AI in education and vocational training',
+  Healthcare: 'Annex III §5(a): AI systems used in medical devices',
+  Finance: 'Annex III §5(b): AI in creditworthiness and insurance risk',
+  'HR & Recruitment': 'Annex III §4: AI in employment and worker management',
+  'Critical Infrastructure': 'Annex III §2: Safety components in critical infrastructure',
+  Education: 'Annex III §3: AI in education and vocational training',
 }
 
 const HIGH_OBLIGATIONS = [
-  'Article 9 — Establish and maintain a risk management system throughout the AI lifecycle',
-  'Article 11 — Prepare technical documentation before deployment and keep it current',
-  'Article 13 — Ensure transparency so users know they are interacting with an AI system and understand its limitations',
+  'Article 9: Establish and maintain a risk management system throughout the AI lifecycle',
+  'Article 11: Prepare technical documentation before deployment and keep it current',
+  'Article 13: Ensure transparency so users know they are interacting with an AI system and understand its limitations',
 ]
 
 const LIMITED_OBLIGATIONS = [
-  'Article 50 — Disclose AI interaction to users of chatbots or synthetic media generators',
-  'Article 53 — General-purpose AI model obligations apply if your model is made publicly available',
-  'Article 6 — Re-verify classification if your deployment scale or use case expands',
+  'Article 50: Disclose AI interaction to users of chatbots or synthetic media generators',
+  'Article 53: General-purpose AI model obligations apply if your model is made publicly available',
+  'Article 6: Re-verify classification if your deployment scale or use case expands',
 ]
 
 const DEADLINE = new Date('2026-08-02')
