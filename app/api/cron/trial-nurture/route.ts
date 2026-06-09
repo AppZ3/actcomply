@@ -45,13 +45,13 @@ export async function GET(req: NextRequest) {
     const emailsSent = nurtureCount.get(user.id) ?? 0
     if (emailsSent >= NURTURE_EMAIL_CAP) continue
 
-    // Check if user has created any system
-    const { count: systemCount } = await admin
-      .from('ai_systems')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-
     try {
+      // Check if user has created any system
+      const { count: systemCount } = await admin
+        .from('ai_systems')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+
       if (!systemCount || systemCount === 0) {
         await getResend().emails.send({
           from: 'ActComply <hello@getactcomply.com>',
@@ -78,11 +78,12 @@ export async function GET(req: NextRequest) {
         })
       }
 
-      await admin.from('audit_log').insert({
+      const { error: logErr } = await admin.from('audit_log').insert({
         user_id: user.id,
         action: 'trial_nurture_email',
         details: { emails_sent_so_far: emailsSent + 1 },
       })
+      if (logErr) throw logErr
       sent++
     } catch (e) {
       logError(e, { route: `trial_nurture_${user.email}` }).catch(() => {})
