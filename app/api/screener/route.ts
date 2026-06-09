@@ -13,6 +13,10 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.getactcomply.com
 const OUTREACH_TOOL_URL = process.env.OUTREACH_TOOL_URL || 'https://outreach-tool-navy.vercel.app'
 const SCREENER_WEBHOOK_SECRET = process.env.SCREENER_WEBHOOK_SECRET
 
+function escHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 // Rate limiting: 5 submissions per IP per hour
 const rateLimitMap = new Map<string, { count: number; windowStart: number }>()
 
@@ -56,6 +60,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
   }
 
+  // Validate enum fields against known values
+  const VALID_SECTORS = new Set(['Healthcare', 'Finance', 'HR & Recruitment', 'Critical Infrastructure', 'Education', 'Other'])
+  const VALID_PEOPLE = new Set(['<1000', '1000-100000', '>100000'])
+  const VALID_JURISDICTION = new Set(['EU-based', 'Non-EU serves EU', 'Both'])
+  const VALID_STAGE = new Set(['Live', 'In development'])
+  const VALID_COMPLIANCE = new Set(['Nothing', 'Some internal review', 'Formal assessment started'])
+
+  if (
+    !VALID_SECTORS.has(body.sector as string) ||
+    !VALID_PEOPLE.has(body.people_per_month as string) ||
+    !VALID_JURISDICTION.has(body.eu_jurisdiction as string) ||
+    !VALID_STAGE.has(body.deployment_stage as string) ||
+    !VALID_COMPLIANCE.has(body.compliance_work_done as string)
+  ) {
+    return NextResponse.json({ error: 'Invalid field values' }, { status: 400 })
+  }
+
   const answers: ScreenerAnswers = {
     sector: body.sector as ScreenerAnswers['sector'],
     decisions_people: body.decisions_people === true ? true : body.decisions_people === false ? false : null,
@@ -88,27 +109,32 @@ export async function POST(req: NextRequest) {
   const admin = getSupabaseAdmin()
   const companyName = email ? email.split('@')[1]?.split('.')[0] ?? null : null
 
-  const { data: lead, error: saveErr } = await admin
-    .from('screener_leads')
-    .upsert({
-      email: email ?? `anon-${Date.now()}@noemail.invalid`,
-      sector: answers.sector,
-      decisions_people: answers.decisions_people,
-      people_per_month: answers.people_per_month,
-      eu_jurisdiction: answers.eu_jurisdiction,
-      deployment_stage: answers.deployment_stage,
-      compliance_work_done: answers.compliance_work_done,
-      risk_tier: risk.tier,
-      annex_iii_category: risk.annex_iii_category,
-      source: (body.utm_source as string) || null,
-      partner_ref: (body.ref as string) || null,
-      consent,
-      company_name: companyName,
-    }, { onConflict: 'email', ignoreDuplicates: false })
-    .select('id')
-    .single()
-
-  if (saveErr) logError(saveErr, { route: 'POST /api/screener#save' }).catch(() => {})
+  let lead: { id: string } | null = null
+  try {
+    const { data, error: saveErr } = await admin
+      .from('screener_leads')
+      .upsert({
+        email: email ?? `anon-${crypto.randomUUID()}@noemail.invalid`,
+        sector: answers.sector,
+        decisions_people: answers.decisions_people,
+        people_per_month: answers.people_per_month,
+        eu_jurisdiction: answers.eu_jurisdiction,
+        deployment_stage: answers.deployment_stage,
+        compliance_work_done: answers.compliance_work_done,
+        risk_tier: risk.tier,
+        annex_iii_category: risk.annex_iii_category,
+        source: (body.utm_source as string) || null,
+        partner_ref: (body.ref as string) || null,
+        consent,
+        company_name: companyName,
+      }, { onConflict: 'email', ignoreDuplicates: false })
+      .select('id')
+      .single()
+    if (saveErr) logError(saveErr, { route: 'POST /api/screener#save' }).catch(() => {})
+    lead = data
+  } catch (e) {
+    logError(e, { route: 'POST /api/screener#save_throw' }).catch(() => {})
+  }
   const lead_id = lead?.id ?? 'unknown'
 
   // Send Day 0 follow-up email if email + consent
@@ -133,7 +159,7 @@ export async function POST(req: NextRequest) {
         from: 'ActComply Alerts <alerts@getactcomply.com>',
         to: 'zac@getactcomply.com',
         subject: `New screener lead: ${companyName ?? email}, ${risk.tier} risk`,
-        html: `<p><strong>Email:</strong> ${email}</p><p><strong>Sector:</strong> ${answers.sector}</p><p><strong>Risk tier:</strong> ${risk.tier}</p><p><strong>Deployment:</strong> ${answers.deployment_stage}</p><p><strong>Consent:</strong> ${consent ? 'Yes' : 'No'}</p>`,
+        html: `<p><strong>Email:</strong> ${escHtml(email)}</p><p><strong>Sector:</strong> ${escHtml(answers.sector)}</p><p><strong>Risk tier:</strong> ${escHtml(risk.tier)}</p><p><strong>Deployment:</strong> ${escHtml(answers.deployment_stage)}</p><p><strong>Consent:</strong> ${consent ? 'Yes' : 'No'}</p>`,
       })
     } catch (e) {
       logError(e, { route: 'POST /api/screener#zac_notify' }).catch(() => {})
