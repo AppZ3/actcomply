@@ -47,4 +47,9 @@ describe('computeRisk', () => {
     const dev = computeRisk({ ...BASE_HIGH, deployment_stage: 'In development' })
     expect(dev.urgency_note).toContain('development')
   })
+
+  it('treats decisions_people=null as high risk (conservative default)', () => {
+    const result = computeRisk({ ...BASE_HIGH, decisions_people: null })
+    expect(result.tier).toBe('high')
+  })
 })

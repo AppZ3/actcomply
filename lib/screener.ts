@@ -1,6 +1,7 @@
 export type Sector = 'Healthcare' | 'Finance' | 'HR & Recruitment' | 'Critical Infrastructure' | 'Education' | 'Other'
 export type RiskTier = 'high' | 'limited'
 
+// All fields are persisted by the API handler. Only sector and decisions_people affect the current risk tier.
 export interface ScreenerAnswers {
   sector: Sector
   decisions_people: boolean | null
@@ -42,7 +43,8 @@ const LIMITED_OBLIGATIONS = [
 const DEADLINE = new Date('2026-08-02')
 
 export function computeRisk(answers: ScreenerAnswers): ScreenerResult {
-  const daysLeft = Math.max(0, Math.ceil((DEADLINE.getTime() - Date.now()) / 86_400_000))
+  const MS_PER_DAY = 86_400_000
+  const daysLeft = Math.max(0, Math.ceil((DEADLINE.getTime() - Date.now()) / MS_PER_DAY))
   const isHighRisk = ANNEX_III_SECTORS.has(answers.sector) && answers.decisions_people !== false
 
   if (isHighRisk) {
