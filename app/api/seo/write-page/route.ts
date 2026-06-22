@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     if (error) throw error
     return NextResponse.json({ ok: true, slug })
   } catch (err) {
-    logError(err, { route: 'seo-write-page', slug })
+    logError(err, { route: 'seo-write-page', context: { slug } })
     return NextResponse.json({ error: 'Write failed' }, { status: 500 })
   }
 }
