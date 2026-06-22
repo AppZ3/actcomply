@@ -92,13 +92,17 @@ export default async function ResourcePage({ params }: { params: Promise<{ slug:
             <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Related guides</h3>
               <ul className="space-y-2">
-                {page.internal_links.map((link) => (
-                  <li key={link}>
-                    <Link href={link} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                      {link.replace('/resources/', '').replace(/-/g, ' ')}
-                    </Link>
-                  </li>
-                ))}
+                {page.internal_links.map((link) => {
+                  const href = link.startsWith('/') ? link : `/resources/${link}`
+                  const label = link.replace(/^\/resources\//, '').replace(/-/g, ' ')
+                  return (
+                    <li key={link}>
+                      <Link href={href} className="text-sm text-blue-600 dark:text-blue-400 hover:underline capitalize">
+                        {label}
+                      </Link>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
           )}
