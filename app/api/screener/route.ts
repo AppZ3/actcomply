@@ -6,6 +6,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getResend } from '@/lib/resend'
 import { computeRisk, type ScreenerAnswers } from '@/lib/screener'
 import { logError } from '@/lib/error-logger'
+import { newUnsubscribeToken } from '@/lib/newsletter'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
@@ -149,6 +150,20 @@ export async function POST(req: NextRequest) {
       await admin.from('screener_leads').update({ follow_up_day0_sent: true }).eq('id', lead_id)
     } catch (e) {
       logError(e, { route: 'POST /api/screener#day0_email' }).catch(() => {})
+    }
+  }
+
+  // Cross-enroll consent=true screener leads into newsletter_subscribers.
+  // They already received a results email above, so we skip the welcome email here.
+  if (email && consent) {
+    try {
+      const token = newUnsubscribeToken()
+      await admin.from('newsletter_subscribers').upsert(
+        { email, status: 'active', source: 'screener', unsubscribe_token: token, unsubscribed_at: null },
+        { onConflict: 'email', ignoreDuplicates: true }
+      )
+    } catch (e) {
+      logError(e, { route: 'POST /api/screener#newsletter_enroll' }).catch(() => {})
     }
   }
 

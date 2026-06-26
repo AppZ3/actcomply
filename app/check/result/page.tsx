@@ -58,10 +58,20 @@ export default async function ResultPage({ searchParams }: Props) {
         <p className="text-sm text-slate-500 mb-6 italic">Shared result. Take the full 7-question assessment for a personalised report.</p>
         <a
           href={`${APP_URL}/check`}
-          className="block w-full bg-slate-900 text-white text-center py-3 rounded-xl font-semibold hover:bg-slate-800 transition-colors"
+          className="block w-full bg-slate-900 text-white text-center py-3 rounded-xl font-semibold hover:bg-slate-800 transition-colors mb-4"
         >
           Get your full compliance roadmap. Free trial, no card required.
         </a>
+        <div className="rounded-xl border border-slate-200 p-4 text-center">
+          <p className="text-sm font-semibold text-slate-900 mb-1">Stay ahead of enforcement</p>
+          <p className="text-xs text-slate-500 mb-3">Weekly EU AI Act updates for founders and CTOs. Free.</p>
+          <a
+            href={`${APP_URL}/newsletter`}
+            className="inline-block bg-slate-900 text-white text-xs font-semibold py-2 px-5 rounded-lg hover:bg-slate-800 transition-colors"
+          >
+            Subscribe free
+          </a>
+        </div>
       </div>
     </div>
   )

@@ -126,6 +126,23 @@ export default function ScreenerWizard() {
           >
             Copy shareable result link
           </button>
+
+          {state.answers.email && state.answers.consent ? (
+            <p className="mt-6 text-xs text-slate-400 text-center">
+              You&apos;ll receive EU AI Act compliance updates by email.
+            </p>
+          ) : (
+            <div className="mt-6 rounded-xl border border-slate-200 p-4 text-center">
+              <p className="text-sm font-semibold text-slate-900 mb-1">Stay ahead of enforcement</p>
+              <p className="text-xs text-slate-500 mb-3">Weekly EU AI Act updates for founders and CTOs. Free.</p>
+              <a
+                href={`/newsletter${state.answers.email ? `?email=${encodeURIComponent(state.answers.email)}` : ''}`}
+                className="inline-block bg-slate-900 text-white text-xs font-semibold py-2 px-5 rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                Subscribe free
+              </a>
+            </div>
+          )}
         </div>
       </div>
     )
