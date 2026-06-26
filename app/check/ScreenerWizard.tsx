@@ -122,10 +122,29 @@ export default function ScreenerWizard() {
 
           <button
             onClick={shareResult}
-            className="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+            className="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition-colors mb-2"
           >
             Copy shareable result link
           </button>
+
+          <div className="flex gap-2">
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${window.location.origin}/check/result?tier=${state.result.tier}&sector=${encodeURIComponent(state.answers.sector ?? '')}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 text-center py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              Share on LinkedIn
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just ran our AI through the EU AI Act screener — ${state.result.tier === 'high' ? 'High Risk' : 'Limited Risk'} result. August 2 enforcement is ${Math.ceil((new Date('2026-08-02').getTime() - Date.now()) / 86400000)} days away:`)}&url=${encodeURIComponent(`${window.location.origin}/check/result?tier=${state.result.tier}&sector=${encodeURIComponent(state.answers.sector ?? '')}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 text-center py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              Share on X
+            </a>
+          </div>
 
           {state.answers.email && state.answers.consent ? (
             <p className="mt-6 text-xs text-slate-400 text-center">
