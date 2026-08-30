@@ -7,10 +7,11 @@ import Link from 'next/link'
  *
  * Two deliberate differences from the file in public/:
  *
- * 1. The accent strokes use the interface blue (blue-500) rather than the
- *    brand file's #3A6AA3. The two are close enough that showing both on one
- *    page reads as a mistake, and the interface blue is the one the whole site
- *    is already built on. public/ keeps the canonical colours for documents.
+ * 1. The accent strokes use --color-ui-accent (the interface blue) rather than
+ *    --brand-accent. The two are close enough that showing both on one page
+ *    reads as a mistake, and the interface blue is the one the whole site is
+ *    already built on. Both are defined in app/globals.css; public/ keeps the
+ *    canonical colours for documents.
  * 2. The stroke is heavier than the 2.8 in the source file. At 32px a 2.8
  *    stroke renders under 1px and disappears next to the wordmark.
  */
@@ -28,14 +29,14 @@ export function BrandMark({ size = 32, className = '' }: { size?: number; classN
         d="M 82 22 A 40 40 0 1 0 82 78"
         strokeWidth="5.5"
         strokeLinecap="round"
-        className="stroke-gray-900 dark:stroke-white"
+        className="stroke-brand-ink dark:stroke-white"
       />
       <path
         d="M 28 74 L 48 26 L 68 74"
         strokeWidth="5.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="stroke-blue-500"
+        className="stroke-ui-accent"
       />
       <line
         x1="35"
@@ -44,7 +45,7 @@ export function BrandMark({ size = 32, className = '' }: { size?: number; classN
         y2="58"
         strokeWidth="5.5"
         strokeLinecap="round"
-        className="stroke-blue-500"
+        className="stroke-ui-accent"
       />
     </svg>
   )

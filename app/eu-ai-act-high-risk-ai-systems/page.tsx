@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { HIGH_RISK_CATEGORIES } from '@/lib/eu-ai-act'
 import { RelatedGuides } from '@/components/RelatedGuides'
 import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 
 export const metadata: Metadata = {
   title: 'EU AI Act High-Risk AI Systems: Full List 2026',
@@ -132,15 +133,17 @@ export default function HighRiskPage() {
         </div>
       </div>
 
-      <footer className="border-t border-gray-200 dark:border-white/10 px-6 py-8 mt-8">
-        <div className="max-w-4xl mx-auto flex gap-6 text-sm text-gray-500">
-          <Link href="/" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Home</Link>
-          <Link href="/eu-ai-act-compliance-checklist" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Compliance Checklist</Link>
-          <Link href="/eu-ai-act-risk-classification" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Risk Classification</Link>
-          <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Terms</Link>
-          <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Privacy</Link>
-        </div>
-      </footer>
+      <SiteFooter
+        width="4xl"
+        spacing="sm"
+        links={[
+          { href: "/", label: "Home" },
+          { href: "/eu-ai-act-compliance-checklist", label: "Compliance Checklist" },
+          { href: "/eu-ai-act-risk-classification", label: "Risk Classification" },
+          { href: "/terms", label: "Terms" },
+          { href: "/privacy", label: "Privacy" },
+        ]}
+      />
     </div>
   )
 }

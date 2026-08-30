@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { DownloadPdfButton } from './DownloadPdfButton'
 import { RelatedGuides } from '@/components/RelatedGuides'
 import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 import './print.css'
 
 export const metadata: Metadata = {
@@ -183,16 +184,16 @@ export default function FriaTemplatePage() {
 
       </main>
 
-      <footer className="border-t border-gray-200 dark:border-white/10 py-8 mt-12 print:hidden">
-        <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-          <span>&copy; 2026 ActComply. Not legal advice.</span>
-          <div className="flex gap-4">
-            <Link href="/eu-ai-act-fria-scope" className="hover:text-gray-600 dark:hover:text-gray-300 transition">FRIA scope guide</Link>
-            <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        width="4xl"
+        printHidden
+        tagline="© 2026 ActComply. Not legal advice."
+        links={[
+          { href: "/eu-ai-act-fria-scope", label: "FRIA scope guide" },
+          { href: "/privacy", label: "Privacy" },
+          { href: "/terms", label: "Terms" },
+        ]}
+      />
     </div>
   )
 }

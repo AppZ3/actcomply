@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Article 26 Deployer Obligations, What Attaches August 2 2026',
@@ -394,16 +395,15 @@ export default function DeployerObligationsPage() {
 
       </main>
 
-      <footer className="border-t border-gray-200 dark:border-white/10 py-8 mt-16">
-        <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-          <span>&copy; 2026 ActComply. Not legal advice.</span>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</Link>
-            <Link href="/eu-ai-act-fria-scope" className="hover:text-gray-600 dark:hover:text-gray-300 transition">FRIA scope guide</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        width="4xl"
+        tagline="© 2026 ActComply. Not legal advice."
+        links={[
+          { href: "/privacy", label: "Privacy" },
+          { href: "/terms", label: "Terms" },
+          { href: "/eu-ai-act-fria-scope", label: "FRIA scope guide" },
+        ]}
+      />
     </div>
   )
 }

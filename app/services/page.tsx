@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Compliance Services',
@@ -157,17 +158,17 @@ export default function ServicesPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-white/10 px-6 py-8">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <div>© 2026 ActComply. Built to make AI trustworthy.</div>
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link href="/services" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Services</Link>
-            <Link href="/support" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Support</Link>
-            <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Terms</Link>
-            <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Privacy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        width="6xl"
+        spacing="none"
+        tagline="© 2026 ActComply. Built to make AI trustworthy."
+        links={[
+          { href: "/services", label: "Services" },
+          { href: "/support", label: "Support" },
+          { href: "/terms", label: "Terms" },
+          { href: "/privacy", label: "Privacy" },
+        ]}
+      />
     </div>
   )
 }

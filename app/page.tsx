@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 import { createClient } from '@/lib/supabase'
 
 // Shape of /api/stats.nextMilestone. Server source of truth is
@@ -372,19 +373,19 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-white/10 px-6 py-8">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <div>© 2026 ActComply. Built to make AI trustworthy.</div>
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link href="/eu-ai-act-compliance-checklist" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Compliance Checklist</Link>
-            <Link href="/eu-ai-act-high-risk-ai-systems" className="hover:text-gray-700 dark:hover:text-gray-300 transition">High-Risk AI Systems</Link>
-            <Link href="/eu-ai-act-risk-classification" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Risk Classification</Link>
-            <Link href="/support" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Support</Link>
-            <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Terms</Link>
-            <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Privacy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        width="6xl"
+        spacing="none"
+        tagline="© 2026 ActComply. Built to make AI trustworthy."
+        links={[
+          { href: "/eu-ai-act-compliance-checklist", label: "Compliance Checklist" },
+          { href: "/eu-ai-act-high-risk-ai-systems", label: "High-Risk AI Systems" },
+          { href: "/eu-ai-act-risk-classification", label: "Risk Classification" },
+          { href: "/support", label: "Support" },
+          { href: "/terms", label: "Terms" },
+          { href: "/privacy", label: "Privacy" },
+        ]}
+      />
     </div>
   )
 }

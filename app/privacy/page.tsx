@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -121,13 +121,15 @@ export default function PrivacyPage() {
         </div>
       </div>
 
-      <footer className="border-t border-gray-200 dark:border-white/10 px-6 py-8 mt-8">
-        <div className="max-w-4xl mx-auto flex gap-6 text-sm text-gray-500">
-          <Link href="/terms" className="hover:text-gray-300 transition">Terms</Link>
-          <Link href="/privacy" className="hover:text-gray-300 transition">Privacy</Link>
-          <Link href="/" className="hover:text-gray-300 transition">Home</Link>
-        </div>
-      </footer>
+      <SiteFooter
+        width="4xl"
+        spacing="sm"
+        links={[
+          { href: "/terms", label: "Terms" },
+          { href: "/privacy", label: "Privacy" },
+          { href: "/", label: "Home" },
+        ]}
+      />
     </div>
   )
 }
