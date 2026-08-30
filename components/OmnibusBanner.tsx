@@ -22,7 +22,7 @@ export function OmnibusBanner() {
     <div className="bg-amber-500 text-gray-950 px-4 py-2.5 flex items-center justify-center gap-3 text-sm font-medium">
       <span className="w-1.5 h-1.5 bg-gray-950 rounded-full shrink-0" />
       <span>
-        <strong>Omnibus update:</strong> High-risk AI deadlines extended to Dec 2027, August 2, 2026 enforcement powers unchanged.{' '}
+        <strong>Omnibus update:</strong> Enforcement powers went live 2 August 2026. Annex III high-risk obligations now apply from 2 December 2027.{' '}
         <Link href="/eu-ai-act-omnibus-update" className="underline underline-offset-2 hover:no-underline">
           What this means for your organisation →
         </Link>

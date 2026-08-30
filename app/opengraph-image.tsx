@@ -69,7 +69,7 @@ export default function Image() {
           >
             <div style={{ width: '10px', height: '10px', background: '#ef4444', borderRadius: '50%' }} />
             <span style={{ fontSize: '20px', color: '#f87171', fontWeight: 500 }}>
-              Enforcement begins August 2, 2026
+              Enforcement is live · Annex III from 2 Dec 2027
             </span>
           </div>
           <span style={{ fontSize: '20px', color: '#4b5563' }}>getactcomply.com</span>

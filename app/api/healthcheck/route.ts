@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripe, PLANS } from '@/lib/stripe'
 import { bearerOk } from '@/lib/auth-bearer'
+import { getEnforcementStatus } from '@/lib/eu-ai-act'
 
 export async function GET(req: NextRequest) {
   // Bearer-gated detail. Unauthenticated callers get a one-bit status so
@@ -76,12 +77,16 @@ export async function GET(req: NextRequest) {
     detail: appUrl || 'not set',
   }
 
-  // 5. Countdown sanity check
-  const deadline = new Date('2026-08-02T00:00:00Z')
-  const days = Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  // 5. Enforcement timeline sanity check.
+  // A date going past is not a fault, the Act phases in over several years. This
+  // fails only when every tracked milestone is behind us, which means the site has
+  // nothing left to count towards and the timeline copy needs a human.
+  const enforcement = getEnforcementStatus()
   results.countdown = {
-    ok: days > 0,
-    detail: days > 0 ? `${days} days until Aug 2 2026` : 'Deadline has passed',
+    ok: enforcement.next !== null,
+    detail: enforcement.next
+      ? `${enforcement.enforcementLive ? 'Enforcement live' : 'Pre-enforcement'}, ${enforcement.daysUntilNext} days until ${enforcement.next.displayDate} (${enforcement.next.key})`
+      : 'All tracked milestones have passed, enforcement timeline copy needs review',
   }
 
   const allOk = Object.values(results).every(r => r.ok)

@@ -8,6 +8,36 @@ import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
 import { createClient } from '@/lib/supabase'
 
+// Shape of /api/stats.nextMilestone. Server source of truth is
+// ENFORCEMENT_MILESTONES in lib/eu-ai-act.ts.
+interface NextMilestone {
+  key: string
+  label: string
+  displayDate: string
+  daysUntil: number
+}
+
+// Mirrors lib/eu-ai-act.ts so the hero still shows a real date if /api/stats
+// fails. Kept inline rather than imported so the rules engine constants stay
+// out of the landing page bundle. Update both together.
+const MILESTONE_FALLBACK: { key: string; iso: string; label: string; displayDate: string }[] = [
+  { key: 'enforcement', iso: '2026-08-02T00:00:00Z', label: 'Until enforcement powers go live', displayDate: '2 August 2026' },
+  { key: 'annex-iii', iso: '2027-12-02T00:00:00Z', label: 'Until Annex III high-risk obligations', displayDate: '2 December 2027' },
+  { key: 'annex-i', iso: '2028-08-02T00:00:00Z', label: 'Until Annex I embedded-product obligations', displayDate: '2 August 2028' },
+]
+
+function nextMilestoneFallback(): NextMilestone | null {
+  const now = Date.now()
+  const next = MILESTONE_FALLBACK.find(m => new Date(m.iso).getTime() > now)
+  if (!next) return null
+  return {
+    key: next.key,
+    label: next.label,
+    displayDate: next.displayDate,
+    daysUntil: Math.ceil((new Date(next.iso).getTime() - now) / 86_400_000),
+  }
+}
+
 async function startCheckout(plan: string, annual: boolean) {
   const res = await fetch('/api/checkout', {
     method: 'POST',
@@ -21,7 +51,7 @@ async function startCheckout(plan: string, annual: boolean) {
 
 export default function LandingPage() {
   const [annual, setAnnual] = useState(false)
-  const [days, setDays] = useState<number | null>(null)
+  const [nextMilestone, setNextMilestone] = useState<NextMilestone | null>(null)
   const [requirementsMapped, setRequirementsMapped] = useState<number | null>(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -48,12 +78,10 @@ export default function LandingPage() {
       try {
         const res = await fetch('/api/stats')
         const data = await res.json()
-        setDays(data.daysUntilEnforcement)
+        setNextMilestone(data.nextMilestone ?? null)
         setRequirementsMapped(data.requirementsMapped)
       } catch {
-        const deadline = new Date('2026-08-02T00:00:00Z')
-        const diff = Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-        setDays(Math.max(0, diff))
+        setNextMilestone(nextMilestoneFallback())
       }
     }
     fetchStats()
@@ -102,7 +130,7 @@ export default function LandingPage() {
           {
             '@type': 'Question',
             name: 'What is the EU AI Act enforcement deadline?',
-            acceptedAnswer: { '@type': 'Answer', text: 'EU AI Act enforcement powers go live August 2, 2026. All organisations must have completed their AI inventory and risk classification by this date. Under the May 2026 Omnibus provisional agreement (pending formal adoption), full obligations for high-risk AI systems (Annex III) are extended to December 2, 2027, and for AI embedded in regulated products (Annex I) to August 2, 2028. Prohibited AI and GPAI obligations remain enforced from August 2, 2026.' },
+            acceptedAnswer: { '@type': 'Answer', text: 'EU AI Act enforcement powers went live on 2 August 2026 and are in force now. Prohibited AI practices and GPAI provider obligations have been enforceable since that date, and organisations were required to have completed their AI inventory and risk classification by then. Under the May 2026 Omnibus provisional agreement (pending formal adoption), full obligations for high-risk AI systems (Annex III) apply from 2 December 2027, and for AI embedded in regulated products (Annex I) from 2 August 2028.' },
           },
           {
             '@type': 'Question',
@@ -154,21 +182,21 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-6 py-28 text-center">
         <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-2 rounded-full mb-4">
           <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          Enforcement powers live August 2, 2026. Inventory must be complete
+          Enforcement powers are live. Prohibited AI and GPAI obligations apply now
         </div>
         <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full mb-8">
-          Omnibus update: High-risk obligations extended to Dec 2027 (Annex III) · Formal adoption pending
+          Omnibus update: Annex III high-risk obligations apply from 2 December 2027 · Formal adoption pending
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-          Is your AI compliant<br />
-          <span className="text-blue-500 dark:text-blue-400">before the deadline?</span>
+          Enforcement is live.<br />
+          <span className="text-blue-500 dark:text-blue-400">Is your AI compliant?</span>
         </h1>
 
         <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
-          ActComply automatically assesses your AI systems against the EU AI Act,
-          generates required documentation, and keeps you updated as regulations evolve.
-          Non-compliance fines reach <span className="text-gray-900 dark:text-white font-semibold">€35M or 7% of global turnover.</span>
+          The deadline has passed. ActComply assesses your AI systems against the EU AI Act,
+          generates the documentation regulators ask for, and keeps you current as obligations
+          phase in through 2027. Fines reach <span className="text-gray-900 dark:text-white font-semibold">€35M or 7% of global turnover.</span>
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -195,7 +223,11 @@ export default function LandingPage() {
           {[
             { value: '€35M', label: 'Maximum fine per violation' },
             { value: '7%', label: 'Of global turnover at risk' },
-            { value: days !== null ? `${days} days` : '-- days', label: 'Until enforcement powers go live', live: true },
+            {
+              value: nextMilestone !== null ? `${nextMilestone.daysUntil} days` : '-- days',
+              label: nextMilestone !== null ? nextMilestone.label : 'Until the next compliance deadline',
+              live: true,
+            },
             { value: requirementsMapped !== null ? `${requirementsMapped}+` : '15+', label: 'Compliance requirements mapped', live: true },
           ].map(stat => (
             <div key={stat.label}>
@@ -203,7 +235,7 @@ export default function LandingPage() {
                 {stat.value}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center gap-1.5">
-                {stat.live && days !== null && (
+                {stat.live && nextMilestone !== null && (
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shrink-0" />
                 )}
                 {stat.label}

@@ -137,7 +137,7 @@ export default function ScreenerWizard() {
               Share on LinkedIn
             </a>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just ran our AI through the EU AI Act screener — ${state.result.tier === 'high' ? 'High Risk' : 'Limited Risk'} result. August 2 enforcement is ${Math.ceil((new Date('2026-08-02').getTime() - Date.now()) / 86400000)} days away:`)}&url=${encodeURIComponent(`${window.location.origin}/check/result?tier=${state.result.tier}&sector=${encodeURIComponent(state.answers.sector ?? '')}`)}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just ran our AI through the EU AI Act screener. ${state.result.tier === 'high' ? 'High Risk' : 'Limited Risk'} result. EU AI Act enforcement powers are already live:`)}&url=${encodeURIComponent(`${window.location.origin}/check/result?tier=${state.result.tier}&sector=${encodeURIComponent(state.answers.sector ?? '')}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 text-center py-2.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors"

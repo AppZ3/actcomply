@@ -1,6 +1,6 @@
 /**
  * EU AI Act Compliance Rules Engine
- * Based on Regulation (EU) 2024/1689 - fully in force August 2, 2026
+ * Based on Regulation (EU) 2024/1689 - enforcement powers in force since August 2, 2026
  *
  * Risk tiers: PROHIBITED > HIGH_RISK > LIMITED_RISK > MINIMAL_RISK
  */
@@ -330,9 +330,72 @@ export const ENFORCEMENT_DEADLINE = new Date('2026-08-02T00:00:00Z')
 export const OMNIBUS_HIGH_RISK_ANNEX_III_DEADLINE = new Date('2027-12-02T00:00:00Z')
 export const OMNIBUS_HIGH_RISK_ANNEX_I_DEADLINE = new Date('2028-08-02T00:00:00Z')
 
+const MS_PER_DAY = 1000 * 60 * 60 * 24
+
+export type MilestoneKey = 'enforcement' | 'annex-iii' | 'annex-i'
+
+export interface EnforcementMilestone {
+  key: MilestoneKey
+  date: Date
+  /** Used in prose, e.g. "Until Annex III high-risk obligations". */
+  label: string
+  /** Human date for display, e.g. "2 December 2027". */
+  displayDate: string
+}
+
+// Ordered oldest first. getEnforcementStatus walks this to find what is next.
+export const ENFORCEMENT_MILESTONES: EnforcementMilestone[] = [
+  {
+    key: 'enforcement',
+    date: ENFORCEMENT_DEADLINE,
+    label: 'Until enforcement powers go live',
+    displayDate: '2 August 2026',
+  },
+  {
+    key: 'annex-iii',
+    date: OMNIBUS_HIGH_RISK_ANNEX_III_DEADLINE,
+    label: 'Until Annex III high-risk obligations',
+    displayDate: '2 December 2027',
+  },
+  {
+    key: 'annex-i',
+    date: OMNIBUS_HIGH_RISK_ANNEX_I_DEADLINE,
+    label: 'Until Annex I embedded-product obligations',
+    displayDate: '2 August 2028',
+  },
+]
+
+export interface EnforcementStatus {
+  /** True once enforcement powers are in force (2 August 2026 onwards). */
+  enforcementLive: boolean
+  /** The next milestone still ahead of us, or null once all have passed. */
+  next: EnforcementMilestone | null
+  /** Whole days until `next`, or null when there is no next milestone. */
+  daysUntilNext: number | null
+}
+
+/**
+ * The compliance timeline has phases, not one deadline. Copy that hard-codes
+ * "days until August 2" goes stale the moment the date passes and cannot be
+ * fixed without a deploy, so every surface reads its phase from here instead.
+ */
+export function getEnforcementStatus(now: Date = new Date()): EnforcementStatus {
+  const t = now.getTime()
+  const next = ENFORCEMENT_MILESTONES.find(m => m.date.getTime() > t) ?? null
+  return {
+    enforcementLive: t >= ENFORCEMENT_DEADLINE.getTime(),
+    next,
+    daysUntilNext: next ? Math.ceil((next.date.getTime() - t) / MS_PER_DAY) : null,
+  }
+}
+
+/**
+ * Days until enforcement powers went live, floored at 0.
+ * Retained for the legacy /api/stats field; new surfaces use getEnforcementStatus.
+ */
 export function getDaysUntilEnforcement(): number {
   const diff = ENFORCEMENT_DEADLINE.getTime() - Date.now()
-  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+  return Math.max(0, Math.ceil(diff / MS_PER_DAY))
 }
 
 // Total compliance obligations currently defined in this file.
