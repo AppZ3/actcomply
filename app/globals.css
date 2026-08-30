@@ -8,5 +8,8 @@
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  /* next/font puts --font-geist-sans on <html> in layout.tsx. Before this,
+     body hard-set Arial, so both Geist families downloaded on every page load
+     and neither was ever rendered. The old stack stays as the fallback. */
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
