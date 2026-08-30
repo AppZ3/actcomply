@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { AssessmentResult } from '@/lib/eu-ai-act'
 import { createClient } from '@/lib/supabase'
+import { BrandMark } from '@/components/Brand'
 
 const SECTORS = [
   'Technology / Software',
@@ -369,7 +370,7 @@ export default function AssessPage() {
         <nav className="border-b border-white/10 px-6 py-4">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">AI</div>
+              <BrandMark />
               <span className="font-semibold text-lg">ActComply</span>
             </Link>
             <Link href="/assess" className="text-sm text-gray-400 hover:text-white transition">
@@ -495,7 +496,7 @@ export default function AssessPage() {
       <nav className="border-b border-white/10 px-6 py-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">AI</div>
+            <BrandMark />
             <span className="font-semibold text-lg">ActComply</span>
           </Link>
         </div>

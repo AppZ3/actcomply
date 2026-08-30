@@ -6,6 +6,8 @@ import { PLANS } from '@/lib/stripe'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
+import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 import { createClient } from '@/lib/supabase'
 
 // Shape of /api/stats.nextMilestone. Server source of truth is
@@ -157,35 +159,24 @@ export default function LandingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       {/* Nav */}
-      <nav className="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-gray-950 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">AI</div>
-            <span className="font-semibold text-lg">ActComply</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="#pricing" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
-            <Link href="/services" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Services</Link>
-            {isLoggedIn
-              ? <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Dashboard</Link>
-              : <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
-            }
-            <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-2 py-2 rounded-lg transition">
-              Check Your AI Systems
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+      <SiteNav width="6xl" brandHref={null}>
+        <Link href="#pricing" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
+        <Link href="/services" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Services</Link>
+        {isLoggedIn
+          ? <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Dashboard</Link>
+          : <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
+        }
+        <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-2 py-2 rounded-lg transition">
+          Check Your AI Systems
+        </Link>
+        <ThemeToggle />
+      </SiteNav>
 
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-6 py-28 text-center">
-        <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-2 rounded-full mb-4">
+        <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 text-sm px-4 py-2 rounded-full mb-8">
           <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
           Enforcement powers are live. Prohibited AI and GPAI obligations apply now
-        </div>
-        <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs px-3 py-1.5 rounded-full mb-8">
-          Omnibus update: Annex III high-risk obligations apply from 2 December 2027 · Formal adoption pending
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
@@ -196,7 +187,7 @@ export default function LandingPage() {
         <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
           The deadline has passed. ActComply assesses your AI systems against the EU AI Act,
           generates the documentation regulators ask for, and keeps you current as obligations
-          phase in through 2027. Fines reach <span className="text-gray-900 dark:text-white font-semibold">€35M or 7% of global turnover.</span>
+          phase in to 2 December 2027. Fines reach <span className="text-gray-900 dark:text-white font-semibold">€35M or 7% of global turnover.</span>
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -382,19 +373,19 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-white/10 px-6 py-8">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <div>© 2026 ActComply. Built to make AI trustworthy.</div>
-          <div className="flex flex-wrap justify-center gap-6">
-            <Link href="/eu-ai-act-compliance-checklist" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Compliance Checklist</Link>
-            <Link href="/eu-ai-act-high-risk-ai-systems" className="hover:text-gray-700 dark:hover:text-gray-300 transition">High-Risk AI Systems</Link>
-            <Link href="/eu-ai-act-risk-classification" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Risk Classification</Link>
-            <Link href="/support" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Support</Link>
-            <Link href="/terms" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Terms</Link>
-            <Link href="/privacy" className="hover:text-gray-700 dark:hover:text-gray-300 transition">Privacy</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        width="6xl"
+        spacing="none"
+        tagline="© 2026 ActComply. Built to make AI trustworthy."
+        links={[
+          { href: "/eu-ai-act-compliance-checklist", label: "Compliance Checklist" },
+          { href: "/eu-ai-act-high-risk-ai-systems", label: "High-Risk AI Systems" },
+          { href: "/eu-ai-act-risk-classification", label: "Risk Classification" },
+          { href: "/support", label: "Support" },
+          { href: "/terms", label: "Terms" },
+          { href: "/privacy", label: "Privacy" },
+        ]}
+      />
     </div>
   )
 }

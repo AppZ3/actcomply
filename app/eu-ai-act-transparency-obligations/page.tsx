@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 import { RelatedGuides } from '@/components/RelatedGuides'
+import { SiteNav } from '@/components/SiteNav'
+import { SiteFooter } from '@/components/SiteFooter'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Article 50 Transparency Obligations, Providers, Deployers, August 2 2026',
@@ -95,20 +97,12 @@ const implementationChecklist = [
 export default function TransparencyObligationsPage() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white">
-      <nav className="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-gray-950 px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">AI</div>
-            <span className="font-semibold text-lg">ActComply</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg transition font-medium">
-              Assess your AI systems &rarr;
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+      <SiteNav width="4xl">
+        <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg transition font-medium">
+          Assess your AI systems &rarr;
+        </Link>
+        <ThemeToggle />
+      </SiteNav>
 
       <main className="max-w-4xl mx-auto px-6 py-16">
 
@@ -315,17 +309,16 @@ export default function TransparencyObligationsPage() {
 
       </main>
 
-      <footer className="border-t border-gray-200 dark:border-white/10 py-8 mt-16">
-        <div className="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-          <span>&copy; 2026 ActComply. Not legal advice.</span>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Privacy</Link>
-            <Link href="/terms" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Terms</Link>
-            <Link href="/eu-ai-act-fria-scope" className="hover:text-gray-600 dark:hover:text-gray-300 transition">FRIA scope</Link>
-            <Link href="/eu-ai-act-deployer-obligations" className="hover:text-gray-600 dark:hover:text-gray-300 transition">Deployer obligations</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter
+        width="4xl"
+        tagline="© 2026 ActComply. Not legal advice."
+        links={[
+          { href: "/privacy", label: "Privacy" },
+          { href: "/terms", label: "Terms" },
+          { href: "/eu-ai-act-fria-scope", label: "FRIA scope" },
+          { href: "/eu-ai-act-deployer-obligations", label: "Deployer obligations" },
+        ]}
+      />
     </div>
   )
 }

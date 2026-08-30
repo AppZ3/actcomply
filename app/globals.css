@@ -2,11 +2,35 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Canonical brand values, exactly as drawn in public/actcomply-*.svg. These
+   are the colours for anything that represents the brand itself: the lockups,
+   exported documents, the OG image. The interface deliberately runs on a
+   different blue, --color-ui-accent below, because the site was built on
+   Tailwind's blue-500 and the two are close enough that showing both on one
+   page reads as a mistake. To move the whole interface onto the brand blue,
+   point --color-ui-accent at var(--brand-accent). */
+:root {
+  --brand-ink: #111418;
+  --brand-paper: #faf8f3;
+  --brand-accent: #3a6aa3;
+  --brand-accent-on-dark: #6a93c4;
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Exposed as utilities: text-brand-ink, stroke-ui-accent, bg-brand-paper. */
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-paper: var(--brand-paper);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-on-dark: var(--brand-accent-on-dark);
+  --color-ui-accent: #3b82f6;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  /* next/font puts --font-geist-sans on <html> in layout.tsx. Before this,
+     body hard-set Arial, so both Geist families downloaded on every page load
+     and neither was ever rendered. The old stack stays as the fallback. */
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
