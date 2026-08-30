@@ -5,6 +5,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getResend } from '@/lib/resend'
 import { bearerOk } from '@/lib/auth-bearer'
 import { logError } from '@/lib/error-logger'
+import { getEnforcementStatus, type EnforcementStatus } from '@/lib/eu-ai-act'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.getactcomply.com'
 
@@ -74,7 +75,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const daysLeft = Math.ceil((new Date('2026-08-02').getTime() - now.getTime()) / 86_400_000)
+  const enforcement = getEnforcementStatus(now)
 
   for (const lead of (day7Leads ?? [])) {
     if (trialSet.has(lead.email)) {
@@ -85,8 +86,10 @@ export async function GET(req: NextRequest) {
       await getResend().emails.send({
         from: 'ActComply <hello@getactcomply.com>',
         to: lead.email,
-        subject: `${daysLeft} days until August 2`,
-        html: day7EmailHtml({ lead, daysLeft, appUrl: APP_URL }),
+        subject: enforcement.next
+          ? `${enforcement.daysUntilNext} days until ${enforcement.next.displayDate}`
+          : 'Your EU AI Act obligations are live',
+        html: day7EmailHtml({ lead, enforcement, appUrl: APP_URL }),
       })
       await admin.from('screener_leads').update({ follow_up_day7_sent: true }).eq('id', lead.id)
       day7Sent++
@@ -114,7 +117,7 @@ function day3EmailHtml({ lead, articleLabel, appUrl }: { lead: { email: string; 
   `
 }
 
-function day7EmailHtml({ lead, daysLeft, appUrl }: { lead: { email: string; sector: string }; daysLeft: number; appUrl: string }) {
+function day7EmailHtml({ lead, enforcement, appUrl }: { lead: { email: string; sector: string }; enforcement: EnforcementStatus; appUrl: string }) {
   return `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#111">
       <div style="background:#0f172a;padding:24px 32px;border-radius:12px 12px 0 0">
@@ -122,7 +125,7 @@ function day7EmailHtml({ lead, daysLeft, appUrl }: { lead: { email: string; sect
       </div>
       <div style="padding:32px;background:#fff;border-radius:0 0 12px 12px;border:1px solid #e2e8f0">
         <p>Most ${lead.sector} companies with AI products have not started documentation yet. If you start a trial today you can have your Article 11 technical documentation in 20 minutes.</p>
-        <p>${daysLeft} days until August 2.</p>
+        <p>${enforcement.next ? `${enforcement.daysUntilNext} days until ${enforcement.next.displayDate}.` : 'Enforcement powers are live.'}</p>
         <a href="${appUrl}/signup" style="display:inline-block;background:#0f172a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:8px">Start free trial</a>
         <p style="color:#94a3b8;font-size:12px;margin-top:32px"><a href="${appUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(lead.email)}">Unsubscribe</a></p>
       </div>

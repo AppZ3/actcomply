@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-server'
 import { getActiveOrgId, getUserOrgs } from '@/lib/active-org'
+import { getEnforcementStatus } from '@/lib/eu-ai-act'
 import type { AssessmentResult, RiskLevel } from '@/lib/eu-ai-act'
 import { OnboardingBanner } from './onboarding'
 import type { Metadata } from 'next'
@@ -61,10 +62,7 @@ export default async function DashboardPage() {
     ? Math.round((assessments ?? []).reduce((sum, a) => sum + a.compliance_score, 0) / total)
     : 0
 
-  const daysLeft = Math.max(
-    0,
-    Math.floor((new Date('2026-08-02').getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-  )
+  const enforcement = getEnforcementStatus()
 
   return (
     <div className="p-8">
@@ -78,7 +76,11 @@ export default async function DashboardPage() {
             </span>
           )}
         </div>
-        <p className="text-gray-400 text-sm mt-1">EU AI Act enforcement in <span className="text-red-400 font-semibold">{daysLeft} days</span></p>
+        <p className="text-gray-400 text-sm mt-1">
+          {enforcement.enforcementLive
+            ? <>EU AI Act enforcement powers are <span className="text-red-400 font-semibold">live</span>{enforcement.next && <>, {enforcement.next.displayDate} in <span className="text-red-400 font-semibold">{enforcement.daysUntilNext} days</span></>}</>
+            : <>EU AI Act enforcement in <span className="text-red-400 font-semibold">{enforcement.daysUntilNext} days</span></>}
+        </p>
       </div>
 
       {/* Stats */}
@@ -86,7 +88,11 @@ export default async function DashboardPage() {
         <StatCard label="Systems Assessed" value={total.toString()} />
         <StatCard label="High / Prohibited Risk" value={highRisk.toString()} highlight={highRisk > 0} />
         <StatCard label="Avg Compliance Score" value={total > 0 ? `${avgScore}%` : '-'} />
-        <StatCard label="Days to Deadline" value={daysLeft.toString()} highlight />
+        <StatCard
+          label={enforcement.next ? 'Days to Next Deadline' : 'Enforcement Status'}
+          value={enforcement.next ? String(enforcement.daysUntilNext) : 'Live'}
+          highlight
+        />
       </div>
 
       {/* Plan warning */}
