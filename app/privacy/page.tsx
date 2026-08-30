@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { SiteNav } from '@/components/SiteNav'
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -10,15 +11,9 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white">
-      <nav className="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-transparent px-6 py-4">
-        <div className="absolute top-4 right-4"><ThemeToggle /></div>
-        <div className="max-w-4xl mx-auto">
-          <Link href="/" className="flex items-center gap-2 w-fit">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm">AI</div>
-            <span className="font-semibold text-lg">ActComply</span>
-          </Link>
-        </div>
-      </nav>
+      <SiteNav width="4xl" transparentDark>
+        <ThemeToggle />
+      </SiteNav>
 
       <div className="max-w-4xl mx-auto px-6 py-16">
         <h1 className="text-3xl font-bold mb-2">Privacy Policy</h1>

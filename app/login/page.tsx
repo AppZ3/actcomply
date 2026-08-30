@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { BrandMark } from '@/components/Brand'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -112,7 +113,7 @@ export default function LoginPage() {
       </div>
       <div className="w-full max-w-md">
         <Link href="/" className="flex items-center gap-2 justify-center mb-10">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">AI</div>
+          <BrandMark />
           <span className="font-semibold text-lg">ActComply</span>
         </Link>
         <div className="bg-white border border-gray-200 dark:bg-white/5 dark:border-white/10 rounded-2xl p-8">

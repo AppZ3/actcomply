@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { SiteNav } from '@/components/SiteNav'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Compliance Services',
@@ -74,22 +75,14 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-white">
       {/* Nav */}
-      <nav className="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-gray-950 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">AI</div>
-            <span className="font-semibold text-lg">ActComply</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/#pricing" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
-            <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
-            <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-2 rounded-lg transition">
-              Assess your AI free
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+      <SiteNav width="6xl">
+        <Link href="/#pricing" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Pricing</Link>
+        <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition">Sign in</Link>
+        <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-2 rounded-lg transition">
+          Assess your AI free
+        </Link>
+        <ThemeToggle />
+      </SiteNav>
 
       {/* Hero */}
       <section className="max-w-3xl mx-auto px-6 pt-24 pb-12 text-center">

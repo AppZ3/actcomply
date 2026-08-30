@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { HIGH_RISK_REQUIREMENTS, LIMITED_RISK_REQUIREMENTS, GENERAL_PROVIDER_REQUIREMENTS, GPAI_REQUIREMENTS } from '@/lib/eu-ai-act'
 import { RelatedGuides } from '@/components/RelatedGuides'
+import { SiteNav } from '@/components/SiteNav'
 
 export const metadata: Metadata = {
   title: 'EU AI Act Compliance Checklist 2026',
@@ -47,20 +48,12 @@ export default function ChecklistPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white">
-      <nav className="border-b border-gray-200 dark:border-white/10 bg-white dark:bg-gray-950 px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">AI</div>
-            <span className="font-semibold text-lg">ActComply</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-2 rounded-lg transition">
-              Free Assessment →
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
+      <SiteNav width="4xl">
+        <Link href="/assess" className="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-2 rounded-lg transition">
+          Free Assessment →
+        </Link>
+        <ThemeToggle />
+      </SiteNav>
 
       <div className="max-w-4xl mx-auto px-6 py-16">
         <div className="mb-12">
