@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     default: 'ActComply: EU AI Act Compliance Platform',
     template: '%s | ActComply',
   },
-  description: 'Assess your AI systems against the EU AI Act in minutes. Automated risk classification, compliance checklist, and audit-ready documentation. Enforcement begins August 2, 2026.',
+  description: 'Assess your AI systems against the EU AI Act in minutes. Automated risk classification, compliance checklist, and audit-ready documentation. Enforcement powers are live, Annex III high-risk obligations apply from 2 December 2027.',
   keywords: [
     'EU AI Act compliance',
     'EU AI Act compliance tool',
@@ -36,6 +36,8 @@ export const metadata: Metadata = {
     'AI regulation compliance',
     'GPAI compliance',
     'EU AI Act 2026',
+    'EU AI Act enforcement',
+    'Annex III high-risk obligations',
   ],
   authors: [{ name: 'ActComply', url: 'https://www.getactcomply.com' }],
   creator: 'ActComply',
@@ -51,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'ActComply: EU AI Act Compliance Platform',
-    description: 'Assess your AI systems against the EU AI Act in minutes. Enforcement begins August 2, 2026.',
+    description: 'Assess your AI systems against the EU AI Act in minutes. Enforcement powers are live now.',
     images: ['/opengraph-image'],
   },
   robots: {
