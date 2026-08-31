@@ -382,10 +382,19 @@ export interface EnforcementStatus {
 export function getEnforcementStatus(now: Date = new Date()): EnforcementStatus {
   const t = now.getTime()
   const next = ENFORCEMENT_MILESTONES.find(m => m.date.getTime() > t) ?? null
+
+  // The day count is measured from UTC midnight rather than the current
+  // instant, so it is identical for every caller for the whole UTC day. That
+  // makes it safe to render on the server: the landing page computes the same
+  // number during SSR and again at hydration, instead of showing a placeholder
+  // until a client fetch lands. It also stops the figure drifting by one
+  // between the server-rendered HTML and the next /api/stats refresh.
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+
   return {
     enforcementLive: t >= ENFORCEMENT_DEADLINE.getTime(),
     next,
-    daysUntilNext: next ? Math.ceil((next.date.getTime() - t) / MS_PER_DAY) : null,
+    daysUntilNext: next ? Math.ceil((next.date.getTime() - today) / MS_PER_DAY) : null,
   }
 }
 
