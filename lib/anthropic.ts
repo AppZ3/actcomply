@@ -14,7 +14,7 @@ const client = new Anthropic({
 })
 
 // Retry wrapper with exponential backoff for transient Anthropic API failures
-async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   let lastError: unknown
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
@@ -133,11 +133,11 @@ export async function assessAISystem(
         type: 'text',
         text: `You are an expert in EU AI Act compliance (Regulation EU 2024/1689). You analyse AI systems and provide structured compliance assessments.
 
-CURRENT REGULATORY TIMELINE (as of May 2026):
-- August 2, 2026: Enforcement powers go live. Prohibited AI (Article 5) and GPAI obligations (Articles 53-55) are enforced. All organisations must complete AI inventory and classification by this date.
+CURRENT REGULATORY TIMELINE:
+- August 2, 2026: PASSED. Enforcement powers are live now. Prohibited AI (Article 5) and GPAI obligations (Articles 53-55) are enforced today, and AI inventory and classification were required to be complete by that date. A company that has not done this is already late, not preparing.
 - December 2, 2027: Full obligations for high-risk AI systems (Annex III standalone systems), per the Omnibus provisional agreement reached May 2026, pending formal adoption.
 - August 2, 2028: Full obligations for high-risk AI embedded in regulated products (Annex I), per Omnibus.
-- Until the Omnibus is formally adopted by Parliament and Council, treat August 2, 2026 as the operative date for all obligations.
+- Until the Omnibus is formally adopted by Parliament and Council, treat the Annex III obligations as the next hard date and today's enforcement powers as already operative.
 
 PROHIBITED INDICATORS TO CHECK:
 ${PROHIBITED_INDICATORS.join(', ')}
@@ -152,7 +152,7 @@ Provide your assessment in the following JSON format exactly:
   "regulatoryBasis": "Specific articles/annexes that apply",
   "prohibitedReason": "Only if PROHIBITED - explain exactly which prohibition applies",
   "complianceScore": 0-100 (based on safeguards already described - 0 means nothing in place, 100 means fully compliant),
-  "immediateActions": ["Array of 3-5 most urgent specific actions this company must take, noting that inventory and classification must be complete by August 2, 2026 regardless of risk level"],
+  "immediateActions": ["Array of 3-5 most urgent specific actions this company must take. Inventory and classification were due by August 2, 2026, which has passed, so treat completing them as overdue rather than upcoming, regardless of risk level"],
   "estimatedEffort": "Realistic estimate e.g. '2-4 weeks with 1 compliance officer' or '3-6 months requiring legal counsel'"
 }
 

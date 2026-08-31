@@ -112,7 +112,7 @@ export default async function ResourcePage({ params }: { params: Promise<{ slug:
               Check your EU AI Act risk in 5 minutes
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-              Free risk classifier. No signup required. August 2 deadline.
+              Free risk classifier. No signup required. Enforcement is already live.
             </p>
             <Link
               href="/check?utm_source=seo&utm_medium=resource&utm_campaign=page-cta"
