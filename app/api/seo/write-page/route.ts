@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { bearerOk } from '@/lib/auth-bearer'
 import { logError } from '@/lib/error-logger'
+import { sanitiseHtml, stripEmDashes } from '@/lib/seo-writer'
 
 interface SeoPageInput {
   slug: string
@@ -37,9 +38,11 @@ export async function POST(req: NextRequest) {
     const { error } = await db.from('seo_pages').upsert(
       {
         slug,
-        title: body.title,
-        meta_description: body.meta_description ?? null,
-        content: body.content,
+        title: stripEmDashes(body.title),
+        meta_description: body.meta_description ? stripEmDashes(body.meta_description) : null,
+        // Content is rendered with dangerouslySetInnerHTML, so it never goes to
+        // the database as the caller supplied it.
+        content: sanitiseHtml(stripEmDashes(body.content)),
         schema_markup: body.schema_markup ?? null,
         internal_links: body.internal_links ?? null,
         updated_at: new Date().toISOString(),
