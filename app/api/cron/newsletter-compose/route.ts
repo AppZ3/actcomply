@@ -5,7 +5,7 @@ import { getSupabaseAdmin } from '@/lib/supabase-admin'
 import { getResend } from '@/lib/resend'
 import { bearerOk } from '@/lib/auth-bearer'
 import { logError } from '@/lib/error-logger'
-import { bodyToHtml, newsletterShellHtml } from '@/lib/newsletter'
+import { bodyToHtml, newsletterShellHtml, escapeHtml } from '@/lib/newsletter'
 import { scoreItems, composeIssue, selectCandidates, type CandidateItem, type ResourcePage } from '@/lib/newsletter-composer'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.getactcomply.com'
@@ -150,7 +150,7 @@ export async function GET(req: NextRequest) {
           <p style="margin:0 0 8px;font-size:13px;color:#9a3412"><strong>Draft only. Nothing has been sent.</strong></p>
           <p style="margin:0 0 8px;font-size:13px;color:#7c2d12">Slug: <code>${slug}</code></p>
           <p style="margin:0 0 8px;font-size:13px;color:#7c2d12">Sources used: ${composed.items
-            .map(i => `${i.relevance}, ${i.title.replace(/</g, '&lt;').slice(0, 70)}`)
+            .map(i => `${i.relevance}, ${escapeHtml(i.title.slice(0, 70))}`)
             .join('<br>')}</p>
           <p style="margin:0;font-size:13px;color:#7c2d12">To send: POST ${APP_URL}/api/newsletter/send with the slug, subject and body, dryRun first.</p>
         </div>
