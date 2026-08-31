@@ -7,15 +7,38 @@ export function newUnsubscribeToken(): string {
   return randomBytes(24).toString('base64url')
 }
 
-// Convert plain-text body (paragraphs separated by blank lines) into simple
-// safe-ish HTML. We're sending to opt-in subscribers, content is authored by us,
-// so we don't escape, but we do trim and wrap each paragraph.
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+// Only http(s) becomes a link. Anything else stays as visible text so a
+// javascript: or data: URL cannot reach the rendered email.
+function renderLinks(escaped: string): string {
+  return escaped.replace(
+    /\[([^\]]{1,200})\]\((https?:\/\/[^\s)]{1,500})\)/g,
+    (_m, label: string, href: string) =>
+      `<a href="${href}" style="color:#2563eb;text-decoration:underline">${label}</a>`
+  )
+}
+
+// Convert a plain-text body (paragraphs separated by blank lines) into email
+// HTML. Markdown links, [label](url), become anchors.
+//
+// The body is escaped first. It used to be interpolated raw on the grounds that
+// we authored every word, but issues are now composed from third-party feed
+// titles and summaries, so a publisher's headline must never be able to inject
+// markup into an email going out under Zac's name.
 export function bodyToHtml(body: string): string {
   return body
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => `<p style="margin:0 0 16px 0;line-height:1.7;color:#334155;font-size:15px">${p.replace(/\n/g, '<br/>')}</p>`)
+    .map((p) => renderLinks(escapeHtml(p)).replace(/\n/g, '<br/>'))
+    .map((p) => `<p style="margin:0 0 16px 0;line-height:1.7;color:#334155;font-size:15px">${p}</p>`)
     .join('\n')
 }
 
