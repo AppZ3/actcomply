@@ -26,8 +26,24 @@ describe('POST /api/docs/:assessmentId', () => {
 })
 
 describe('GET /api/healthcheck', () => {
-  it('returns healthy status with all checks', async () => {
+  it('returns healthy status to anonymous callers, without the check detail', async () => {
     const res = await fetch(`${BASE_URL}/api/healthcheck`)
+    expect(res.status).toBe(200)
+    const data = await res.json()
+    expect(data.status).toBe('healthy')
+    // The route bearer-gates the detail so uptime probes get a one-bit status
+    // while the env-var inventory and raw error strings stay private. This
+    // assertion is the guard on that, so an anonymous caller seeing `checks`
+    // is a leak, not a convenience.
+    expect(data.checks).toBeUndefined()
+  }, 15_000)
+
+  // Runs only where the secret is available, e.g. CI with TEST_CRON_SECRET set.
+  const cronSecret = process.env.TEST_CRON_SECRET
+  it.skipIf(!cronSecret)('returns the full check detail to a bearer-authorised caller', async () => {
+    const res = await fetch(`${BASE_URL}/api/healthcheck`, {
+      headers: { authorization: `Bearer ${cronSecret}` },
+    })
     expect(res.status).toBe(200)
     const data = await res.json()
     expect(data.status).toBe('healthy')
@@ -35,6 +51,7 @@ describe('GET /api/healthcheck', () => {
     expect(data.checks.supabase?.ok).toBe(true)
     expect(data.checks.stripe_prices?.ok).toBe(true)
     expect(data.checks.env_vars?.ok).toBe(true)
+    expect(data.checks.countdown?.ok).toBe(true)
   }, 15_000)
 })
 
