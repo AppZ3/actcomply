@@ -45,6 +45,17 @@ export async function GET(req: NextRequest) {
   const admin = getSupabaseAdmin()
 
   try {
+    // Same guard as feed-poll. Until the migration is applied there is nothing
+    // to compose from, and that is a deployment state, not an error.
+    const probe = await admin.from('feed_items').select('id').limit(1)
+    if (probe.error && (probe.error.code === 'PGRST205' || probe.error.code === '42P01')) {
+      return NextResponse.json({
+        composed: false,
+        migration_pending: 'supabase-migrations/add_newsletter_feed.sql',
+        reason: 'feed_items does not exist yet',
+      })
+    }
+
     const since = new Date(Date.now() - WINDOW_DAYS * 86_400_000).toISOString()
 
     const { data: rows, error: readErr } = await admin
