@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { bodyToHtml } from '../lib/newsletter'
+import { bodyToHtml, newsletterShellHtml, escapeHtml } from '../lib/newsletter'
 
 // Issues are now assembled from third-party feed titles and summaries, so this
 // renderer is the boundary between a publisher's text and an email going out
@@ -53,5 +53,46 @@ describe('bodyToHtml', () => {
 
   it('drops empty paragraphs', () => {
     expect(bodyToHtml('One.\n\n\n\n\nTwo.').match(/<p /g)).toHaveLength(2)
+  })
+})
+
+describe('newsletterShellHtml', () => {
+  const shell = (subject: string) =>
+    newsletterShellHtml({ subject, bodyHtml: '<p>body</p>', unsubscribeUrl: 'https://example.test/u?token=abc' })
+
+  it('escapes the subject in the h1', () => {
+    const html = shell('<img src=x onerror=alert(1)>')
+    expect(html).not.toContain('<img src=x')
+    expect(html).toContain('&lt;img')
+  })
+
+  it('escapes the subject in the title tag too, not just the visible heading', () => {
+    // The subject is interpolated in two places. Escaping only the h1 leaves
+    // the head tag as a second injection point.
+    const html = shell('</title><script>alert(1)</script>')
+    expect(html).not.toContain('</title><script>')
+    expect(html).not.toContain('<script>alert(1)</script>')
+  })
+
+  it('leaves the already-rendered body html alone', () => {
+    // bodyToHtml has escaped it; escaping twice would show &amp;lt; to readers.
+    const html = newsletterShellHtml({
+      subject: 'Fine',
+      bodyHtml: '<p>Escaped &amp; safe <a href="https://example.test/a">link</a></p>',
+      unsubscribeUrl: 'https://example.test/u',
+    })
+    expect(html).toContain('<a href="https://example.test/a">link</a>')
+    expect(html).not.toContain('&amp;amp;')
+  })
+})
+
+describe('escapeHtml', () => {
+  it('neutralises the characters that break out of text and attributes', () => {
+    expect(escapeHtml('<b>&"')).toBe('&lt;b&gt;&amp;&quot;')
+  })
+
+  it('escapes the ampersand first, so escapes are not double-encoded', () => {
+    expect(escapeHtml('a < b')).toBe('a &lt; b')
+    expect(escapeHtml('&lt;')).toBe('&amp;lt;')
   })
 })

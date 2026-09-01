@@ -7,7 +7,8 @@ export function newUnsubscribeToken(): string {
   return randomBytes(24).toString('base64url')
 }
 
-function escapeHtml(s: string): string {
+/** Exported because every interpolation of untrusted text needs it, not just the body. */
+export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -42,6 +43,15 @@ export function bodyToHtml(body: string): string {
     .join('\n')
 }
 
+/**
+ * The email chrome around a rendered body.
+ *
+ * `subject` is escaped here for the same reason the body is: issues are now
+ * composed from third-party feed titles, so the headline is untrusted text on
+ * exactly the same path as the paragraphs beneath it. `bodyHtml` arrives
+ * already rendered and escaped by bodyToHtml, and `unsubscribeUrl` is a token
+ * we generate, so neither is escaped again here.
+ */
 export function newsletterShellHtml({
   subject,
   bodyHtml,
@@ -56,7 +66,7 @@ export function newsletterShellHtml({
   return `
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${subject}</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(subject)}</title></head>
 <body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#111">
   <div style="max-width:640px;margin:0 auto;padding:24px 16px">
     <div style="background:#0f172a;padding:20px 28px;border-radius:12px 12px 0 0">
@@ -64,7 +74,7 @@ export function newsletterShellHtml({
       <span style="color:#64748b;font-size:13px;margin-left:8px">Builder's Notes on the EU AI Act</span>
     </div>
     <div style="background:#fff;border:1px solid #e2e8f0;border-top:none;padding:32px;border-radius:0 0 12px 12px">
-      <h1 style="margin:0 0 24px 0;font-size:24px;line-height:1.3;color:#0f172a">${subject}</h1>
+      <h1 style="margin:0 0 24px 0;font-size:24px;line-height:1.3;color:#0f172a">${escapeHtml(subject)}</h1>
       ${bodyHtml}
       <div style="margin-top:32px;padding-top:20px;border-top:1px solid #e2e8f0">
         <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6">
